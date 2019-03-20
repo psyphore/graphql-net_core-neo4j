@@ -3,6 +3,7 @@ using GraphQL;
 using GraphQL.Types;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +30,7 @@ namespace net_core_graphql
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddCors();
             services.AddSingleton<ContextServiceLocator>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient(o =>
             {
                 var connectionString = Configuration["ConnectionString:BoltURL"];
@@ -44,7 +46,10 @@ namespace net_core_graphql
             services.AddSingleton<PersonType>();
 
             var sp = services.BuildServiceProvider();
-            services.AddSingleton<ISchema>(new MainSchema(new FuncDependencyResolver(type => sp.GetService(type))));
+            using (var mainSchema = new MainSchema(new FuncDependencyResolver(type => sp.GetService(type))))
+            {
+                services.AddSingleton<ISchema>(mainSchema);
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
