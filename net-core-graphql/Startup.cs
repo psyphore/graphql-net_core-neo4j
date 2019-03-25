@@ -13,6 +13,7 @@ using net_core_graphql.Data.Interfaces;
 using net_core_graphql.Helper;
 using net_core_graphql.Types;
 
+
 namespace net_core_graphql
 {
     public class Startup
@@ -60,6 +61,11 @@ namespace net_core_graphql
 
             app.UseGraphiQl();
             app.UseMvc();
+
+            var ws = new WebSocketOptions();
+            ws.AllowedOrigins.Add("*");
+
+            app.UseWebSockets(ws);
         }
     }
 }
