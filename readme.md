@@ -7,7 +7,12 @@ this is my take on GraphQL and .net core 2.2
 ```
 
 ## Environment
-```env
+```json
+"ConnectionStrings": {
+    "BoltURL": "bolt://localhost:7687",
+    "Username": "neo4j",
+    "Password": "n4j"
+  },
 
 ```
 
@@ -16,3 +21,4 @@ this is my take on GraphQL and .net core 2.2
 1. [Building GraphQL API](https://fullstackmark.com/post/17/building-a-graphql-api-with-aspnet-core-2-and-entity-framework-core)
 1. [How to GraphQL](https://www.howtographql.com/)
 1. [Neo4J .net driver](https://neo4j.com/developer/dotnet/)
+1. [NetCore 3.0 GraphQL](https://dev.to/dotnet/learn-how-you-can-use-graphql-in-net-core-and-c-4h96) 

@@ -13,7 +13,6 @@ using net_core_graphql.Data.Interfaces;
 using net_core_graphql.Helper;
 using net_core_graphql.Types;
 
-
 namespace net_core_graphql
 {
     public class Startup
@@ -24,6 +23,21 @@ namespace net_core_graphql
         }
 
         public IConfiguration Configuration { get; }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            if (env.IsDevelopment())
+                app.UseDeveloperExceptionPage();
+
+            app.UseGraphiQl();
+            app.UseMvc();
+
+            var ws = new WebSocketOptions();
+            ws.AllowedOrigins.Add("*");
+
+            app.UseWebSockets(ws);
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -48,24 +62,7 @@ namespace net_core_graphql
 
             var sp = services.BuildServiceProvider();
             using (var mainSchema = new MainSchema(new FuncDependencyResolver(type => sp.GetService(type))))
-            {
                 services.AddSingleton<ISchema>(mainSchema);
-            }
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-        {
-            if (env.IsDevelopment())
-                app.UseDeveloperExceptionPage();
-
-            app.UseGraphiQl();
-            app.UseMvc();
-
-            var ws = new WebSocketOptions();
-            ws.AllowedOrigins.Add("*");
-
-            app.UseWebSockets(ws);
         }
     }
 }

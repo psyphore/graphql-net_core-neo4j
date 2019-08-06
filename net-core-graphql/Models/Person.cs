@@ -18,6 +18,6 @@ namespace net_core_graphql.Models
         public List<string> Line { get; set; }
         public List<string> Buildings { get; set; }
 
-        public string Manager { get; set; }
+        public Person Manager { get; set; }
     }
 }
