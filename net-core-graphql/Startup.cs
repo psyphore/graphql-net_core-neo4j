@@ -46,6 +46,7 @@ namespace net_core_graphql
             services.AddCors();
             services.AddSingleton<ContextServiceLocator>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
             services.AddTransient(o =>
             {
                 var connectionString = Configuration["ConnectionString:BoltURL"];
@@ -59,6 +60,9 @@ namespace net_core_graphql
             services.AddSingleton<PersonQuery>();
             services.AddSingleton<PersonMutation>();
             services.AddSingleton<PersonType>();
+
+            //IoC.Registration.Configuration = Configuration;
+            IoC.Registration.RegisterTypes(services);
 
             var sp = services.BuildServiceProvider();
             using (var mainSchema = new MainSchema(new FuncDependencyResolver(type => sp.GetService(type))))
