@@ -43,7 +43,9 @@ namespace net_core_graphql
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMemoryCache();
             services.AddCors();
+
             services.AddSingleton<ContextServiceLocator>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
