@@ -8,9 +8,9 @@ namespace net_core_graphql.Controllers
     [Route("api/[controller]"), ApiController]
     public class CachingController : ControllerBase
     {
-        private IMemoryCache _memoryCache;
-        private ILogger<CachingController> _logger;
-        private string _dataKey = "Date-Created";
+        private readonly IMemoryCache _memoryCache;
+        private readonly ILogger<CachingController> _logger;
+        private const string DATA_KEY = "Date-Created";
         private string _message;
 
         public CachingController(IMemoryCache cache, ILogger<CachingController> logger)
@@ -19,17 +19,24 @@ namespace net_core_graphql.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
-            if (!_memoryCache.TryGetValue(_dataKey, out _message))
+            if (!_memoryCache.TryGetValue(DATA_KEY, out _message))
             {
                 _message = $"New value created at {DateTime.Now}.";
-                _memoryCache.Set(_dataKey, _message, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(5)));
-                _logger.LogInformation($"> {_dataKey} generated and set in cache.");
+
+                _memoryCache.Set(DATA_KEY, _message, new MemoryCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromMinutes(5))
+                    .SetAbsoluteExpiration(TimeSpan.FromHours(1))
+                    .SetPriority(CacheItemPriority.Low)
+                    );
+
+                _logger.LogInformation($"> {DATA_KEY} generated and set in cache.");
             }
             else
             {
-                _logger.LogInformation($"> {_dataKey} was available (and pulled) from cache.");
+                _logger.LogInformation($"> {DATA_KEY} was available (and pulled) from cache.");
             }
             return Ok(_message);
         }
