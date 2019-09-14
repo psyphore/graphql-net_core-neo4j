@@ -1,6 +1,6 @@
 ﻿using GraphQL.Types;
 
-namespace net_core_graphql.Types
+namespace Models.GraphQLTypes.Person
 {
     public class PersonInputType : InputObjectGraphType
     {

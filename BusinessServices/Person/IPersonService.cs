@@ -1,15 +1,19 @@
-﻿using System;
+﻿using Models.DTOs;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BusinessServices.Person
 {
     public interface IPersonService
     {
-        Task<object> Get(string id);
-        Task<object> Update(object person);
-        Task<object> Delete(string id);
+        Task<PersonModel> Add(PersonModel person);
+
+        Task<PersonModel> Delete(string id);
+
+        Task<PersonModel> Get(string id);
+
+        Task<IEnumerable<PersonModel>> GetAll();
+
+        Task<PersonModel> Update(PersonModel person);
     }
 }

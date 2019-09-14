@@ -1,30 +1,35 @@
-﻿using System;
-using BusinessServices.Person;
-using DataAccess;
-using DataAccess.Interfaces;
+﻿using GraphQLCore;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Models.Types;
 
 namespace IoC
 {
     public static class Registration
     {
-        public static IConfiguration Configuration { get; }
-
-        public static void RegisterTypes(IServiceCollection services)
+        public static void RegisterTypes(IServiceCollection services, IConfiguration configuration)
         {
-            // Frameworks
+            RegisterFrameworks.RegisterTypes(services, configuration);
 
-            // Repositories
-            services.AddTransient(o =>
+            RegisterRepositories.RegisterTypes(services);
+
+            RegisterBusinessServices.RegisterTypes(services);
+
+            RegisterGraphQLHandlers.RegisterTypes(services);
+        }
+
+        public static void ConfigureApp(IApplicationBuilder app)
+        {
+            app.UseMiddleware<GraphQLMiddleware>(new GraphQLSettings
             {
-                return new Repository(Configuration["ConnectionString:BoltURL"], Configuration["ConnectionString:Username"], Configuration["ConnectionString:Password"]);
+                Path = "/graphql",
+                BuildUserContext = ctx => new GraphQLUserContext
+                {
+                    User = ctx.User
+                },
+                EnableMetrics = true
             });
-            services.AddTransient<IRepository, Repository>();
-
-            // Business Services
-            services.AddTransient<IPersonService, PersonService>();
-
         }
     }
 }

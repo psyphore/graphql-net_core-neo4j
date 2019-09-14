@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 
-namespace net_core_graphql.Types
+namespace Models.Types
 {
     public class GraphQLQuery
     {

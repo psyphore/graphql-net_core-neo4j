@@ -6,22 +6,12 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.2.0" />
-    <!--<PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />-->
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
-
     <PackageReference Include="GraphQL" Version="2.4.0" />
     <PackageReference Include="GraphQL.Common" Version="1.0.3" />
-    <PackageReference Include="Neo4j.Driver" Version="1.7.2" />
-    
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.5.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BusinessServices\BusinessServices.csproj" />
-    <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
-    <ProjectReference Include="..\GraphQLCore\GraphQLCore.csproj" />
     <ProjectReference Include="..\Models\Models.csproj" />
   </ItemGroup>
 

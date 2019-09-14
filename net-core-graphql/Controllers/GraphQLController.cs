@@ -1,7 +1,7 @@
 ﻿using GraphQL;
 using GraphQL.Types;
 using Microsoft.AspNetCore.Mvc;
-using net_core_graphql.Types;
+using Models.Types;
 using System;
 using System.Threading.Tasks;
 

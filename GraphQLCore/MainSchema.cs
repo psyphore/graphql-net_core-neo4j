@@ -1,7 +1,8 @@
 ﻿using GraphQL;
 using GraphQL.Types;
+using Models.Types;
 
-namespace net_core_graphql.Types
+namespace GraphQLCore
 {
     public class MainSchema : Schema
     {
