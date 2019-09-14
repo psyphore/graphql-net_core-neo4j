@@ -1,4 +1,5 @@
 ﻿using DataAccess;
+using DataAccess.Interfaces;
 using GraphQL;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,8 +25,10 @@ namespace IoC
 
             services.AddTransient(o =>
             {
-                return new Repository(neo4j.BoltURL, neo4j.Username, neo4j.Password);
+                return new Repository(neo4j);
             });
+
+            services.AddTransient<IRepository, Repository>();
 
             services.AddSingleton<IDocumentExecuter, DocumentExecuter>();
         }

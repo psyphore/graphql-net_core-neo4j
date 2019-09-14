@@ -10,7 +10,7 @@ namespace Models.GraphQLTypes.Person
             Field(x => x.Id);
             Field(x => x.Firstname, true);
             Field(x => x.Lastname, true);
-            Field(x => x.Manager);
+            // Field(x => x.Manager);
             Field(x => x.Team);
             Field(x => x.Line);
             Field(x => x.Buildings);

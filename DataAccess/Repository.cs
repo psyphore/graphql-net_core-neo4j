@@ -1,4 +1,5 @@
 ﻿using DataAccess.Interfaces;
+using Models.DTOs.Configuration;
 using Neo4j.Driver.V1;
 using System.Threading.Tasks;
 
@@ -8,9 +9,9 @@ namespace DataAccess
     {
         private readonly IDriver _driver;
 
-        public Repository(string uri, string username, string password)
+        public Repository(Connection connection)
         {
-            _driver = GraphDatabase.Driver(uri, AuthTokens.Basic(username, password));
+            _driver = GraphDatabase.Driver(connection.BoltURL, AuthTokens.Basic(connection.Username, connection.Password));
         }
 
         public ISession GetSession(AccessMode mode)
