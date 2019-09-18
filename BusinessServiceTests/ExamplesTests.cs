@@ -6,7 +6,7 @@ using System.Linq;
 namespace BusinessServiceTests
 {
     [TestFixture]
-    public class Class1Tests
+    public class ExamplesTests
     {
         [SetUp]
         public void SetUp()
@@ -21,7 +21,7 @@ namespace BusinessServiceTests
             int k = 3;
 
             // Act
-            var result = Class1.FindNumber(
+            var result = Examples.FindNumber(
                 arr,
                 k);
 
@@ -33,16 +33,17 @@ namespace BusinessServiceTests
         public void OddNumbers_StateUnderTest_ExpectedBehavior()
         {
             // Arrange
-            int l = 1;
-            int r = 10;
+            int l = 2;
+            int r = 5;
 
             // Act
-            var result = Class1.OddNumbers(
+            var result = Examples.OddNumbers(
                 l,
                 r);
 
             // Assert
-            Assert.Contains(2, result);
+            Assert.Contains(3, result);
+            Assert.Contains(5, result);
         }
     }
 }
