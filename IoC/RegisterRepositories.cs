@@ -6,9 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace IoC
 {
-    internal class RegisterRepositories
+    internal static class RegisterRepositories
     {
-        public static void RegisterTypes(IServiceCollection services)
+        public static void ConfigureRepositories(this IServiceCollection services)
         {
             services.AddTransient<IRepository, Repository>();
             services.AddSingleton<ICacheProvider, InMemoryCache>();

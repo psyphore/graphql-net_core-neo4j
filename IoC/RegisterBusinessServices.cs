@@ -5,7 +5,7 @@ namespace IoC
 {
     internal static class RegisterBusinessServices
     {
-        public static void RegisterTypes(IServiceCollection services)
+        public static void ConfigureServices(this IServiceCollection services)
         {
             services.AddTransient<IPersonService, PersonService>();
         }

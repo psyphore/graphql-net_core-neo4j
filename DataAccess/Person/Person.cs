@@ -1,22 +1,25 @@
 ﻿using DataAccess.Interfaces;
-using System;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace DataAccess.Person
 {
     public class Person : IEntity
     {
-        public DateTime BirthDate { get; set; }
-        public string BirthPlace { get; set; }
         public List<string> Buildings { get; set; }
+
+        [JsonProperty("firstname")]
         public string Firstname { get; set; }
-        public string Height { get; set; }
+
+        [JsonProperty("id")]
         public string Id { get; set; }
+
+        [JsonProperty("lastname")]
         public string Lastname { get; set; }
+
         public List<string> Line { get; set; }
         public Person Manager { get; set; }
         public List<string> Products { get; set; }
         public List<string> Team { get; set; }
-        public int WeightLbs { get; set; }
     }
 }

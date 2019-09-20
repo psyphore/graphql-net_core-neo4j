@@ -1,8 +1,9 @@
 ﻿using DataAccess.Interfaces;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using DataAccess.Serializer.Converters;
 using Neo4j.Driver.V1;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DataAccess.Person
 {
@@ -28,9 +29,29 @@ namespace DataAccess.Person
         public async Task<IEnumerable<Person>> All()
         {
             var x = new List<Person>();
-            var entity = await _repository.Read<object>(_queries["GET_PEOPLE"].Trim(), new { first = 9999, offset = 0 });
-            if (entity != null)
-                x = JsonConvert.DeserializeObject<List<Person>>(JsonConvert.SerializeObject(entity));
+            const int First = 999;
+            const int Offset = 0;
+            const string LABEL = "person";
+            var param = new Dictionary<string, object>()
+            {
+                //{
+                //    "pages", ParameterSerializer.ToDictionary(new List<NodePaging> { new NodePaging(First, Offset) })
+                //},
+                {
+                    "offset", Offset
+                },
+                {
+                    "first", First
+                }
+            };
+            var query = _queries["GET_PEOPLE"].Trim();
+            var records = await _repository.Read(query, param);
+            
+            foreach(var record in records)
+            {
+                var props = JsonConvert.SerializeObject(record[LABEL]);
+                x.Add(JsonConvert.DeserializeObject<Person>(props));
+            }
 
             return x;
         }

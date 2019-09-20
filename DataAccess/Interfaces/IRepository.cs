@@ -11,5 +11,7 @@ namespace DataAccess.Interfaces
         Task<T> Write<T>(string query, object parameters);
 
         ISession GetSession(AccessMode mode);
+        Task CreateIndices(string[] labels);
+        Task<System.Collections.Generic.IList<IRecord>> Read(string query, System.Collections.Generic.IDictionary<string, object> parameters);
     }
 }

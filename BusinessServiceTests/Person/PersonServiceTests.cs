@@ -1,13 +1,15 @@
 using BusinessServices.Person;
+using BusinessServices.Person.Extensions;
+using DataAccess;
 using DataAccess.CacheProvider;
-using entity = DataAccess.Person.Person;
-using model = Models.DTOs.PersonModel;
+using DataAccess.Person;
 using NSubstitute;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DataAccess.Person;
+using entity = DataAccess.Person.Person;
+using model = Models.DTOs.PersonModel;
 
 namespace BusinessServiceTests.Person
 {
@@ -23,7 +25,7 @@ namespace BusinessServiceTests.Person
         {
             // Arrange
             var service = this.CreateService();
-            model person = null;
+            var person = people[0].ToModel();
 
             // Act
             var result = await service.Add(person);
@@ -67,11 +69,10 @@ namespace BusinessServiceTests.Person
         {
             // Arrange
             var service = this.CreateService();
-            string id = null;
+            string id = people[0].Id;
 
             // Act
-            var result = await service.Get(
-                id);
+            var result = await service.Get(id);
 
             // Assert
             Assert.IsNotNull(result);
@@ -133,7 +134,11 @@ namespace BusinessServiceTests.Person
 
             this.subCacheProvider
                 .Save(Arg.Any<string>(), Arg.Any<entity>())
-                .Returns(Arg.Any<bool>());
+                .Returns(true);
+
+            this.subCacheProvider
+                .Save(Arg.Any<string>(), Arg.Any<model>())
+                .Returns(true);
         }
 
         [Test]
@@ -141,14 +146,13 @@ namespace BusinessServiceTests.Person
         {
             // Arrange
             var service = this.CreateService();
-            model person = null;
+            var person = people[0].ToModel();
 
             // Act
-            var result = await service.Update(
-                person);
+            var result = await service.Update(person);
 
             // Assert
-            Assert.Fail();
+            Assert.IsNotNull(result);
         }
 
         private PersonService CreateService()
@@ -156,6 +160,27 @@ namespace BusinessServiceTests.Person
             return new PersonService(
                 this.subPersonRepository,
                 this.subCacheProvider);
+        }
+
+        [Test]
+        public async Task IntegrationTest_GetPeople()
+        {
+            // Arrange
+            var connection = new Models.DTOs.Configuration.Connection
+            {
+                BoltURL = "bolt://localhost:7687",
+                Username = "neo4j",
+                Password = "n4j"
+            };
+            subPersonRepository = new PersonRepository(new Repository(connection));
+            var service = new PersonService(subPersonRepository, subCacheProvider);
+
+            // Act
+            var result = await service.GetAll();
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsNotEmpty(result);
         }
     }
 }

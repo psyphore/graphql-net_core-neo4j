@@ -9,7 +9,7 @@ namespace IoC
 {
     internal static class RegisterFrameworks
     {
-        public static void RegisterTypes(IServiceCollection services, IConfiguration configuration)
+        public static void ConfigureFrameworks(this IServiceCollection services, IConfiguration configuration)
         {
             var auth0conf = configuration.GetSection("Auth0");
             services.Configure<Auth0>(auth0conf);

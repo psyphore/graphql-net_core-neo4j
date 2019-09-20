@@ -23,11 +23,11 @@ namespace IoC
 
         public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)
         {
-            RegisterFrameworks.RegisterTypes(services, configuration);
+            services.ConfigureFrameworks(configuration);
 
-            RegisterRepositories.RegisterTypes(services);
+            services.ConfigureRepositories();
 
-            RegisterBusinessServices.RegisterTypes(services);
+            services.ConfigureServices();
 
             services.ConfigureGraphQLServices();
         }

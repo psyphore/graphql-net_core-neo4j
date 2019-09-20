@@ -2,6 +2,7 @@
 using Models.DTOs.Configuration;
 using Neo4j.Driver.V1;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DataAccess
@@ -31,10 +32,26 @@ namespace DataAccess
             {
                 var trx = await session.ReadTransactionAsync(async tx =>
                 {
-                    var response = await tx.RunAsync(query,parameters);
+                    var response = await tx.RunAsync(query, parameters);
                     return response.ToListAsync().As<T>();
                 });
                 return trx;
+            }
+        }
+
+        public async Task<IList<IRecord>> Read(string query, IDictionary<string, object> parameters)
+        {
+            using (var session = GetSession(AccessMode.Read))
+            {
+                var s = await session.RunAsync(query, parameters);
+                return await s.ToListAsync();
+
+                //var trx = await session.ReadTransactionAsync(async tx =>
+                //{
+                //    var response = await tx.RunAsync(query, parameters);
+                //    return response.ToListAsync();
+                //});
+                //return await trx;
             }
         }
 
@@ -48,6 +65,21 @@ namespace DataAccess
                     return response.ToListAsync().As<T>();
                 });
                 return trx;
+            }
+        }
+
+        public async Task CreateIndices(string[] labels)
+        {
+            if (labels != null && labels.Any())
+            {
+                var queries = labels.Select(l => string.Format("CREATE INDEX ON :{0}(id)", l)).ToArray();
+                using (var session = GetSession(AccessMode.Write))
+                {
+                    foreach (var query in queries)
+                    {
+                        await session.RunAsync(query);
+                    }
+                }
             }
         }
     }
