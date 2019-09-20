@@ -91,11 +91,11 @@ namespace DataAccess.Person
                           .lastname,
                           .avatar,
                           .knownAs,
-                          manager: apoc.cypher.runFirstColumn(""MATCH (m)-[:MANAGES]->(this) RETURN m LIMIT 1"", {this: p}, false),
+                         /* manager: apoc.cypher.runFirstColumn(""MATCH (m)-[:MANAGES]->(this) RETURN m LIMIT 1"", {this: p}, false),
                           team: [(p)<-[:MANAGES]-()-[:MANAGES]->(t) | t],
                           line: [(s)<-[:MANAGES]-(p) | s],
                           products: [(p)-[:KNOWS]->(pr) | pr],
-                          building: [(p)-[:BASED_IN]->(b) | b],
+                          building: [(p)-[:BASED_IN]->(b) | b],*/
                           deactivated: deactivated
                         } AS person
                         ORDER BY person.lastname ASC, person.firstname ASC
