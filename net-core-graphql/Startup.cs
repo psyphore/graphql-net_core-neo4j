@@ -1,11 +1,17 @@
 ﻿using GraphiQl;
 using IoC;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using Models.DTOs.Configuration;
+using net_core_graphql.Filters;
+using System.Text;
 
 namespace net_core_graphql
 {
@@ -36,10 +42,10 @@ namespace net_core_graphql
             var ws = new WebSocketOptions();
             ws.AllowedOrigins.Add("*");
 
+            app.ConfigureApp();
+
             app.UseWebSockets(ws);
             app.UseMvc();
-
-            Registration.ConfigureApp(app);
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
@@ -51,7 +57,35 @@ namespace net_core_graphql
             services.AddCors();
             services.AddMemoryCache();
 
-            Registration.RegisterTypes(services, Configuration);
+            services.AddSingleton<IAuthorizationPolicyProvider, Auth0PolicyProvider>();
+            services.AddSingleton<IAuthorizationHandler, Auth0AuthorizationHandler>();
+
+            services.ConfigureServices(Configuration);
+
+            var auth0conf = Configuration.GetSection("Auth0");
+            services.Configure<Auth0>(auth0conf);
+            var auth0 = auth0conf.Get<Auth0>();
+
+            services.AddAuthentication(auth =>
+            {
+                auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                auth.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(jb =>
+            {
+                jb.RequireHttpsMetadata = false;
+                jb.SaveToken = true;
+                jb.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(auth0.Secret)),
+
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    RequireExpirationTime = false,
+                    ValidateLifetime = true
+                };
+            });
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

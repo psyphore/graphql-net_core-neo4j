@@ -1,6 +1,8 @@
 ﻿using DataAccess.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Neo4j.Driver.V1;
+using Newtonsoft.Json;
 
 namespace DataAccess.Person
 {
@@ -19,31 +21,35 @@ namespace DataAccess.Person
 
         public async Task<Person> Add(Person person)
         {
-            var entity = await _repository.Write<Person>(_mutations["MERGE_PERSON"], person);
+            var entity = await _repository.Write<Person>(_mutations["UPDATE_PERSON"].Trim(), person);
             return entity;
         }
 
         public async Task<IEnumerable<Person>> All()
         {
-            var entity = await _repository.Read<IEnumerable<Person>>(_queries["GET_PEOPLE"], null);
-            return entity;
+            var x = new List<Person>();
+            var entity = await _repository.Read<object>(_queries["GET_PEOPLE"].Trim(), new { first = 9999, offset = 0 });
+            if (entity != null)
+                x = JsonConvert.DeserializeObject<List<Person>>(JsonConvert.SerializeObject(entity));
+
+            return x;
         }
 
         public async Task<string> Delete(string id)
         {
-            var entity = await _repository.Write<Person>(_mutations["DELETE_PERSON"], id);
+            var entity = await _repository.Write<Person>(_mutations["DEACTIVATE_PERSON"].Trim(), new { id });
             return entity.Id;
         }
 
         public async Task<Person> Get(string id)
         {
-            var entity = await _repository.Read<Person>(_queries["GET_PERSON"], id);
+            var entity = await _repository.Read<Person>(_queries["GET_PERSON"].Trim(), new { id });
             return entity;
         }
 
         public async Task<Person> Update(Person person)
         {
-            var entity = await _repository.Write<Person>(_mutations["MERGE_PERSON"], person);
+            var entity = await _repository.Write<Person>(_mutations["UPDATE_PERSON_2"].Trim(), person);
             return entity;
         }
     }

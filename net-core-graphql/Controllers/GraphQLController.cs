@@ -2,11 +2,13 @@
 using GraphQL.Types;
 using Microsoft.AspNetCore.Mvc;
 using Models.Types;
+using net_core_graphql.Filters;
 using System;
 using System.Threading.Tasks;
 
 namespace net_core_graphql.Controllers
 {
+    //[Auth0Authorize]
     [Route("[controller]")]
     [ApiController]
     public class GraphQLController : ControllerBase

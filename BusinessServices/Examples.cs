@@ -24,13 +24,9 @@ namespace BusinessServices
             var result = new List<int>();
             if (l >= 1 && r <= Math.Abs(Math.Pow(10, 5)))
             {
-                for (var index = l; index < r+1; index += 1)
-                {
+                for (var index = l; index < r + 1; index += 1)
                     if (Math.Abs(index % 2) != 0)
-                    {
                         result.Add(index);
-                    }
-                }
             }
             return result;
         }

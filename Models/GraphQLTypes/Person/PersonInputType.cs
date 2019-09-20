@@ -9,10 +9,10 @@ namespace Models.GraphQLTypes.Person
             Name = "PersonInput";
             Field<NonNullGraphType<StringGraphType>>("firstname");
             Field<NonNullGraphType<StringGraphType>>("lastname");
-            Field<StringGraphType>("birthPlace");
-            Field<StringGraphType>("height");
-            Field<IntGraphType>("weightLbs");
-            Field<DateGraphType>("birthDate");
+            //Field<StringGraphType>("birthPlace");
+            //Field<StringGraphType>("height");
+            //Field<IntGraphType>("weightLbs");
+            //Field<DateGraphType>("birthDate");
         }
     }
 }
