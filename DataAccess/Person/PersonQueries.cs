@@ -58,7 +58,7 @@ namespace DataAccess.Person
                 return new Dictionary<string, string>
                 {
                     { "GET_PERSON", @"
-                        OPTIONAL MATCH (p:Person{id: $id})
+                        OPTIONAL MATCH (p:Person{id: {id}})
                         WITH apoc.date.format(p.deactivated, 'yyyyMMdd HH:mm:ss.ms') AS deactivated, p
                         RETURN p { 
                         .firstname,
@@ -80,7 +80,7 @@ namespace DataAccess.Person
                     "},
                     { "GET_PEOPLE", @"
                         MATCH (p:Person)
-                        WITH apoc.date.format(p.deactivated, 'yyyyMMdd HH:mm:ss.ms') AS deactivated, p
+                        WITH apoc.date.format(p.deactivated, 'dd/MM/yyyy HH:mm:ss') AS deactivated, p
                         RETURN p { 
                           .firstname,
                           .mobile,
@@ -91,10 +91,10 @@ namespace DataAccess.Person
                           .lastname,
                           .avatar,
                           .knownAs,
-                         /* manager: apoc.cypher.runFirstColumn(""MATCH (m)-[:MANAGES]->(this) RETURN m LIMIT 1"", {this: p}, false),
+                          manager: apoc.cypher.runFirstColumn(""MATCH (m)-[:MANAGES]->(this) RETURN m LIMIT 1"", {this: p}, false),
                           team: [(p)<-[:MANAGES]-()-[:MANAGES]->(t) | t],
                           line: [(s)<-[:MANAGES]-(p) | s],
-                          products: [(p)-[:KNOWS]->(pr) | pr],
+                          /*products: [(p)-[:KNOWS]->(pr) | pr],
                           building: [(p)-[:BASED_IN]->(b) | b],*/
                           deactivated: deactivated
                         } AS person

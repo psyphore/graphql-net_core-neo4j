@@ -7,6 +7,7 @@ using NSubstitute;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using entity = DataAccess.Person.Person;
 using model = Models.DTOs.PersonModel;
@@ -181,6 +182,12 @@ namespace BusinessServiceTests.Person
             // Assert
             Assert.IsNotNull(result);
             Assert.IsNotEmpty(result);
+
+            Assert.IsNotNull(result.ToList().First().Manager);
+
+            Assert.IsNotEmpty(result.ToList().First().Line);
+
+            Assert.IsNotEmpty(result.ToList().First().Team);
         }
     }
 }
