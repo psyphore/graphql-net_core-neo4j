@@ -3,9 +3,12 @@ using GraphQL.Http;
 using GraphQL.Types;
 using GraphQL.Validation;
 using GraphQLCore;
+using GraphQLCore.Unions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Models.GraphQLTypes.Building;
 using Models.GraphQLTypes.Person;
+using Models.GraphQLTypes.Product;
 using Models.Types;
 using System.Threading.Tasks;
 
@@ -20,10 +23,30 @@ namespace IoC
             services.AddSingleton<IDocumentWriter, DocumentWriter>();
 
             // Person
-            services.AddSingleton<PersonQuery>();
-            services.AddSingleton<PersonMutation>();
             services.AddSingleton<PersonType>();
             services.AddSingleton<PersonInputType>();
+            services.AddSingleton<IGraphQueryMarker, PersonQuery>();
+            services.AddSingleton<IGraphMutator, PersonMutation>();
+
+            // Product
+            services.AddSingleton<ProductInputType>();
+            services.AddSingleton<ProductType>();
+            services.AddSingleton<IGraphMutator, ProductMutation>();
+            services.AddSingleton<IGraphQueryMarker, ProductQuery>();
+
+            // Building
+            services.AddSingleton<BuildingInputType>();
+            services.AddSingleton<BuildingType>();
+            services.AddSingleton<IGraphMutator, BuildingMutation>();
+            services.AddSingleton<IGraphQueryMarker, BuildingQuery>();
+
+            // Unions
+            services.AddSingleton<Mutations>();
+            services.AddSingleton<Queries>();
+
+            // Composites
+            services.AddSingleton<CompositeQueries>();
+            services.AddSingleton<CompositeMutators>();
 
             // GraphQL Schema
             services.AddSingleton<ISchema, MainSchema>();

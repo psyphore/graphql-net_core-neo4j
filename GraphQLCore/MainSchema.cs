@@ -1,5 +1,6 @@
 ﻿using GraphQL;
 using GraphQL.Types;
+using GraphQLCore.Unions;
 using Models.Types;
 
 namespace GraphQLCore
@@ -8,8 +9,8 @@ namespace GraphQLCore
     {
         public MainSchema(IDependencyResolver resolver) : base(resolver)
         {
-            Query = resolver.Resolve<PersonQuery>();
-            Mutation = resolver.Resolve<PersonMutation>();
+            Query = resolver.Resolve<CompositeQueries>();
+            Mutation = resolver.Resolve<CompositeMutators>();
         }
     }
 }

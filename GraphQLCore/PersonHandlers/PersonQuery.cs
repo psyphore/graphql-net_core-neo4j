@@ -1,10 +1,11 @@
 ﻿using BusinessServices.Person;
 using GraphQL.Types;
+using GraphQLCore.Unions;
 using Models.GraphQLTypes.Person;
 
 namespace Models.Types
 {
-    public class PersonQuery : ObjectGraphType
+    public class PersonQuery : ObjectGraphType, IGraphQueryMarker
     {
         public PersonQuery(IPersonService service)
         {
