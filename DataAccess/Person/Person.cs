@@ -14,7 +14,7 @@ namespace DataAccess.Person
         public string Bio { get; set; }
 
         [JsonProperty("building")]
-        public List<string> Buildings { get; set; }
+        public IEnumerable<Building.Building> Buildings { get; set; }
 
         public DateTime? Deactivated { get; set; }
 
@@ -38,7 +38,7 @@ namespace DataAccess.Person
 
         [JsonIgnore]
         [JsonProperty("line")]
-        public List<Person> Line { get; set; }
+        public IEnumerable<Person> Line { get; set; }
 
         [JsonIgnore]
         [JsonProperty("manager")]
@@ -49,11 +49,11 @@ namespace DataAccess.Person
 
         [JsonIgnore]
         [JsonProperty("products")]
-        public List<string> Products { get; set; }
+        public IEnumerable<Product.Product> Products { get; set; }
 
         [JsonIgnore]
         [JsonProperty("team")]
-        public List<Person> Team { get; set; }
+        public IEnumerable<Person> Team { get; set; }
 
         [JsonProperty("title")]
         public string Title { get; set; }

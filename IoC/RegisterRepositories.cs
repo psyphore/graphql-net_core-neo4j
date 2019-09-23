@@ -1,7 +1,9 @@
 ﻿using DataAccess;
+using DataAccess.Building;
 using DataAccess.CacheProvider;
 using DataAccess.Interfaces;
 using DataAccess.Person;
+using DataAccess.Product;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IoC
@@ -13,6 +15,8 @@ namespace IoC
             services.AddTransient<IRepository, Repository>();
             services.AddSingleton<ICacheProvider, InMemoryCache>();
             services.AddTransient<IPersonRepository, PersonRepository>();
+            services.AddTransient<IBuildingRepository, BuildingRepository>();
+            services.AddTransient<IProductRepository, ProductRepository>();
         }
     }
 }

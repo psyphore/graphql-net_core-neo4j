@@ -1,10 +1,28 @@
-﻿using System;
+﻿using BusinessServices.Building.Extensions;
+using BusinessServices.Product.Extensions;
+using System;
 using System.Linq;
 
 namespace BusinessServices.Person.Extensions
 {
     public static class PersonExtensions
     {
+        public static long? DateToTimeStamp(this DateTime? date)
+        {
+            if (date == null)
+                return null;
+
+            return date.Value.Ticks;
+        }
+
+        public static DateTime? TimeStampToDate(this long? timestamp)
+        {
+            if (timestamp == null)
+                return null;
+
+            return new DateTime(1970, 1, 1).AddTicks(timestamp.Value);
+        }
+
         public static DataAccess.Person.Person ToEnitity(this Models.DTOs.PersonModel model)
         {
             if (model == null)
@@ -25,9 +43,10 @@ namespace BusinessServices.Person.Extensions
                 Mobile = model.Mobile,
                 Title = model.Title,
                 Deactivated2 = model.Deactivated.DateToTimeStamp(),
+                Deactivated = model.Deactivated,
 
-                //Buildings = model.Buildings,
-                //Products = model.Products.ToList(),
+                Buildings = model.Buildings?.Select(b => b.ToEnitity()),
+                Products = model.Products?.Select(p => p.ToEnitity())
             };
         }
 
@@ -51,26 +70,9 @@ namespace BusinessServices.Person.Extensions
                 Mobile = entity.Mobile,
                 Title = entity.Title,
                 Deactivated = entity.Deactivated2.TimeStampToDate(),
-
-                //Buildings = entity.Buildings,
-                //Products = entity.Products,
+                Buildings = entity.Buildings?.Select(b => b.ToModel()),
+                Products = entity.Products?.Select(p => p.ToModel()),
             };
-        }
-
-        private static DateTime? TimeStampToDate(this long? timestamp)
-        {
-            if (timestamp == null)
-                return null;
-
-            return new DateTime(1970, 1, 1).AddTicks(timestamp.Value);
-        }
-
-        private static long? DateToTimeStamp(this DateTime? date)
-        {
-            if (date == null)
-                return null;
-
-            return date.Value.Ticks;
         }
     }
 }

@@ -80,7 +80,7 @@ namespace DataAccess.Person
                     "},
                     { "GET_PEOPLE", @"
                         MATCH (p:Person)
-                        WITH apoc.date.format(p.deactivated, 'dd/MM/yyyy HH:mm:ss') AS deactivated, p
+                        WITH apoc.date.format(p.deactivated, 'yyyyMMdd HH:mm:ss.ms') AS deactivated, p
                         RETURN p { 
                           .firstname,
                           .mobile,
@@ -91,12 +91,13 @@ namespace DataAccess.Person
                           .lastname,
                           .avatar,
                           .knownAs,
+                          .deactivated,
                           manager: apoc.cypher.runFirstColumn(""MATCH (m)-[:MANAGES]->(this) RETURN m LIMIT 1"", {this: p}, false),
                           team: [(p)<-[:MANAGES]-()-[:MANAGES]->(t) | t],
                           line: [(s)<-[:MANAGES]-(p) | s],
-                          /*products: [(p)-[:KNOWS]->(pr) | pr],
-                          building: [(p)-[:BASED_IN]->(b) | b],*/
-                          deactivated: deactivated
+                          products: [(p)-[:KNOWS]->(pr) | pr],
+                          building: [(p)-[:BASED_IN]->(b) | b]
+                          /*deactivated: deactivated*/
                         } AS person
                         ORDER BY person.lastname ASC, person.firstname ASC
                         SKIP {offset}

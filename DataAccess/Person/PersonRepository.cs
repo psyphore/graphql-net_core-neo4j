@@ -30,7 +30,7 @@ namespace DataAccess.Person
         public async Task<IEnumerable<Person>> All()
         {
             var x = new List<Person>();
-            const int First = 5; //9999;
+            const int First = 9999;
             const int Offset = 0;
             const string LABEL = "person";
             var param = new Dictionary<string, object>()
@@ -79,7 +79,7 @@ namespace DataAccess.Person
             if(person.Manager == null)
             {
                 var managerProps = ((Dictionary<string, object>)record.Values.Values.First()).FirstOrDefault(v => v.Key == "manager");
-                person.Manager = JsonConvert.DeserializeObject<Person>(JsonConvert.SerializeObject(managerProps.Value.As<INode>().Properties));
+                person.Manager = managerProps.Value != null ? JsonConvert.DeserializeObject<Person>(JsonConvert.SerializeObject(managerProps.Value.As<INode>().Properties)) : null;
             }
 
             if(person.Line == null)

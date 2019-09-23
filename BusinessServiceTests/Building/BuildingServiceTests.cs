@@ -1,35 +1,37 @@
-using BusinessServices.Person;
-using BusinessServices.Person.Extensions;
+using BusinessServices.Building;
+using BusinessServices.Building.Extensions;
 using DataAccess;
+using DataAccess.Building;
 using DataAccess.CacheProvider;
 using DataAccess.Person;
+using Models.DTOs;
 using NSubstitute;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using entity = DataAccess.Person.Person;
-using model = Models.DTOs.PersonModel;
+using entity = DataAccess.Building.Building;
+using model = Models.DTOs.BuildingModel;
 
-namespace BusinessServiceTests.Person
+namespace BusinessServiceTests.Building
 {
     [TestFixture]
-    public class PersonServiceTests
+    public class BuildingServiceTests
     {
+        private List<entity> buildings;
+        private IBuildingRepository subBuildingRepository;
         private ICacheProvider subCacheProvider;
-        private IPersonRepository subPersonRepository;
-        private List<entity> people;
 
         [Test]
         public async Task Add_StateUnderTest_ExpectedBehavior()
         {
             // Arrange
             var service = this.CreateService();
-            var person = people.First().ToModel();
+            var building = buildings.First().ToModel();
 
             // Act
-            var result = await service.Add(person);
+            var result = await service.Add(building);
 
             // Assert
             Assert.IsNotNull(result);
@@ -40,10 +42,10 @@ namespace BusinessServiceTests.Person
         {
             // Arrange
             var service = this.CreateService();
-            model person = people.Last().ToModel();
+            var building = buildings.First().ToModel();
 
             // Act
-            var result = await service.Create(person);
+            var result = await service.Create(building);
 
             // Assert
             Assert.IsNotNull(result);
@@ -54,7 +56,7 @@ namespace BusinessServiceTests.Person
         {
             // Arrange
             var service = this.CreateService();
-            string id = people.First().Id;
+            string id = buildings.First().Id;
 
             // Act
             var result = await service.Delete(id);
@@ -68,7 +70,7 @@ namespace BusinessServiceTests.Person
         {
             // Arrange
             var service = this.CreateService();
-            string id = people[0].Id;
+            string id = buildings.First().Id;
 
             // Act
             var result = await service.Get(id);
@@ -88,48 +90,48 @@ namespace BusinessServiceTests.Person
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsNotEmpty(result);
         }
 
         [SetUp]
         public void SetUp()
         {
-            people = new List<entity>
+            buildings = new List<entity>
             {
-                new entity { Id = Guid.NewGuid().ToString(), Firstname = "John", Lastname = "Basic" },
-                new entity { Id = Guid.NewGuid().ToString(), Firstname = "Jane", Lastname = "Basic" },
-                new entity { Id = Guid.NewGuid().ToString(), Firstname = "Joan", Lastname = "Basic" },
+                new entity{ Id = Guid.NewGuid().ToString(), Name = "A"},
+                new entity{ Id = Guid.NewGuid().ToString(), Name = "B"},
+                new entity{ Id = Guid.NewGuid().ToString(), Name = "C"},
+                new entity{ Id = Guid.NewGuid().ToString(), Name = "D"},
             };
 
-            this.subPersonRepository = Substitute.For<IPersonRepository>();
-            this.subPersonRepository
+            this.subBuildingRepository = Substitute.For<IBuildingRepository>();
+            this.subBuildingRepository
                 .All()
-                .Returns(people);
+                .Returns(buildings);
 
-            this.subPersonRepository
+            this.subBuildingRepository
                 .Get(Arg.Any<string>())
-                .Returns(people[0]);
+                .Returns(buildings[0]);
 
-            this.subPersonRepository
+            this.subBuildingRepository
                 .Delete(Arg.Any<string>())
                 .Returns(Guid.NewGuid().ToString());
 
-            this.subPersonRepository
+            this.subBuildingRepository
                 .Add(Arg.Any<entity>())
-                .Returns(people[0]);
+                .Returns(buildings[0]);
 
-            this.subPersonRepository
+            this.subBuildingRepository
                 .Update(Arg.Any<entity>())
-                .Returns(people[0]);
+                .Returns(buildings[0]);
 
-            this.subPersonRepository
+            this.subBuildingRepository
                 .Get(Arg.Any<string>())
-                .Returns(people[0]);
+                .Returns(buildings[0]);
 
             this.subCacheProvider = Substitute.For<ICacheProvider>();
             this.subCacheProvider
                 .Fetch<entity>(Arg.Any<string>())
-                .Returns(people[0]);
+                .Returns(buildings[0]);
 
             this.subCacheProvider
                 .Save(Arg.Any<string>(), Arg.Any<entity>())
@@ -145,19 +147,19 @@ namespace BusinessServiceTests.Person
         {
             // Arrange
             var service = this.CreateService();
-            var person = people[0].ToModel();
+            var building = buildings.First().ToModel();
 
             // Act
-            var result = await service.Update(person);
+            var result = await service.Update(building);
 
             // Assert
             Assert.IsNotNull(result);
         }
 
-        private PersonService CreateService()
+        private BuildingService CreateService()
         {
-            return new PersonService(
-                this.subPersonRepository,
+            return new BuildingService(
+                this.subBuildingRepository,
                 this.subCacheProvider);
         }
 
@@ -171,21 +173,19 @@ namespace BusinessServiceTests.Person
                 Username = "neo4j",
                 Password = "n4j"
             };
-            subPersonRepository = new PersonRepository(new Repository(connection));
-            var service = new PersonService(subPersonRepository, subCacheProvider);
+
+            subBuildingRepository = new BuildingRepository(new Repository(connection));
+            var service = new BuildingService(subBuildingRepository, subCacheProvider);
 
             // Act
             var result = await service.GetAll();
 
             // Assert
             Assert.IsNotNull(result);
+
             Assert.IsNotEmpty(result);
 
-            Assert.IsNotNull(result.ToList().First().Manager);
-
-            Assert.IsNotEmpty(result.ToList().First().Line);
-
-            Assert.IsNotEmpty(result.ToList().First().Team);
+            Assert.IsNotNull(result.ToList().First().People);
         }
     }
 }
