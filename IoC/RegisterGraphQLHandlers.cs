@@ -1,6 +1,4 @@
-﻿using GraphQL;
-using GraphQL.Http;
-using GraphQL.Types;
+﻿using GraphQL.Types;
 using GraphQL.Validation;
 using GraphQLCore;
 using GraphQLCore.Unions;
@@ -9,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Models.GraphQLTypes.Building;
 using Models.GraphQLTypes.Person;
 using Models.GraphQLTypes.Product;
+using Models.GraphQLTypes.Search;
 using Models.Types;
 using System.Threading.Tasks;
 
@@ -18,10 +17,6 @@ namespace IoC
     {
         public static void ConfigureGraphQLServices(this IServiceCollection services)
         {
-            services.AddSingleton<IDependencyResolver>(s => new FuncDependencyResolver(s.GetRequiredService));
-            services.AddSingleton<IDocumentExecuter, DocumentExecuter>();
-            services.AddSingleton<IDocumentWriter, DocumentWriter>();
-
             // Person
             services.AddSingleton<PersonType>();
             services.AddSingleton<PersonInputType>();
@@ -39,6 +34,11 @@ namespace IoC
             services.AddSingleton<BuildingType>();
             services.AddSingleton<IGraphMutator, BuildingMutation>();
             services.AddSingleton<IGraphQueryMarker, BuildingQuery>();
+
+            // Search
+            services.AddSingleton<SearchInputType>();
+            services.AddSingleton<SearchType>();
+            services.AddSingleton<IGraphQueryMarker, SearchQuery>();
 
             // Unions
             services.AddSingleton<Mutations>();

@@ -1,6 +1,7 @@
 ﻿using DataAccess;
 using DataAccess.Interfaces;
 using GraphQL;
+using GraphQL.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Models.DTOs.Configuration;
@@ -30,7 +31,9 @@ namespace IoC
 
             services.AddTransient<IRepository, Repository>();
 
+            services.AddSingleton<IDependencyResolver>(s => new FuncDependencyResolver(s.GetRequiredService));
             services.AddSingleton<IDocumentExecuter, DocumentExecuter>();
+            services.AddSingleton<IDocumentWriter, DocumentWriter>();
         }
     }
 }

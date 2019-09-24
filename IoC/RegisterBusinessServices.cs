@@ -1,6 +1,7 @@
 ﻿using BusinessServices.Building;
 using BusinessServices.Person;
 using BusinessServices.Product;
+using BusinessServices.Search;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IoC
@@ -12,6 +13,7 @@ namespace IoC
             services.AddTransient<IPersonService, PersonService>();
             services.AddTransient<IBuildingService, BuildingService>();
             services.AddTransient<IProductService, ProductService>();
+            services.AddTransient<ISearchService, SearchService>();
         }
     }
 }

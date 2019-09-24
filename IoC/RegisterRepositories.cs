@@ -4,6 +4,7 @@ using DataAccess.CacheProvider;
 using DataAccess.Interfaces;
 using DataAccess.Person;
 using DataAccess.Product;
+using DataAccess.Search;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IoC
@@ -17,6 +18,7 @@ namespace IoC
             services.AddTransient<IPersonRepository, PersonRepository>();
             services.AddTransient<IBuildingRepository, BuildingRepository>();
             services.AddTransient<IProductRepository, ProductRepository>();
+            services.AddTransient<ISearchRepository, SearchRepository>();
         }
     }
 }
