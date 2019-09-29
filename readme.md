@@ -23,3 +23,4 @@ this is my take on GraphQL and .net core 2.2
 1. [How to GraphQL](https://www.howtographql.com/)
 1. [Neo4J .net driver](https://neo4j.com/developer/dotnet/)
 1. [NetCore 3.0 GraphQL](https://dev.to/dotnet/learn-how-you-can-use-graphql-in-net-core-and-c-4h96) 
+1. [GraphQL.NET + .NET Core](https://code-maze.com/graphql-aspnetcore-basics/)

@@ -5,7 +5,7 @@ using System;
 
 namespace net_core_graphql.Controllers
 {
-    [Route("api/[controller]"), ApiController]
+    [Route("[controller]"), ApiController]
     public class CachingController : ControllerBase
     {
         private readonly IMemoryCache _memoryCache;

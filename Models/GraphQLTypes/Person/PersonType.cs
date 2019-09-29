@@ -9,7 +9,9 @@ namespace Models.GraphQLTypes.Person
     {
         public PersonType()
         {
-            Field(x => x.Id);
+            Name = "Person";
+
+            Field(x => x.Id, type: typeof(IdGraphType)).Description("The ID of the Person.");
             Field(x => x.Firstname, true);
             Field(x => x.Lastname, true);
             Field(x => x.Title, true);

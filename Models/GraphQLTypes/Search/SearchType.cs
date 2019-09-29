@@ -8,9 +8,9 @@ namespace Models.GraphQLTypes.Search
     {
         public SearchType()
         {
-            Field(x => x.Id);
-            Field(x => x.People);
-            Field(x => x.Count);
+            // Field(x => x.Id);
+            Field(x => x.People, type: typeof(ListGraphType<PersonType>));
+            Field(x => x.Count, type: typeof(IntGraphType));
 
             //Field<ListGraphType<PersonType>>("People", resolve: ctx => new ListGraphType<PersonType>());
         }

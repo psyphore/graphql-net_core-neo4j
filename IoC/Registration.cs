@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using GraphQL.Server;
+using GraphQLCore;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,7 +11,8 @@ namespace IoC
         public static void ConfigureApp(this IApplicationBuilder app)
         {
             app.UseGraphQLAuth();
-
+            app.UseGraphQL<MainSchema>();
+            
             //app.UseMiddleware<GraphQLMiddleware>(new GraphQLSettings
             //{
             //    Path = "/graphql",

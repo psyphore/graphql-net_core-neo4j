@@ -1,13 +1,12 @@
-﻿using GraphiQl;
+﻿using GraphQL.Server;
+using GraphQL.Server.Ui.Playground;
 using IoC;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 using Models.DTOs.Configuration;
 using net_core_graphql.Filters;
@@ -25,30 +24,38 @@ namespace net_core_graphql
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
-                app.UseDeveloperExceptionPage();
+            app.UseDeveloperExceptionPage();
 
             app.UseCors(p => p
                 .WithOrigins(new[] { "http://localhost:4201", "http://sipholpt:4201" })
                 .WithMethods(new[] { "OPTIONS", "GET", "POST" })
                 .AllowAnyHeader());
 
+            app.UseRouting();
+
             app.UseAuthentication();
-
-            app.UseGraphiQl();
-
-            var ws = new WebSocketOptions();
-            ws.AllowedOrigins.Add("*");
+            app.UseAuthorization();
 
             app.ConfigureApp();
 
-            app.UseWebSockets(ws);
-            app.UseMvc();
+            app.UseGraphQLPlayground(options: new GraphQLPlaygroundOptions());
 
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
+            var ws = new WebSocketOptions();
+            ws.AllowedOrigins.Add("http://localhost:4201");
+            ws.AllowedOrigins.Add("http://sipholpt:4201");
+
+            app.UseWebSockets(ws);
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapDefaultControllerRoute().RequireAuthorization();
+                endpoints.MapControllers();
+                endpoints.MapHealthChecks("/health");
+                //endpoints.MapHub<ChatHub>("/chat");   // SignalR
+                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+            });
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -71,8 +78,16 @@ namespace net_core_graphql
                 auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 auth.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(jb =>
+            })
+                .AddJwtBearer(jb =>
             {
+                /*  // validate against Auth0
+                    jb.Authority = $"https://{auth0.Domain}/oauth2/default";
+                    jb.Audience = "api://default";
+                    jb.RequireHttpsMetadata = false;
+                 */
+
+                // validate locally
                 jb.RequireHttpsMetadata = false;
                 jb.SaveToken = true;
                 jb.TokenValidationParameters = new TokenValidationParameters
@@ -85,11 +100,18 @@ namespace net_core_graphql
                     RequireExpirationTime = false,
                     ValidateLifetime = true
                 };
-            });
+            })
+                ;
 
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddHealthChecks()
+                .AddCheck("Example", () => HealthCheckResult.Healthy("Example is OK!"), tags: new[] { "example" });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddGraphQL(o => { o.ExposeExceptions = false; })
+                .AddGraphTypes(ServiceLifetime.Scoped);
+
+            services.AddControllers()
+                .AddJsonOptions(o => o.JsonSerializerOptions.MaxDepth = 15)
+                .AddMvcOptions(o => o.EnableEndpointRouting = false);
         }
     }
 }

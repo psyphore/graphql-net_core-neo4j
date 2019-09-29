@@ -8,9 +8,7 @@ using System.Threading.Tasks;
 
 namespace net_core_graphql.Controllers
 {
-    //[Auth0Authorize]
-    [Route("[controller]")]
-    [ApiController]
+    [ApiController, Route("[controller]"), Auth0Authorize]
     public class GraphQLController : ControllerBase
     {
         private readonly IDocumentExecuter _documentExecuter;
