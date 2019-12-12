@@ -1,9 +1,22 @@
-# GraphQL - .Net Core 2.2 - Neo4J
-this is my take on GraphQL and .net core 2.2
+# GraphQL - .Net Core 3.1 - Neo4J
+this is my take on GraphQL and .net core 3.1
 
 ## Project Structure
 ```
+net-core-graphql
+|
+|__ Models
 
+|
+|__ IoC
+    |
+    |__ GraphQLCore
+
+    |
+    |__ BusinessServices
+
+    |
+    |__ DataAccess
 ```
 
 ## Environment
@@ -13,7 +26,6 @@ this is my take on GraphQL and .net core 2.2
     "Username": "neo4j",
     "Password": "n4j"
   },
-
 ```
 
 ## Learning resources
