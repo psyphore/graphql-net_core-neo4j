@@ -4,11 +4,7 @@ namespace DataAccess.Product
 {
     public class ProductQueries
     {
-        public IDictionary<string, string> Mutations
-        {
-            get
-            {
-                return new Dictionary<string, string>
+        public IDictionary<string, string> Mutations => new Dictionary<string, string>
                 {
                     { "UPDATE_PRODUCT", @"
                         MERGE (p:Product{id: {id}})
@@ -40,14 +36,8 @@ namespace DataAccess.Product
                         RETURN p
                     " }
                 };
-            }
-        }
 
-        public IDictionary<string, string> Queries
-        {
-            get
-            {
-                return new Dictionary<string, string>
+        public IDictionary<string, string> Queries => new Dictionary<string, string>
                 {
                     { "GET_PRODUCT", @"
                         MATCH (product:Product{id:{id}}) 
@@ -75,7 +65,5 @@ namespace DataAccess.Product
                         LIMIT {first}
                     " }
                 };
-            }
-        }
     }
 }

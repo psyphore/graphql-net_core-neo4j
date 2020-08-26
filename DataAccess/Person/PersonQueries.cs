@@ -4,11 +4,7 @@ namespace DataAccess.Person
 {
     public class PersonQueries
     {
-        public IDictionary<string, string> Mutations
-        {
-            get
-            {
-                return new Dictionary<string, string>
+        public IDictionary<string, string> Mutations => new Dictionary<string, string>
                 {
                     { "UPDATE_PERSON", @"
                         MERGE (p:Person{id: $id})
@@ -48,14 +44,8 @@ namespace DataAccess.Person
                         RETURN p
                     " }
                 };
-            }
-        }
 
-        public IDictionary<string, string> Queries
-        {
-            get
-            {
-                return new Dictionary<string, string>
+        public IDictionary<string, string> Queries => new Dictionary<string, string>
                 {
                     { "GET_PERSON", @"
                         OPTIONAL MATCH (p:Person{id: {id}})
@@ -140,7 +130,5 @@ namespace DataAccess.Person
                         RETURN [note] AS notes
                     " }
                 };
-            }
-        }
     }
 }

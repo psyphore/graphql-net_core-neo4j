@@ -15,7 +15,8 @@ namespace Models.Types
             Field<ProductType>(
                 "CreateProduct",
                 arguments: new QueryArguments(new QueryArgument<NonNullGraphType<ProductInputType>> { Name = "Product" }),
-                resolve: ctx => {
+                resolve: ctx =>
+                {
                     // service.Add(ctx.GetArgument<ProductModel>("Product"))
                     return null;
                 },
@@ -25,7 +26,8 @@ namespace Models.Types
             Field<ProductType>(
                 "UpdateProduct",
                 arguments: new QueryArguments(new QueryArgument<NonNullGraphType<ProductInputType>> { Name = "Product" }),
-                resolve: ctx => {
+                resolve: ctx =>
+                {
                     // service.Update(ctx.GetArgument<ProductModel>("Product"));
                     return null;
                 },
@@ -35,7 +37,8 @@ namespace Models.Types
             Field<ProductType>(
                 "RemoveProduct",
                 arguments: new QueryArguments(new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "id" }),
-                resolve: ctx => {
+                resolve: ctx =>
+                {
                     // service.Delete(ctx.GetArgument<string>("id"));
                     return null;
                 },

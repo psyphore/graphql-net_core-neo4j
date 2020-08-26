@@ -1,5 +1,4 @@
-﻿using BusinessServices.Building;
-using BusinessServices.Search;
+﻿using BusinessServices.Search;
 using GraphQL.Types;
 using GraphQLCore.Unions;
 using Models.DTOs;

@@ -1,6 +1,5 @@
-﻿using DataAccess.Person;
-using DataAccess.Interfaces;
-using Neo4j.Driver.V1;
+﻿using DataAccess.Interfaces;
+using Neo4j.Driver;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;

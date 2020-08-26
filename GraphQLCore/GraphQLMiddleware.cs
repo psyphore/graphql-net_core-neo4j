@@ -2,10 +2,8 @@
 using GraphQL.Http;
 using GraphQL.Instrumentation;
 using GraphQL.Types;
-using GraphQL.Validation;
 using GraphQL.Validation.Complexity;
 using Microsoft.AspNetCore.Http;
-using Models.GraphQLTypes;
 using Models.Types;
 using Newtonsoft.Json;
 using System;

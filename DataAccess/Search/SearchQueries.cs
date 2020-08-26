@@ -4,11 +4,7 @@ namespace DataAccess.Search
 {
     public class SearchQueries
     {
-        public IDictionary<string, string> Queries
-        {
-            get
-            {
-                return new Dictionary<string, string>
+        public IDictionary<string, string> Queries => new Dictionary<string, string>
                 {
                     { "SEARCH", @"
                         WITH {query} AS query
@@ -71,7 +67,5 @@ namespace DataAccess.Search
                         LIMIT {first}
                     " }
                 };
-            }
-        }
     }
 }

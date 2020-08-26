@@ -5,19 +5,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="AutoMapper" Version="10.0.0" />
     <PackageReference Include="GraphQL.Authorization" Version="2.1.29" />
     <PackageReference Include="GraphQL.Server.Transports.AspNetCore" Version="3.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.7" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.7" />
 
     <PackageReference Include="GraphQL" Version="2.4.0" />
     <PackageReference Include="GraphQL.Common" Version="1.0.3" />
-    <PackageReference Include="Neo4j.Driver" Version="1.7.2" />
+    <PackageReference Include="Neo4j.Driver" Version="4.1.1" />
     
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.6.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.7.1" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.7" />
   </ItemGroup>
 
   <ItemGroup>

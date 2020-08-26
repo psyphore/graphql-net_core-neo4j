@@ -1,4 +1,4 @@
-﻿using Neo4j.Driver.V1;
+﻿using Neo4j.Driver;
 using System;
 using System.Threading.Tasks;
 
@@ -10,8 +10,8 @@ namespace DataAccess.Interfaces
 
         Task<T> Write<T>(string query, object parameters);
 
-        ISession GetSession(AccessMode mode);
-        Task CreateIndices(string[] labels);
+        IAsyncSession GetSession(AccessMode mode);
+        Task CreateIndicesAsync(string[] labels);
         Task<System.Collections.Generic.IList<IRecord>> Read(string query, System.Collections.Generic.IDictionary<string, object> parameters);
     }
 }

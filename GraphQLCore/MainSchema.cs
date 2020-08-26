@@ -1,7 +1,6 @@
 ﻿using GraphQL;
 using GraphQL.Types;
 using GraphQLCore.Unions;
-using Models.Types;
 
 namespace GraphQLCore
 {

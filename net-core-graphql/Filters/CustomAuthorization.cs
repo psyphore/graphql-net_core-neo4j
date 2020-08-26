@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 using Models.DTOs.Configuration;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Primitives;
 
 namespace net_core_graphql.Filters
 {

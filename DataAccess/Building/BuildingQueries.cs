@@ -4,13 +4,10 @@ namespace DataAccess.Building
 {
     public class BuildingQueries
     {
-        public IDictionary<string, string> Mutations
-        {
-            get
+        public IDictionary<string, string> Mutations =>
+            new Dictionary<string, string>
             {
-                return new Dictionary<string, string>
-                {
-                    { "UPDATE_BUILDING", @"
+                { "UPDATE_BUILDING", @"
                         MERGE (b:Building{id: {id}})
                         SET b += {
                           name: {name}, 
@@ -18,30 +15,25 @@ namespace DataAccess.Building
                         }
                         RETURN b AS building;
                     "},
-                    { "UPDATE_BUILDING_RESIDENCY", @"
+                { "UPDATE_BUILDING_RESIDENCY", @"
                         MATCH (p:Person{id:{personId}}-[r:BASED_IN]->(b:Building{id:{buildingId}}))
                         MERGE (p)-[r2:BASED_IN]->(b)
                         WITH r, b, p, r2
                         DELETE r
                         RETURN b AS building
                     "},
-                    { "DEACTIVATE_BUILDING", @"
+                { "DEACTIVATE_BUILDING", @"
                         MATCH (b:Building) 
                         WHERE b.id = {id}
                         SET b.deactivated = timestamp()
                         RETURN b AS building
                     " }
-                };
-            }
-        }
+            };
 
-        public IDictionary<string, string> Queries
-        {
-            get
+        public IDictionary<string, string> Queries =>
+            new Dictionary<string, string>
             {
-                return new Dictionary<string, string>
-                {
-                    { "GET_BUILDING", @"
+                { "GET_BUILDING", @"
                         MATCH (b:Building)
                         WHERE LOWER(b.name) CONTAINS LOWER({name}) OR b.id = {id}
                         RETURN b { 
@@ -52,7 +44,7 @@ namespace DataAccess.Building
                           people: [(b)<-[:BASED_IN]-(p) | p] }
                         AS building
                     "},
-                    { "GET_BUILDINGS", @"
+                { "GET_BUILDINGS", @"
                        MATCH (building:Building)
                         RETURN building { 
                             .id , 
@@ -64,8 +56,6 @@ namespace DataAccess.Building
                         SKIP {offset}
                         LIMIT {first}
                     " }
-                };
-            }
-        }
+            };
     }
 }

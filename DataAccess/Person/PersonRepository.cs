@@ -1,6 +1,6 @@
 ﻿using DataAccess.Interfaces;
 using DataAccess.Serializer.Converters;
-using Neo4j.Driver.V1;
+using Neo4j.Driver;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
