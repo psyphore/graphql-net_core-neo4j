@@ -6,9 +6,7 @@ using GraphQL.Server;
 using GraphQLCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-//using Microsoft.Extensions.en;
 using Models.DTOs.Configuration;
-using System.Text.Json;
 
 namespace IoC
 {
@@ -46,7 +44,7 @@ namespace IoC
                     o.ExposeExceptions = true;
                 })
                 //.AddSystemTextJson()
-                .AddUserContextBuilder(hc => new GraphQLUserContext {User = hc.User})
+                .AddUserContextBuilder(hc => new GraphQLUserContext { User = hc.User })
                 .AddGraphTypes(ServiceLifetime.Scoped);
         }
     }

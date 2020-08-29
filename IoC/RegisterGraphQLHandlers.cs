@@ -1,14 +1,10 @@
-﻿using GraphQLCore;
-using GraphQLCore.GraphQLTypes.Building;
+﻿using GraphQLCore.GraphQLTypes.Building;
 using GraphQLCore.GraphQLTypes.Person;
 using GraphQLCore.GraphQLTypes.Product;
 using GraphQLCore.GraphQLTypes.Search;
 using GraphQLCore.Unions;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Models.Types;
-using GraphQLSettings = GraphQLCore.GraphQLSettings;
-using GraphQLUserContext = GraphQLCore.GraphQLUserContext;
 
 namespace IoC
 {
@@ -47,6 +43,6 @@ namespace IoC
             services.AddSingleton<CompositeQueries>();
             services.AddSingleton<CompositeMutators>();
         }
-        
+
     }
 }

@@ -1,5 +1,4 @@
 ﻿using DataAccess.Interfaces;
-using DataAccess.Serializer.Converters;
 using Neo4j.Driver;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -23,7 +22,7 @@ namespace DataAccess.Person
 
         public async Task<Person> Add(Person person)
         {
-            var entity = await _repository.Write<Person>(_mutations["UPDATE_PERSON"].Trim(), person);
+            var entity = await _repository.Write<Person>(_mutations["UPDATE_PERSON"].Trim(), new Dictionary<string, object> { { "person", person } });
             return entity;
         }
 
@@ -55,19 +54,19 @@ namespace DataAccess.Person
 
         public async Task<string> Delete(string id)
         {
-            var entity = await _repository.Write<Person>(_mutations["DEACTIVATE_PERSON"].Trim(), new { id });
+            var entity = await _repository.Write<Person>(_mutations["DEACTIVATE_PERSON"].Trim(), new Dictionary<string, object> { { "id", id } });
             return entity.Id;
         }
 
         public async Task<Person> Get(string id)
         {
-            var entity = await _repository.Read<Person>(_queries["GET_PERSON"].Trim(), new { id });
+            var entity = await _repository.Read<Person>(_queries["GET_PERSON"].Trim(), new Dictionary<string, object> { { "id", id } });
             return entity;
         }
 
         public async Task<Person> Update(Person person)
         {
-            var entity = await _repository.Write<Person>(_mutations["UPDATE_PERSON_2"].Trim(), person);
+            var entity = await _repository.Write<Person>(_mutations["UPDATE_PERSON_2"].Trim(), new Dictionary<string, object> { { "person", person } });
             return entity;
         }
 
@@ -76,16 +75,16 @@ namespace DataAccess.Person
             var props = JsonConvert.SerializeObject(record[label]);
             var person = JsonConvert.DeserializeObject<Person>(props);
 
-            if(person.Manager == null)
+            if (person.Manager == null)
             {
                 var managerProps = ((Dictionary<string, object>)record.Values.Values.First()).FirstOrDefault(v => v.Key == "manager");
                 person.Manager = managerProps.Value != null ? JsonConvert.DeserializeObject<Person>(JsonConvert.SerializeObject(managerProps.Value.As<INode>().Properties)) : null;
             }
 
-            if(person.Line == null)
+            if (person.Line == null)
             {
                 var lineProps = ((Dictionary<string, object>)record.Values.Values.First()).FirstOrDefault(v => v.Key == "line");
-                if(lineProps.Value != null && ((List<object>)lineProps.Value).Any())
+                if (lineProps.Value != null && ((List<object>)lineProps.Value).Any())
                 {
                     var lines = ((List<object>)lineProps.Value)
                         .Select(l => JsonConvert.DeserializeObject<Person>(JsonConvert.SerializeObject(l.As<INode>().Properties)));
@@ -95,7 +94,7 @@ namespace DataAccess.Person
                     person.Line = new List<Person>();
             }
 
-            if(person.Team == null)
+            if (person.Team == null)
             {
                 var teamProps = ((Dictionary<string, object>)record.Values.Values.First()).FirstOrDefault(v => v.Key == "team");
                 if (teamProps.Value != null && ((List<object>)teamProps.Value).Any())

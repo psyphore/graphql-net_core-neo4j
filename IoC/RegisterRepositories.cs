@@ -1,7 +1,5 @@
-﻿using DataAccess;
-using DataAccess.Building;
+﻿using DataAccess.Building;
 using DataAccess.CacheProvider;
-using DataAccess.Interfaces;
 using DataAccess.Person;
 using DataAccess.Product;
 using DataAccess.Search;
@@ -14,7 +12,6 @@ namespace IoC
         public static void ConfigureRepositories(this IServiceCollection services)
         {
             services.AddSingleton<ICacheProvider, InMemoryCache>();
-            //services.AddTransient<IRepository, Repository>();
             services.AddTransient<IPersonRepository, PersonRepository>();
             services.AddTransient<IBuildingRepository, BuildingRepository>();
             services.AddTransient<IProductRepository, ProductRepository>();
