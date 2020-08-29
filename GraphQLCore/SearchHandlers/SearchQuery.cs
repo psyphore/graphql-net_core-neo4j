@@ -2,8 +2,8 @@
 using GraphQL.Types;
 using GraphQLCore.Unions;
 using Models.DTOs;
-using Models.GraphQLTypes.Building;
-using Models.GraphQLTypes.Search;
+using GraphQLCore.GraphQLTypes.Building;
+using GraphQLCore.GraphQLTypes.Search;
 
 namespace Models.Types
 {

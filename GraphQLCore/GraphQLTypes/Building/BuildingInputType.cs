@@ -1,6 +1,6 @@
 ﻿using GraphQL.Types;
 
-namespace Models.GraphQLTypes.Person
+namespace GraphQLCore.GraphQLTypes.Person
 {
     public class BuildingInputType : InputObjectGraphType
     {

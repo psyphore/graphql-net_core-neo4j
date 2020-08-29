@@ -13,8 +13,8 @@ namespace IoC
     {
         public static void ConfigureRepositories(this IServiceCollection services)
         {
-            services.AddTransient<IRepository, Repository>();
             services.AddSingleton<ICacheProvider, InMemoryCache>();
+            //services.AddTransient<IRepository, Repository>();
             services.AddTransient<IPersonRepository, PersonRepository>();
             services.AddTransient<IBuildingRepository, BuildingRepository>();
             services.AddTransient<IProductRepository, ProductRepository>();

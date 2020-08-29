@@ -1,7 +1,7 @@
 ﻿using BusinessServices.Person;
 using GraphQL.Types;
 using GraphQLCore.Unions;
-using Models.GraphQLTypes.Person;
+using GraphQLCore.GraphQLTypes.Person;
 
 namespace Models.Types
 {

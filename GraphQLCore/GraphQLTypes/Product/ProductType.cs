@@ -1,8 +1,8 @@
 ﻿using GraphQL.Types;
 using Models.DTOs;
-using Models.GraphQLTypes.Person;
+using GraphQLCore.GraphQLTypes.Person;
 
-namespace Models.GraphQLTypes.Product
+namespace GraphQLCore.GraphQLTypes.Product
 { 
     public class ProductType : ObjectGraphType<ProductModel>
     {

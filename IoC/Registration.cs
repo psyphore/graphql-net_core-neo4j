@@ -10,28 +10,15 @@ namespace IoC
     {
         public static void ConfigureApp(this IApplicationBuilder app)
         {
-            app.UseGraphQLAuth();
+            // /graphql
             app.UseGraphQL<MainSchema>();
-            
-            //app.UseMiddleware<GraphQLMiddleware>(new GraphQLSettings
-            //{
-            //    Path = "/graphql",
-            //    BuildUserContext = ctx => new GraphQLUserContext
-            //    {
-            //        User = ctx.User
-            //    },
-            //    EnableMetrics = true
-            //});
         }
 
         public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.ConfigureFrameworks(configuration);
-
             services.ConfigureRepositories();
-
             services.ConfigureServices();
-
             services.ConfigureGraphQLServices();
         }
     }

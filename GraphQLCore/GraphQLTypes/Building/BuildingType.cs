@@ -1,8 +1,8 @@
 ﻿using GraphQL.Types;
 using Models.DTOs;
-using Models.GraphQLTypes.Person;
+using GraphQLCore.GraphQLTypes.Person;
 
-namespace Models.GraphQLTypes.Building
+namespace GraphQLCore.GraphQLTypes.Building
 {
     public class BuildingType : ObjectGraphType<BuildingModel>
     {
@@ -15,7 +15,7 @@ namespace Models.GraphQLTypes.Building
             Field(x => x.Address, false).Description("The Physical address of the Building");
             Field(x => x.Avatar, true).Description("The Image of the Building");
             Field(x => x.HeadCount, true).Description("The Number of people based in the Building");
-            Field(x => x.People, true);
+            //Field(x => x.People, true);
             Field(x => x.Deactivated, true);
 
             Field<ListGraphType<PersonType>>("People", resolve: ctx => new ListGraphType<PersonType>());

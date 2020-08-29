@@ -1,8 +1,8 @@
 ﻿using GraphQL.Types;
 using Models.DTOs;
-using Models.GraphQLTypes.Person;
+using GraphQLCore.GraphQLTypes.Person;
 
-namespace Models.GraphQLTypes.Search
+namespace GraphQLCore.GraphQLTypes.Search
 { 
     public class SearchType : ObjectGraphType<SearchModel>
     {

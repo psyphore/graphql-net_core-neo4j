@@ -5,8 +5,9 @@ namespace DataAccess.Person
     public class PersonQueries
     {
         public IDictionary<string, string> Mutations => new Dictionary<string, string>
-                {
-                    { "UPDATE_PERSON", @"
+        {
+            {
+                "UPDATE_PERSON", @"
                         MERGE (p:Person{id: $id})
                         SET p += {
                           title: $title
@@ -19,8 +20,10 @@ namespace DataAccess.Person
                           , subscriptions: $subscriptions
                         }
                         RETURN p AS person;
-                    "},
-                    { "UPDATE_PERSON_2", @"
+                    "
+            },
+            {
+                "UPDATE_PERSON_2", @"
                         MERGE (p:Person{id: $id})
                         SET p += {
                           mobile: $mobile
@@ -29,26 +32,32 @@ namespace DataAccess.Person
                           , knownAs: $knownAs
                         }
                         RETURN p AS person;
-                    "},
-                    { "UPDATE_PERSON_REPORTING", @"
+                    "
+            },
+            {
+                "UPDATE_PERSON_REPORTING", @"
                         MATCH (m:Person{id:$man}-[r:MANAGES]->(s:Person{id:$sub}))
                         MERGE (m)-[r2:MANAGES]->(s)
                         WITH r, s, m, r2
                         DELETE r
                         RETURN s
-                    "},
-                    { "DEACTIVATE_PERSON", @"
+                    "
+            },
+            {
+                "DEACTIVATE_PERSON", @"
                         MATCH (p:Person) 
                         WHERE p.id = $id
                         SET p.deactivated = timestamp()
                         RETURN p
-                    " }
-                };
+                    "
+            }
+        };
 
         public IDictionary<string, string> Queries => new Dictionary<string, string>
-                {
-                    { "GET_PERSON", @"
-                        OPTIONAL MATCH (p:Person{id: {id}})
+        {
+            {
+                "GET_PERSON", @"
+                        OPTIONAL MATCH (p:Person{id: $id})
                         WITH apoc.date.format(p.deactivated, 'yyyyMMdd HH:mm:ss.ms') AS deactivated, p
                         RETURN p { 
                         .firstname,
@@ -67,8 +76,10 @@ namespace DataAccess.Person
                         building: [(p) -[:BASED_IN]->(b) | b],
                         deactivated: deactivated
                         } AS person
-                    "},
-                    { "GET_PEOPLE", @"
+                    "
+            },
+            {
+                "GET_PEOPLE", @"
                         MATCH (p:Person)
                         WITH apoc.date.format(p.deactivated, 'yyyyMMdd HH:mm:ss.ms') AS deactivated, p
                         RETURN p { 
@@ -90,10 +101,12 @@ namespace DataAccess.Person
                           /*deactivated: deactivated*/
                         } AS person
                         ORDER BY person.lastname ASC, person.firstname ASC
-                        SKIP {offset}
-                        LIMIT {first}
-                    " },
-                    { "GET_ME", @"
+                        SKIP $offset
+                        LIMIT first
+                    "
+            },
+            {
+                "GET_ME", @"
                         MATCH (p:Person)
                         WHERE LOWER($firstname) CONTAINS LOWER(p.firstname) AND
                                 LOWER($lastname) CONTAINS LOWER(p.lastname) AND
@@ -117,18 +130,23 @@ namespace DataAccess.Person
                         subscriptions: ['meals', 'support', 'leave', 'general'],
                         deactivated: deactivated
                         } AS person
-                    " },
-                    { "GET_FUZZY_PERSON", @"
+                    "
+            },
+            {
+                "GET_FUZZY_PERSON", @"
                         OPTIONAL MATCH (p:Person)
                         WHERE LOWER($firstname) CONTAINS LOWER(p.firstname) AND
                               LOWER($lastname) CONTAINS LOWER(p.lastname)
                         RETURN p AS person
-                    " },
-                    { "PERSONAL_NOTES", @"
+                    "
+            },
+            {
+                "PERSONAL_NOTES", @"
                         WITH apoc.create.uuid() AS uuid 
                         WITH {id: uuid, subject: 'Notification', body: 'test note'} AS note
                         RETURN [note] AS notes
-                    " }
-                };
+                    "
+            }
+        };
     }
 }

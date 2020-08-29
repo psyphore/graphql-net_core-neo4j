@@ -1,6 +1,6 @@
 ﻿using GraphQL.Validation;
 
-namespace Models.GraphQLTypes
+namespace GraphQLCore.GraphQLTypes
 {
     public class InputValidationRule : IValidationRule
     {

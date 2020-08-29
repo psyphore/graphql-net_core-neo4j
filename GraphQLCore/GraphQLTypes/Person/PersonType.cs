@@ -1,9 +1,9 @@
 ﻿using GraphQL.Types;
 using Models.DTOs;
-using Models.GraphQLTypes.Building;
-using Models.GraphQLTypes.Product;
+using GraphQLCore.GraphQLTypes.Building;
+using GraphQLCore.GraphQLTypes.Product;
 
-namespace Models.GraphQLTypes.Person
+namespace GraphQLCore.GraphQLTypes.Person
 { 
     public class PersonType : ObjectGraphType<PersonModel>
     {

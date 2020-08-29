@@ -2,9 +2,13 @@
 using DataAccess.Interfaces;
 using GraphQL;
 using GraphQL.Http;
+using GraphQL.Server;
+using GraphQLCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+//using Microsoft.Extensions.en;
 using Models.DTOs.Configuration;
+using System.Text.Json;
 
 namespace IoC
 {
@@ -14,26 +18,36 @@ namespace IoC
         {
             var auth0conf = configuration.GetSection("Auth0");
             services.Configure<Auth0>(auth0conf);
-            var auth0 = auth0conf.Get<Auth0>();
 
+            var auth0 = auth0conf.Get<Auth0>();
             services.AddSingleton(auth0);
 
             var dbconf = configuration.GetSection("ConnectionStrings");
             services.Configure<Connection>(dbconf);
-            var neo4j = dbconf.Get<Connection>();
 
+            var neo4j = dbconf.Get<Connection>();
             services.AddSingleton(neo4j);
 
-            services.AddTransient(o =>
-            {
-                return new Repository(neo4j);
-            });
+            // Repository
+            services.AddTransient<IRepository>(o => new Repository(neo4j));
 
-            services.AddTransient<IRepository, Repository>();
+            // GraphQL
+            services.AddScoped<IDependencyResolver>(s => new FuncDependencyResolver(s.GetRequiredService));
+            services.AddScoped<IDocumentExecuter, DocumentExecuter>();
+            services.AddScoped<IDocumentWriter, DocumentWriter>();
 
-            services.AddSingleton<IDependencyResolver>(s => new FuncDependencyResolver(s.GetRequiredService));
-            services.AddSingleton<IDocumentExecuter, DocumentExecuter>();
-            services.AddSingleton<IDocumentWriter, DocumentWriter>();
+            // GraphQL Schema
+            services.AddScoped<MainSchema>();
+
+            services
+                .AddGraphQL(o =>
+                {
+                    o.EnableMetrics = true;
+                    o.ExposeExceptions = true;
+                })
+                //.AddSystemTextJson()
+                .AddUserContextBuilder(hc => new GraphQLUserContext {User = hc.User})
+                .AddGraphTypes(ServiceLifetime.Scoped);
         }
     }
 }

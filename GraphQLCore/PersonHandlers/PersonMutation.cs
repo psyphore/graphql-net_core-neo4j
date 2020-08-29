@@ -2,7 +2,7 @@
 using GraphQL.Types;
 using GraphQLCore.Unions;
 using Models.DTOs;
-using Models.GraphQLTypes.Person;
+using GraphQLCore.GraphQLTypes.Person;
 
 namespace Models.Types
 {

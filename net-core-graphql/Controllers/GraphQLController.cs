@@ -1,14 +1,14 @@
 ﻿using GraphQL;
 using GraphQL.Types;
+using GraphQLCore;
 using Microsoft.AspNetCore.Mvc;
-using Models.Types;
-using net_core_graphql.Filters;
 using System;
 using System.Threading.Tasks;
 
 namespace net_core_graphql.Controllers
 {
-    [ApiController, Route("[controller]"), Auth0Authorize]
+    //[ApiController, Route("[controller]")]
+    //[Produces("application/json")]
     public class GraphQLController : ControllerBase
     {
         private readonly IDocumentExecuter _documentExecuter;
@@ -21,7 +21,7 @@ namespace net_core_graphql.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] GraphQLQuery query)
+        public async Task<IActionResult> Post([FromBody] GraphQLRequest query)
         {
             if (query == null) { throw new ArgumentNullException(nameof(query)); }
 

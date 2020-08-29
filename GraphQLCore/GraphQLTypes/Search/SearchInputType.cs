@@ -1,7 +1,7 @@
 ﻿using GraphQL.Types;
 using Models.DTOs;
 
-namespace Models.GraphQLTypes.Search
+namespace GraphQLCore.GraphQLTypes.Search
 {
     public class SearchInputType : InputObjectGraphType<SearchCriteriaModel>
     {
