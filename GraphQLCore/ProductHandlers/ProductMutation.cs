@@ -1,49 +1,55 @@
-﻿using BusinessServices.Product;
-using GraphQL.Types;
-using GraphQLCore.Unions;
-using GraphQLCore.GraphQLTypes.Product;
+﻿using System.Threading.Tasks;
+using BusinessServices.Product;
+using HotChocolate;
+using HotChocolate.AspNetCore.Authorization;
+using HotChocolate.Subscriptions;
+using HotChocolate.Types;
+using Models.DTOs;
 
-namespace Models.Types
+namespace GraphQLCore.ProductHandlers
 {
-    public class ProductMutation : ObjectGraphType, IGraphMutator
+    /// <summary>
+    /// Actions to create, update and delete a Product
+    /// </summary>
+    [ExtendObjectType(Name = "Mutation")]
+    public class ProductMutation
     {
-        public ProductMutation(IProductService service)
+        private readonly IProductService service;
+        private readonly ITopicEventSender eventSender;
+
+        public ProductMutation(IProductService service, ITopicEventSender eventSender)
         {
-            Name = "ProductMutation";
-            Description = "Actions to create, update and delete a Product";
-
-            Field<ProductType>(
-                "CreateProduct",
-                arguments: new QueryArguments(new QueryArgument<NonNullGraphType<ProductInputType>> { Name = "Product" }),
-                resolve: ctx =>
-                {
-                    // service.Add(ctx.GetArgument<ProductModel>("Product"))
-                    return null;
-                },
-                description: "Create a new Product"
-                );
-
-            Field<ProductType>(
-                "UpdateProduct",
-                arguments: new QueryArguments(new QueryArgument<NonNullGraphType<ProductInputType>> { Name = "Product" }),
-                resolve: ctx =>
-                {
-                    // service.Update(ctx.GetArgument<ProductModel>("Product"));
-                    return null;
-                },
-                description: "Update a Product"
-                );
-
-            Field<ProductType>(
-                "RemoveProduct",
-                arguments: new QueryArguments(new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "id" }),
-                resolve: ctx =>
-                {
-                    // service.Delete(ctx.GetArgument<string>("id"));
-                    return null;
-                },
-                description: "Delete a Product"
-                );
+            this.service = service;
+            this.eventSender = eventSender;
         }
+
+        /// <summary>
+        /// Create a new Product
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Authorize]
+        public async Task<ProductModel> CreateProductAsync(ProductModel model)
+        {
+            var payload = await Task.FromResult(new ProductModel());
+            await eventSender.SendAsync(new TopicAttribute(payload.Id), "New Product Created");
+            return payload;
+        }
+
+        /// <summary>
+        /// Update a Product
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Authorize]
+        public async Task<ProductModel> UpdateProductAsync(ProductModel model) => await Task.FromResult(new ProductModel());
+
+        /// <summary>
+        /// Delete a Product
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize]
+        public async Task<ProductModel> RemoveProductAsync(string id) => await Task.FromResult(new ProductModel());
     }
 }

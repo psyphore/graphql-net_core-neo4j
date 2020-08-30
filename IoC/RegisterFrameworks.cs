@@ -1,18 +1,26 @@
 ﻿using DataAccess;
 using DataAccess.Interfaces;
-using GraphQL;
-using GraphQL.Http;
-using GraphQL.Server;
-using GraphQLCore;
+using GraphQLCore.BuildingHandlers;
+using GraphQLCore.PersonHandlers;
+using GraphQLCore.ProductHandlers;
+using GraphQLCore.SearchHandlers;
+using HotChocolate;
+using HotChocolate.Execution.Configuration;
+using HotChocolate.Types;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Models.Configuration;
 using Models.DTOs.Configuration;
+using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using GraphQLCore;
 
 namespace IoC
 {
     internal static class RegisterFrameworks
     {
-        public static void ConfigureFrameworks(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigureFrameworks(this IServiceCollection services, IConfiguration configuration)
         {
             var auth0conf = configuration.GetSection("Auth0");
             services.Configure<Auth0>(auth0conf);
@@ -26,26 +34,53 @@ namespace IoC
             var neo4j = dbconf.Get<Connection>();
             services.AddSingleton(neo4j);
 
-            // Repository
-            services.AddTransient<IRepository>(o => new Repository(neo4j));
-
-            // GraphQL
-            services.AddScoped<IDependencyResolver>(s => new FuncDependencyResolver(s.GetRequiredService));
-            services.AddScoped<IDocumentExecuter, DocumentExecuter>();
-            services.AddScoped<IDocumentWriter, DocumentWriter>();
-
-            // GraphQL Schema
-            services.AddScoped<MainSchema>();
-
             services
-                .AddGraphQL(o =>
+                .AddTransient<IRepository>(o => new Repository(neo4j))
+                .AddDataLoaderRegistry()
+                .AddInMemorySubscriptions()
+                .AddGraphQL(sp =>
+                        SchemaBuilder.New()
+                            .AddServices(sp)
+                            .AddQueryType<Query>(d => d.Name("Query"))
+                            .AddType<SearchQuery>()
+                            .AddType<BuildingQuery>()
+                            .AddType<ProductQuery>()
+                            .AddType<PersonQuery>()
+                            .AddMutationType<Mutation>(d => d.Name("Mutation"))
+                            .AddType<BuildingMutation>()
+                            .AddType<ProductMutation>()
+                            .AddType<PersonMutation>()
+                            .AddSubscriptionType<Subscription>(d => d.Name("Subscription"))
+                            .AddType<ProductSubscription>()
+                            .AddAuthorizeDirectiveType()
+                            .BindClrType<string, StringType>()
+                            .BindClrType<Guid, IdType>()
+                            .Create(),
+                    new QueryExecutionOptions
+                    {
+                        ForceSerialExecution = true,
+                        //MaxExecutionDepth = 4,
+                        IncludeExceptionDetails = true
+                    }
+                );
+
+
+            services.AddQueryRequestInterceptor(async (context, builder, ct) =>
+            {
+                if (context.User.Identity.IsAuthenticated)
                 {
-                    o.EnableMetrics = true;
-                    o.ExposeExceptions = true;
-                })
-                //.AddSystemTextJson()
-                .AddUserContextBuilder(hc => new GraphQLUserContext { User = hc.User })
-                .AddGraphTypes(ServiceLifetime.Scoped);
+                    var personId = Guid.Parse(context.User.FindFirst(WellKnownClaimTypes.UserId).Value);
+
+                    builder.AddProperty("currentPersonId", personId);
+                    builder.AddProperty("currentUserEmail", context.User.FindFirst(ClaimTypes.Email).Value);
+
+                    //IPersonRepository personRepository = context.RequestServices.GetRequiredService<IPersonRepository>();
+                    //await personRepository..UpdateLastSeenAsync(personId, DateTime.UtcNow, ct);
+                    await Task.FromResult(true);
+                }
+            });
+
+            return services;
         }
     }
 }

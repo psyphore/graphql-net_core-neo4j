@@ -1,39 +1,46 @@
-﻿using BusinessServices.Building;
-using GraphQL.Types;
-using GraphQLCore.Unions;
+﻿using System.Threading.Tasks;
+using BusinessServices.Building;
+using HotChocolate.AspNetCore.Authorization;
+using HotChocolate.Types;
 using Models.DTOs;
-using GraphQLCore.GraphQLTypes.Building;
-using GraphQLCore.GraphQLTypes.Person;
 
-namespace Models.Types
+namespace GraphQLCore.BuildingHandlers
 {
-    public class BuildingMutation : ObjectGraphType, IGraphMutator
+    /// <summary>
+    /// Actions to create, update and delete a Building
+    /// </summary>
+    [ExtendObjectType(Name = "Query")]
+    public class BuildingMutation
     {
+        private readonly IBuildingService service;
+
         public BuildingMutation(IBuildingService service)
         {
-            Name = "BuildingMutation";
-            Description = "Actions to create, update and delete a Building";
-
-            Field<BuildingType>(
-                "CreateBuilding",
-                arguments: new QueryArguments(new QueryArgument<NonNullGraphType<BuildingInputType>> { Name = "building" }),
-                resolve: ctx => service.Add(ctx.GetArgument<BuildingModel>("building")),
-                description: "Create a new Building"
-                );
-
-            Field<BuildingType>(
-                "UpdateBuilding",
-                arguments: new QueryArguments(new QueryArgument<NonNullGraphType<BuildingInputType>> { Name = "building" }),
-                resolve: ctx => service.Update(ctx.GetArgument<BuildingModel>("building")),
-                description: "Update a Building"
-                );
-
-            Field<BuildingType>(
-                "RemoveBuilding",
-                arguments: new QueryArguments(new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "id" }),
-                resolve: ctx => service.Delete(ctx.GetArgument<string>("id")),
-                description: "Delete a Building"
-                );
+            this.service = service;
         }
+
+        /// <summary>
+        /// Create a new Building
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Authorize]
+        public async Task<BuildingModel> CreateBuilding(BuildingModel model) => await service.Add(model);
+
+        /// <summary>
+        /// Update a Building
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Authorize]
+        public async Task<BuildingModel> UpdateBuilding(BuildingModel model) => await service.Update(model);
+
+        /// <summary>
+        /// Delete a Building
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize]
+        public async Task<BuildingModel> DeleteBuilding(string id) => await service.Delete(id);
     }
 }

@@ -1,26 +1,28 @@
-﻿using BusinessServices.Search;
-using GraphQL.Types;
-using GraphQLCore.Unions;
+﻿using System.Threading.Tasks;
+using BusinessServices.Search;
+using HotChocolate.Types;
 using Models.DTOs;
-using GraphQLCore.GraphQLTypes.Building;
-using GraphQLCore.GraphQLTypes.Search;
 
-namespace Models.Types
+namespace GraphQLCore.SearchHandlers
 {
-    public class SearchQuery : ObjectGraphType, IGraphQueryMarker
+    /// <summary>
+    /// Search for person or people
+    /// </summary>
+    [ExtendObjectType(Name = "Query")]
+    public class SearchQuery
     {
+        private readonly ISearchService service;
+
         public SearchQuery(ISearchService service)
         {
-            Name = "SearchQuery";
-            Description = "Search for person or people";
-
-            Field<BuildingType>(
-                "Search",
-                arguments: new QueryArguments(new QueryArgument<NonNullGraphType<SearchType>> { Name = "criteria" }),
-                resolve: ctx => service.Get(ctx.GetArgument<SearchCriteriaModel>("criteria")),
-                description: "Search"
-                );
-
+            this.service = service;
         }
+
+        /// <summary>
+        /// Search
+        /// </summary>
+        /// <param name="criteria"></param>
+        /// <returns></returns>
+        public async Task<SearchModel> SearchAsync(SearchCriteriaModel criteria) => await service.Get(criteria);
     }
 }
