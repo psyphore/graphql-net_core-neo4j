@@ -1,5 +1,9 @@
-# GraphQL - .Net Core 3.1 - Neo4J
+# GraphQL - .Net Core 3.1 + Neo4J 4.1
 this is my take on GraphQL and .net core 3.1
+stack: 
+- .Net core 3.1
+- Neo4j-driver 4.1 
+- HotChocolate GraphQL 10.5
 
 ## Project Structure
 ```
@@ -24,7 +28,8 @@ net-core-graphql
 "ConnectionStrings": {
     "BoltURL": "bolt://localhost:7687",
     "Username": "neo4j",
-    "Password": "n4j"
+    "Password": "n4j",
+    "databaseName":  "neo4j" 
   },
 ```
 
