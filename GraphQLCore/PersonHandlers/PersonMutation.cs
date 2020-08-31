@@ -1,38 +1,46 @@
 ﻿using BusinessServices.Person;
-using GraphQL.Types;
-using GraphQLCore.Unions;
+using HotChocolate.Types;
 using Models.DTOs;
-using GraphQLCore.GraphQLTypes.Person;
+using System.Threading.Tasks;
+using HotChocolate.AspNetCore.Authorization;
 
-namespace Models.Types
+namespace GraphQLCore.PersonHandlers
 {
-    public class PersonMutation : ObjectGraphType, IGraphMutator
+    /// <summary>
+    /// Actions to create, update and delete a person
+    /// </summary>
+    [ExtendObjectType(Name = "Mutation")]
+    public class PersonMutation
     {
+        private readonly IPersonService service;
+
         public PersonMutation(IPersonService service)
         {
-            Name = "PersonMutation";
-            Description = "Actions to create, update and delete a person";
-
-            Field<PersonType>(
-                "CreatePerson",
-                arguments: new QueryArguments(new QueryArgument<NonNullGraphType<PersonInputType>> { Name = "person" }),
-                resolve: ctx => service.Add(ctx.GetArgument<PersonModel>("person")),
-                description: "Create a new person"
-                );
-
-            Field<PersonType>(
-                "UpdatePerson",
-                arguments: new QueryArguments(new QueryArgument<NonNullGraphType<PersonInputType>> { Name = "person" }),
-                resolve: ctx => service.Update(ctx.GetArgument<PersonModel>("person")),
-                description: "Update a person"
-                );
-
-            Field<PersonType>(
-                "RemovePerson",
-                arguments: new QueryArguments(new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "id" }),
-                resolve: ctx => service.Delete(ctx.GetArgument<string>("id")),
-                description: "Delete a person"
-                );
+            this.service = service;
         }
+
+        /// <summary>
+        /// Create a person
+        /// </summary>
+        /// <param name="person"></param>
+        /// <returns></returns>
+        [Authorize]
+        public async Task<PersonModel> CreatePersonAsync(PersonModel person) => await service.Add(person);
+
+        /// <summary>
+        /// Update a person
+        /// </summary>
+        /// <param name="person"></param>
+        /// <returns></returns>
+        [Authorize]
+        public async Task<PersonModel> UpdatePersonAsync(PersonModel person) => await service.Update(person);
+
+        /// <summary>
+        /// Delete a person
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize]
+        public async Task<PersonModel> DeletePersonAsync(string id) => await service.Delete(id);
     }
 }
