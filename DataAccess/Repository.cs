@@ -11,28 +11,17 @@ namespace DataAccess
     public class Repository : IRepository
     {
         private readonly IDriver _driver;
-        private readonly string _databaseName;
+        private readonly Connection _connection;
 
-        public Repository(Connection connection)
+        public Repository(Connection connection, IDriver driver)
         {
-            _driver = GraphDatabase.Driver(
-                connection.BoltURL,
-                AuthTokens.Basic(connection.Username, connection.Password),
-                o =>
-                {
-                    o.WithEncryptionLevel(EncryptionLevel.None);
-                });
-            _databaseName = connection.DatabaseName;
-        }
-
-        public void Dispose()
-        {
-            _driver?.Dispose();
+            _driver = driver;
+            _connection = connection;
         }
 
         public IAsyncSession GetSession(AccessMode mode)
         {
-            return _driver.AsyncSession(o => o.WithDatabase(_databaseName));
+            return _driver.AsyncSession(o => o.WithDatabase(_connection.DatabaseName));
         }
 
         public async Task<T> Read<T>(string query, IDictionary<string, object> parameters)
@@ -123,6 +112,11 @@ namespace DataAccess
                 await session.CloseAsync();
                 await _driver.CloseAsync();
             }
+        }
+
+        public void Dispose()
+        {
+            _driver?.Dispose();
         }
     }
 }

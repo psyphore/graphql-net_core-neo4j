@@ -12,19 +12,19 @@ namespace IoC
         public static IServiceCollection ConfigureGraphQLServices(this IServiceCollection services)
         {
             // Person
-            services.AddSingleton<PersonQuery>();
-            services.AddSingleton<PersonMutation>();
+            services.AddTransient<PersonQuery>();
+            services.AddTransient<PersonMutation>();
 
             // Product
-            services.AddSingleton<ProductMutation>();
-            services.AddSingleton<ProductQuery>();
+            services.AddTransient<ProductMutation>();
+            services.AddTransient<ProductQuery>();
 
             // Building
-            services.AddSingleton<BuildingMutation>();
-            services.AddSingleton<BuildingQuery>();
+            services.AddTransient<BuildingMutation>();
+            services.AddTransient<BuildingQuery>();
 
             // Search
-            services.AddSingleton<SearchQuery>();
+            services.AddTransient<SearchQuery>();
 
             services.AddSingleton<Query>()
                 .AddSingleton<Mutation>()

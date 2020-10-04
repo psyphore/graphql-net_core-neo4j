@@ -1,5 +1,6 @@
 ﻿using DataAccess;
 using DataAccess.Interfaces;
+using GraphQLCore;
 using GraphQLCore.BuildingHandlers;
 using GraphQLCore.PersonHandlers;
 using GraphQLCore.ProductHandlers;
@@ -11,10 +12,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Models.Configuration;
 using Models.DTOs.Configuration;
+using Neo4j.Driver;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using GraphQLCore;
 
 namespace IoC
 {
@@ -32,16 +33,21 @@ namespace IoC
             services.Configure<Connection>(dbconf);
 
             var neo4j = dbconf.Get<Connection>();
-            services.AddSingleton(neo4j);
+            services
+                .AddSingleton(neo4j)
+                .AddTransient(d => GraphDatabase.Driver(
+                neo4j.BoltURL,
+                AuthTokens.Basic(neo4j.Username, neo4j.Password),
+                o => o.WithEncryptionLevel(EncryptionLevel.None)));
 
             services
-                .AddTransient<IRepository>(o => new Repository(neo4j))
+                .AddTransient<IRepository, Repository>()
                 .AddDataLoaderRegistry()
                 .AddInMemorySubscriptions()
                 .AddGraphQL(sp =>
                         SchemaBuilder.New()
                             .AddServices(sp)
-                            .AddQueryType<Query>(d => d.Name("Query"))
+                            .AddQueryType<GraphQLCore.Query>(d => d.Name("Query"))
                             .AddType<SearchQuery>()
                             .AddType<BuildingQuery>()
                             .AddType<ProductQuery>()
@@ -59,7 +65,6 @@ namespace IoC
                     new QueryExecutionOptions
                     {
                         ForceSerialExecution = true,
-                        //MaxExecutionDepth = 4,
                         IncludeExceptionDetails = true
                     }
                 );
