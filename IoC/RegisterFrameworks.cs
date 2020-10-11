@@ -5,6 +5,7 @@ using GraphQLCore.BuildingHandlers;
 using GraphQLCore.PersonHandlers;
 using GraphQLCore.ProductHandlers;
 using GraphQLCore.SearchHandlers;
+using GraphQLCore.UserHandlers;
 using HotChocolate;
 using HotChocolate.Execution.Configuration;
 using HotChocolate.Types;
@@ -52,10 +53,12 @@ namespace IoC
                             .AddType<BuildingQuery>()
                             .AddType<ProductQuery>()
                             .AddType<PersonQuery>()
+                            .AddType<UserQuery>()
                             .AddMutationType<Mutation>(d => d.Name("Mutation"))
                             .AddType<BuildingMutation>()
                             .AddType<ProductMutation>()
                             .AddType<PersonMutation>()
+                            .AddType<UserMutation>()
                             .AddSubscriptionType<Subscription>(d => d.Name("Subscription"))
                             .AddType<ProductSubscription>()
                             .AddAuthorizeDirectiveType()

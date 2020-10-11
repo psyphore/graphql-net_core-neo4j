@@ -3,6 +3,7 @@ using GraphQLCore.BuildingHandlers;
 using GraphQLCore.PersonHandlers;
 using GraphQLCore.ProductHandlers;
 using GraphQLCore.SearchHandlers;
+using GraphQLCore.UserHandlers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IoC
@@ -15,6 +16,10 @@ namespace IoC
             services.AddTransient<PersonQuery>();
             services.AddTransient<PersonMutation>();
 
+            // User
+            services.AddTransient<UserQuery>();
+            services.AddTransient<UserMutation>();
+
             // Product
             services.AddTransient<ProductMutation>();
             services.AddTransient<ProductQuery>();
@@ -26,9 +31,11 @@ namespace IoC
             // Search
             services.AddTransient<SearchQuery>();
 
-            services.AddSingleton<Query>()
+            services
+                .AddSingleton<Query>()
                 .AddSingleton<Mutation>()
-                .AddSingleton<Subscription>();
+                .AddSingleton<Subscription>()
+                ;
 
             return services;
         }
