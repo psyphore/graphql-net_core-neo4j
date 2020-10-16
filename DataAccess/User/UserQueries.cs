@@ -50,24 +50,24 @@ namespace DataAccess.User
             {
                 "GET_USER", @"
                         OPTIONAL MATCH (p:User{id: $id})
-                        WITH apoc.date.format(p.deactivated, 'yyyyMMdd HH:mm:ss.ms') AS deactivated, p
                         RETURN p { 
                         .name,
                         .id,
                         .email,
-                        deactivated: deactivated
+                        .deactivated,
+                        .created
                         } AS user
                     "
             },
             {
                 "GET_USERS", @"
                         MATCH (p:User)
-                        WITH apoc.date.format(p.deactivated, 'yyyyMMdd HH:mm:ss.ms') AS deactivated, p
                         RETURN p { 
                           .name,
                           .id,
                           .email,
-                          .deactivated
+                          .deactivated,
+                          .created
                         } AS user
                         ORDER BY user.name ASC
                         SKIP $offset
@@ -79,12 +79,12 @@ namespace DataAccess.User
                         MATCH (p:User)
                         WHERE LOWER($firstname) CONTAINS LOWER(p.name) AND
                               LOWER($email) CONTAINS LOWER(p.email)
-                        WITH apoc.date.format(p.deactivated, 'yyyyMMdd HH:mm:ss.ms') AS deactivated, p
                         RETURN p { 
                         .name,
                         .id,
-                        .email
-                        deactivated: deactivated
+                        .email,
+                        .deactivated,
+                        .created
                         } AS user
                     "
             },

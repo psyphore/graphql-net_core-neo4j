@@ -17,7 +17,7 @@ namespace BusinessServices.Helpers
             if (timestamp == null)
                 return null;
 
-            return new DateTime(1970, 1, 1).AddTicks(timestamp.Value);
+            return new DateTime(1970, 1, 1).AddMilliseconds(timestamp.Value);
         }
 
         public static long DateToTimeStamp(this DateTime date)
@@ -30,7 +30,7 @@ namespace BusinessServices.Helpers
 
         public static DateTime TimeStampToDate(this long timestamp)
         {
-            return new DateTime(1970, 1, 1).AddTicks(timestamp);
+            return new DateTime(1970, 1, 1).AddMilliseconds(timestamp);
         }
     }
 }
