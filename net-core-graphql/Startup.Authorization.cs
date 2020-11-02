@@ -8,7 +8,7 @@ namespace net_core_graphql
 {
     public partial class Startup
     {
-        internal static byte[] SharedSecret = Encoding.ASCII.GetBytes(
+        private static readonly byte[] SharedSecret = Encoding.ASCII.GetBytes(
             "abcdefghijklmnopqrstuvwxyz1234567890");
 
         private void ConfigureAuthenticationServices(IServiceCollection services)
