@@ -29,10 +29,4 @@
     <PackageReference Include="System.Text.Json" Version="4.7.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\BusinessServices\BusinessServices.csproj" />
-    <ProjectReference Include="..\IoC\IoC.csproj" />
-    <ProjectReference Include="..\Models\Models.csproj" />
-  </ItemGroup>
-
 </Project>
