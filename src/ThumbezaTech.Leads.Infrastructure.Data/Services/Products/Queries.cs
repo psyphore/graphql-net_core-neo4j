@@ -9,29 +9,26 @@ public static class Queries
     public static Dictionary<string, string> Options => new()
     {
         { GetOne, @"
-                    MATCH (l:Lead{id:$id}) 
-                    RETURN l { 
-                      .*
-                      packages: [(cover)-[:COVER_OF]->(covered_packages:Package) | covered_packages]
-                    } AS lead
+                    MATCH (p:Product{id:$id}) 
+                    RETURN p AS product
                 " },
         { GetAll, @"
-                    MATCH (l:Lead) 
-                    RETURN l { 
-                      .*
-                      packages: [(cover)-[:COVER_OF]->(covered_packages:Package) | covered_packages]
-                    } AS lead
-                    ORDER BY lead.LastName ASC
+                    MATCH (p:Product) 
+                    RETURN p AS products
+                    ORDER BY p.value ASC
                     SKIP $offset
                     LIMIT $first
                 " },
         { Search, @"
                     OPTIONAL MATCH (p:Product)
-                    WHERE p.Name =~ $query 
-                        OR p.Description =~ $query 
-                        OR p.Value =~ $query
-                    RETURN p AS product
-                    ORDER BY p.Value DESC
+                    WHERE (p.value <= toFloat($query) OR toFloat($query) >= p.value)
+                        OR p.name =~ $query
+                        OR p.tags IN [$query]
+                    WITH p
+                    RETURN p
+                    ORDER BY p.value ASC
+                    SKIP $offset
+                    LIMIT $first
                 " },
     };
 }

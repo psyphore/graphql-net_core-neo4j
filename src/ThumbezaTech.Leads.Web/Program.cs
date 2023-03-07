@@ -1,4 +1,4 @@
-using Serilog;
+﻿using Serilog;
 
 using ThumbezaTech.Leads.Application;
 using ThumbezaTech.Leads.Infrastructure.Data;

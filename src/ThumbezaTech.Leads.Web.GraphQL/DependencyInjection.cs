@@ -9,42 +9,44 @@ namespace ThumbezaTech.Leads.Web.GraphQL;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddGraphQL(this IServiceCollection services)
+  public static IServiceCollection AddGraphQL(this IServiceCollection services)
+  {
+    services
+        .AddGraphQLServer()
+        .AddDefaultTransactionScopeHandler()
+
+        .AddQueryType<ProductsQuery>()
+        .AddMutationType<ProductsMutation>()
+
+        .AddFiltering()
+        .AddSorting()
+        .AddProjections()
+        ;
+
+    return services;
+  }
+
+  public static IApplicationBuilder UseGraphQLResolver(this IApplicationBuilder app, IWebHostEnvironment env)
+  {
+    app.UseEndpoints(endpoints =>
     {
-        services
-            .AddGraphQLServer()
-
-            .AddQueryType<ProductsQuery>()
-
-            .AddFiltering()
-            .AddSorting()
-            .AddProjections()
-            ;
-
-        return services;
-    }
-
-    public static IApplicationBuilder UseGraphQLResolver(this IApplicationBuilder app, IWebHostEnvironment env)
-    {
-        app.UseEndpoints(endpoints =>
-        {
-            _ = endpoints.MapGraphQL().WithOptions(new HotChocolate.AspNetCore.GraphQLServerOptions
+      _ = endpoints.MapGraphQL().WithOptions(new HotChocolate.AspNetCore.GraphQLServerOptions
+      {
+        EnableSchemaRequests = !env.IsProduction(),
+        EnableBatching = true,
+        EnableMultipartRequests = true,
+        Tool =
             {
-                EnableSchemaRequests = !env.IsProduction(),
-                EnableBatching = true,
-                EnableMultipartRequests = true,
-                Tool =
-                {
                     Enable = env.IsDevelopment(),
-                }
-            });
-            endpoints.MapGet("/", context =>
-            {
-                context.Response.Redirect("/graphql", true);
-                return Task.CompletedTask;
-            });
+            }
+      });
+      endpoints.MapGet("/", context =>
+          {
+          context.Response.Redirect("/graphql", true);
+          return Task.CompletedTask;
         });
+    });
 
-        return app;
-    }
+    return app;
+  }
 }

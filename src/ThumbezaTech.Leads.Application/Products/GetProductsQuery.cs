@@ -6,19 +6,19 @@ public sealed record GetProductsQuery(string Query, int Page = 1, int Size = 10)
 
 internal sealed class GetProductQueryHandler : IQueryHandler<GetProductsQuery, Result<IEnumerable<Product>>>
 {
-    private readonly IProductService _searchRepository;
+  private readonly IProductService _service;
 
-    public GetProductQueryHandler(IProductService searchRepository) => _searchRepository = searchRepository;
+  public GetProductQueryHandler(IProductService service) => _service = service;
 
-    public ValueTask<Result<IEnumerable<Product>>> Handle(GetProductsQuery query, CancellationToken cancellationToken)
-    {
-        var (Query, Size, Page) = query;
-        var parameter = new Dictionary<string, object>
+  public ValueTask<Result<IEnumerable<Product>>> Handle(GetProductsQuery query, CancellationToken cancellationToken)
+  {
+    var (Query, Size, Page) = query;
+    var parameter = new Dictionary<string, object>
         {
             { "offset", Page },
-            { "limit", Size },
+            { "first", Size },
             { "query", Query },
         };
-        return _searchRepository.QueryProducts(parameter, cancellationToken);
-    }
+    return _service.QueryProducts(parameter, cancellationToken);
+  }
 }
