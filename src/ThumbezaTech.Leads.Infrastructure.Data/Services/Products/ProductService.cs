@@ -5,19 +5,41 @@ namespace ThumbezaTech.Leads.Infrastructure.Data.Services.Products;
 
 public class ProductService : IProductService
 {
-    private readonly IRepository<Product> _repository;
-    private const string Label = nameof(Product);
+  private readonly IRepository<Product> _repository;
+  private const string Label = nameof(Product);
 
-    public ProductService(IRepository<Product> repository) => _repository = repository;
+  public ProductService(IRepository<Product> repository) => _repository = repository;
 
-    public async ValueTask<Result<IEnumerable<Product>>> QueryProducts(IDictionary<string, object> Query, CancellationToken cancellationToken = default)
-    {
-        var statement = Queries.Options[Queries.Search].Trim();
-        var records = await _repository.Write(statement, Query, cancellationToken);
-        var payload = records.Select(record => record.ProcessRecords<Product>(Label));
+  public async ValueTask<Result<IEnumerable<Product>>> QueryProducts(IDictionary<string, object> Query, CancellationToken cancellationToken = default)
+  {
+    var statement = Queries.Options[Queries.Search].Trim();
+    var records = await _repository.Read(statement, Query, cancellationToken);
+    var payload = records.Select(record => record.ProcessRecords<Product>(Label));
 
-        return payload.Any()
-            ? Result.Success(payload.Distinct())
-            : Result.NotFound();
-    }
+    return payload.Any()
+        ? Result.Success(payload.Distinct())
+        : Result.NotFound();
+  }
+
+  public async ValueTask<Result> AddProduct(IDictionary<string, object> Query, CancellationToken cancellationToken = default)
+  {
+    var statement = Commands.Options[Commands.SaveOne].Trim();
+    var records = await _repository.Write(statement, Query, cancellationToken);
+    var payload = records.Select(record => record.ProcessRecords<Product>(Label));
+
+    return payload.Any()
+        ? Result.Success()
+        : Result.NotFound();
+  }
+
+  public async ValueTask<Result> UpdateProduct(IDictionary<string, object> Query, CancellationToken cancellationToken = default)
+  {
+    var statement = Commands.Options[Commands.UpdateOne].Trim();
+    var records = await _repository.Write(statement, Query, cancellationToken);
+    var payload = records.Select(record => record.ProcessRecords<Product>(Label));
+
+    return payload.Any()
+        ? Result.Success()
+        : Result.NotFound();
+  }
 }
