@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>87870e70-3db8-43f0-928a-bdc76ea241bd</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
+    <PackageReference Include="Serilog" Version="2.12.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ThumbezaTech.Leads.Application\ThumbezaTech.Leads.Application.csproj" />
+    <ProjectReference Include="..\ThumbezaTech.Leads.Infrastructure.Data\ThumbezaTech.Leads.Infrastructure.Data.csproj" />
+    <ProjectReference Include="..\ThumbezaTech.Leads.Web.GraphQL\ThumbezaTech.Leads.Web.GraphQL.csproj" />
+  </ItemGroup>
+  
+</Project>

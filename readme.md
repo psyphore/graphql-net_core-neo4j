@@ -1,43 +1,43 @@
-# GraphQL - .Net Core 3.1 + Neo4J 4.1
-this is my take on GraphQL and .net core 3.1
-stack: 
-- .Net core 3.1
-- Neo4j-driver 4.1 
-- HotChocolate GraphQL 10.5
+# GraphQL - .Net 6 + Neo4J 5.5
+
+This is my 2nd take on GraphQL with dotnet 6 and Neo4J Graph Database
+I will loosely follow the Domain Driven Design pattern.
+
+stack:
+- dotnet 6 (LTS)
+- Neo4j-driver 5.5
+- HotChocolate GraphQL 13.0.5
 
 ## Project Structure
 ```
 net-core-graphql
 |
-|__ Models
-
-|
-|__ IoC
+|__ .Leads.SharedKernel
     |
-    |__ GraphQLCore
-
-    |
-    |__ BusinessServices
-
-    |
-    |__ DataAccess
+    |__ .Leads.Domain
+        |
+        |__ .Leads.Application
+            |
+            |__ .Leads.Infrastructure.Data
+            |
+            |__ .Leads.Web.GraphQL
+        |
+        |__ .Leads.Web
 ```
 
 ## Environment
 ```json
-"ConnectionStrings": {
+{
+  "Neo4J": {
     "BoltURL": "bolt://localhost:7687",
-    "Username": "neo4j",
-    "Password": "n4j",
-    "databaseName":  "neo4j" 
-  },
+    "Username": "lead-user",
+    "Password": "thumbeza-tech-l3ad5",
+    "databaseName": "leads"
+  }
+}
 ```
 
 ## Learning resources
-1. [GraphQL.NET](https://graphql-dotnet.github.io/)
-1. [GraphQL Authorization](https://github.com/graphql-dotnet/authorization)
-1. [Building GraphQL API](https://fullstackmark.com/post/17/building-a-graphql-api-with-aspnet-core-2-and-entity-framework-core)
 1. [How to GraphQL](https://www.howtographql.com/)
-1. [Neo4J .net driver](https://neo4j.com/developer/dotnet/)
-1. [NetCore 3.0 GraphQL](https://dev.to/dotnet/learn-how-you-can-use-graphql-in-net-core-and-c-4h96) 
-1. [GraphQL.NET + .NET Core](https://code-maze.com/graphql-aspnetcore-basics/)
+1. [Hot Chocolate](https://chillicream.com/docs/hotchocolate/v13/get-started-with-graphql-in-net-core)
+1. [Neo4J dotnet driver](https://neo4j.com/developer/dotnet/)
