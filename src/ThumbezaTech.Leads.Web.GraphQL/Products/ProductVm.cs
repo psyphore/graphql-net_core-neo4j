@@ -6,23 +6,21 @@ public sealed record ProductVm
 {
   public string Id { get; set; } = default!;
   public string Name { get; set; } = default!;
-  public decimal Value { get; set; } = default!;
+  public Money Value { get; set; } = default!;
   public List<string> Tags { get; set; } = new();
+  public string Sku { get; set; } = default!;
 
   public static explicit operator ProductVm(Product v) => new()
   {
     Id = v.Id,
     Name = v.Name,
-    Value = v.Value,
+    Value = v.Price,
     Tags = v.Tags.ToList()
   };
 
   public static implicit operator Product(ProductVm p)
-  {
-    var aggregate = new Product(p.Name, p.Value, p.Tags)
+    => new(p.Name, p.Value, p.Sku, p.Tags)
     {
       Id = p.Id
     };
-    return aggregate;
-  }
 }
