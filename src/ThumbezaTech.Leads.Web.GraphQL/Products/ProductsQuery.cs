@@ -4,6 +4,7 @@ using ThumbezaTech.Leads.Application.Products;
 
 namespace ThumbezaTech.Leads.Web.GraphQL.Products;
 
+[ExtendObjectType(OperationTypeNames.Query)]
 public sealed class ProductsQuery
 {
   [GraphQLName("products")]

@@ -14,9 +14,12 @@ public static class DependencyInjection
     services
         .AddGraphQLServer()
         .AddDefaultTransactionScopeHandler()
+        
+        .AddQueryType()
+        .AddTypeExtension<ProductsQuery>()
 
-        .AddQueryType<ProductsQuery>()
-        .AddMutationType<ProductsMutation>()
+        .AddMutationType()
+        .AddTypeExtension<ProductsMutation>()
 
         .AddFiltering()
         .AddSorting()
@@ -42,9 +45,9 @@ public static class DependencyInjection
       });
       endpoints.MapGet("/", context =>
           {
-          context.Response.Redirect("/graphql", true);
-          return Task.CompletedTask;
-        });
+            context.Response.Redirect("/graphql", true);
+            return Task.CompletedTask;
+          });
     });
 
     return app;
