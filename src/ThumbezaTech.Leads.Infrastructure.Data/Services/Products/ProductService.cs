@@ -3,7 +3,7 @@ using ThumbezaTech.Leads.Domain.ProductAggregate;
 
 namespace ThumbezaTech.Leads.Infrastructure.Data.Services.Products;
 
-public class ProductService : IProductService
+public sealed class ProductService : IProductService
 {
   private readonly IRepository<Product> _repository;
   private const string Label = nameof(Product);
