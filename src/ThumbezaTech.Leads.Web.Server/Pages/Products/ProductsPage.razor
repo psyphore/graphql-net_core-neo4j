@@ -1,0 +1,48 @@
+﻿@page "/products/list"
+@using ThumbezaTech.Leads.Web.Server.Features.Products;
+
+@inject ISender Sender
+@inject ProductState State
+
+@*https://blazor.radzen.com/get-started*@
+
+<section>
+    <div class="container-fluid">
+        <RadzenDataGrid @ref="DefaultGrid"
+                        AllowFiltering="true"
+                        AllowColumnResize="true"
+                        AllowAlternatingRows="false"
+                        FilterMode="FilterMode.Advanced"
+                        AllowSorting="true"
+                        PageSize="5"
+                        AllowPaging="true"
+                        PagerHorizontalAlign="HorizontalAlign.Left"
+                        ShowPagingSummary="true"
+                        Data="@State.Items"
+                        TItem="ProductVm"
+                        ColumnWidth="300px"
+                        LogicalFilterOperator="LogicalFilterOperator.Or">
+            <Columns>
+                <RadzenDataGridColumn TItem="ProductVm" Property="@nameof(ProductVm.Id)" Filterable="false" Title="ID" Frozen="false" TextAlign="TextAlign.Center" />
+                <RadzenDataGridColumn TItem="ProductVm" Property="@nameof(ProductVm.Name)" Filterable="true" Title="Name" Frozen="false" TextAlign="TextAlign.Center" />
+                <RadzenDataGridColumn TItem="ProductVm" Property="@nameof(ProductVm.Price)" Filterable="true" Title="Price" Frozen="false" TextAlign="TextAlign.Center" />
+                <RadzenDataGridColumn TItem="ProductVm" Property="@nameof(ProductVm.Sku)" Filterable="false" Title="SKU" Frozen="false" TextAlign="TextAlign.Center" />
+
+            </Columns>
+        </RadzenDataGrid>
+    </div>
+</section>
+
+@code
+{
+    RadzenDataGrid<ProductVm> DefaultGrid;
+
+    protected override Task OnInitializedAsync()
+    {
+        return Task.WhenAll(
+            base.OnInitializedAsync(),
+            Sender.Send(new GetProductQuery(1, 10), CancellationToken.None),
+            Task.CompletedTask
+        );
+    }
+}

@@ -4,7 +4,14 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>4b5a1f53-e2bf-4e98-8aab-7a7ca54d9e1b</UserSecretsId>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.0.1" />
+    <PackageReference Include="Radzen.Blazor" Version="4.7.8" />
+    <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ThumbezaTech.Leads.ClientLibrary\ThumbezaTech.Leads.ClientLibrary.csproj" />
