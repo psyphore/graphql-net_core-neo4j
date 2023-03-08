@@ -5,7 +5,7 @@ namespace ThumbezaTech.Leads.ClientLibrary;
 
 public static class DependencyInjection
 {
-  public static IServiceCollection AddClient(this IServiceCollection services, IConfigurationSection section)
+  public static IServiceCollection AddLeadsGraphQLClient(this IServiceCollection services, IConfigurationSection section)
   {
     ClientConfiguration config = new();
     section.Bind(config);
