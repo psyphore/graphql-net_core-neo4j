@@ -9,24 +9,20 @@
 <section>
     <div class="container-fluid">
         <RadzenDataGrid @ref="DefaultGrid"
-                        AllowFiltering="true"
-                        AllowColumnResize="true"
-                        AllowAlternatingRows="false"
-                        FilterMode="FilterMode.Advanced"
-                        AllowSorting="true"
-                        PageSize="5"
-                        AllowPaging="true"
-                        PagerHorizontalAlign="HorizontalAlign.Left"
-                        ShowPagingSummary="true"
                         Data="@State.Items"
                         TItem="ProductVm"
-                        ColumnWidth="300px"
-                        LogicalFilterOperator="LogicalFilterOperator.Or">
+                        AllowFiltering
+                        AllowSorting
+                        PageSize="10"
+                        AllowPaging
+                        PagerHorizontalAlign="HorizontalAlign.Left"
+                        AllowGrouping
+                        ShowPagingSummary>
             <Columns>
-                <RadzenDataGridColumn TItem="ProductVm" Property="@nameof(ProductVm.Id)" Filterable="false" Title="ID" Frozen="false" TextAlign="TextAlign.Center" />
-                <RadzenDataGridColumn TItem="ProductVm" Property="@nameof(ProductVm.Name)" Filterable="true" Title="Name" Frozen="false" TextAlign="TextAlign.Center" />
-                <RadzenDataGridColumn TItem="ProductVm" Property="@nameof(ProductVm.Price)" Filterable="true" Title="Price" Frozen="false" TextAlign="TextAlign.Center" />
-                <RadzenDataGridColumn TItem="ProductVm" Property="@nameof(ProductVm.Sku)" Filterable="false" Title="SKU" Frozen="false" TextAlign="TextAlign.Center" />
+                <RadzenDataGridColumn TItem="ProductVm" Property="@nameof(ProductVm.Id)" Title="ID" />
+                <RadzenDataGridColumn TItem="ProductVm" Property="@nameof(ProductVm.Name)" Title="Name" />
+                <RadzenDataGridColumn TItem="ProductVm" Property="@nameof(ProductVm.Price)" Title="Price" />
+                <RadzenDataGridColumn TItem="ProductVm" Property="@nameof(ProductVm.Sku)" Title="SKU" />
 
             </Columns>
         </RadzenDataGrid>
@@ -41,8 +37,7 @@
     {
         return Task.WhenAll(
             base.OnInitializedAsync(),
-            Sender.Send(new GetProductQuery(1, 10), CancellationToken.None),
-            Task.CompletedTask
+            Sender.Send(new GetProductQuery(1, 10), CancellationToken.None)
         );
     }
 }
