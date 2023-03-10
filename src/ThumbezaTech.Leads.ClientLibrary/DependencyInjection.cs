@@ -12,12 +12,13 @@ public static class DependencyInjection
 
     services.AddSingleton(config);
 
-    //services
-    //  .AddLeadsClient()
-    //  .ConfigureHttpClient(client =>
-    //  {
-    //    client.BaseAddress = new Uri(config.Url);
-    //  });
+    services
+      .AddLeadsClient(StrawberryShake.ExecutionStrategy.CacheFirst)
+      .ConfigureHttpClient(client =>
+      {
+        client.BaseAddress = new Uri(config.Url);
+        client.DefaultRequestHeaders.Add("X-Client-Key", config.Key);
+      });
 
     return services;
   }
@@ -25,6 +26,6 @@ public static class DependencyInjection
 
 public sealed record ClientConfiguration
 {
-  public string Url { get; set; }
-  public string Key { get; set; }
+  public string Url { get; set; } = default!;
+  public string Key { get; set; } = default!;
 }

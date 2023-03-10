@@ -5,7 +5,6 @@
     "strawberryShake": {
       "name": "LeadsClient",
       "url": "https://localhost:7234/graphql/",
-      "dependencyInjection": true,
       "records": {
         "inputs": false,
         "entities": false

@@ -1,0 +1,151 @@
+﻿schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  "Search for products"
+  search_products(query: String! pageNumber: Int = 1 pageSize: Int = 50 "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: ProductVmFilterInput): Search_productsConnection
+  "Get all products"
+  list_products("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: ProductVmFilterInput): List_productsConnection
+  "Get product by Id"
+  get_product(id: String!): ProductVm!
+}
+
+type Mutation {
+  "Add a single product"
+  add_product(product: ProductVmInput!): String!
+  "Update a single product"
+  update_product(product: ProductVmInput!): String!
+}
+
+input ProductVmFilterInput {
+  and: [ProductVmFilterInput!]
+  or: [ProductVmFilterInput!]
+  id: StringOperationFilterInput
+  name: StringOperationFilterInput
+  price: MoneyFilterInput
+  tags: ListStringOperationFilterInput
+  sku: StringOperationFilterInput
+}
+
+"A connection to a list of items."
+type Search_productsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [Search_productsEdge!]
+  "A flattened list of the nodes."
+  nodes: [ProductVm!]
+}
+
+"A connection to a list of items."
+type List_productsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [List_productsEdge!]
+  "A flattened list of the nodes."
+  nodes: [ProductVm!]
+}
+
+input StringOperationFilterInput {
+  and: [StringOperationFilterInput!]
+  or: [StringOperationFilterInput!]
+  eq: String
+  neq: String
+  contains: String
+  ncontains: String
+  in: [String]
+  nin: [String]
+  startsWith: String
+  nstartsWith: String
+  endsWith: String
+  nendsWith: String
+}
+
+input MoneyFilterInput {
+  and: [MoneyFilterInput!]
+  or: [MoneyFilterInput!]
+  currency: StringOperationFilterInput
+  amount: DecimalOperationFilterInput
+}
+
+input ListStringOperationFilterInput {
+  all: StringOperationFilterInput
+  none: StringOperationFilterInput
+  some: StringOperationFilterInput
+  any: Boolean
+}
+
+"Information about pagination in a connection."
+type PageInfo {
+  "Indicates whether more edges exist following the set defined by the clients arguments."
+  hasNextPage: Boolean!
+  "Indicates whether more edges exist prior the set defined by the clients arguments."
+  hasPreviousPage: Boolean!
+  "When paginating backwards, the cursor to continue."
+  startCursor: String
+  "When paginating forwards, the cursor to continue."
+  endCursor: String
+}
+
+type ProductVm {
+  id: String!
+  name: String!
+  price: Money
+  tags: [String!]!
+  sku: String!
+}
+
+"An edge in a connection."
+type Search_productsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: ProductVm!
+}
+
+"An edge in a connection."
+type List_productsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: ProductVm!
+}
+
+input DecimalOperationFilterInput {
+  eq: Decimal
+  neq: Decimal
+  in: [Decimal]
+  nin: [Decimal]
+  gt: Decimal
+  ngt: Decimal
+  gte: Decimal
+  ngte: Decimal
+  lt: Decimal
+  nlt: Decimal
+  lte: Decimal
+  nlte: Decimal
+}
+
+"The built-in `Decimal` scalar type."
+scalar Decimal
+
+type Money {
+  currency: String!
+  amount: Decimal!
+}
+
+input ProductVmInput {
+  id: String!
+  name: String!
+  price: MoneyInput
+  tags: [String!]!
+  sku: String!
+}
+
+input MoneyInput {
+  currency: String!
+  amount: Decimal!
+}
