@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using ThumbezaTech.Leads.Web.GraphQL.Orders;
 using ThumbezaTech.Leads.Web.GraphQL.Products;
 
 namespace ThumbezaTech.Leads.Web.GraphQL;
@@ -20,6 +21,9 @@ public static class DependencyInjection
 
         .AddMutationType()
         .AddTypeExtension<ProductsMutation>()
+
+        //.AddSubscriptionType()
+        //.AddTypeExtension<OrderSubscription>()
 
         .AddFiltering()
         .AddSorting()
