@@ -1,25 +1,38 @@
 ﻿using Ardalis.GuardClauses;
 
+using Newtonsoft.Json;
+
 using ThumbezaTech.Leads.SharedKernel.Interfaces;
 
 namespace ThumbezaTech.Leads.Domain.ProductAggregate;
 
 public sealed class Product : BaseEntity, IAggregateRoot
 {
-  private readonly HashSet<string> _tags = new();
   public string Name { get; private set; } = default!;
+
   public Money Price { get; private set; } = default!;
 
-
-  public IEnumerable<string> Tags => _tags.ToList().AsReadOnly();
+  public IReadOnlySet<string> Tags { get; private set; } //=> _tags.ToList().AsReadOnly();
 
   public Sku Sku { get; private set; } = default!;
 
-  public Product(string name, Money value, string sku, List<string> tags)
+  internal Product() { }
+
+  public Product(string name, Money price, string sku, IEnumerable<string> tags)
   {
     Name = Guard.Against.NullOrEmpty(name, nameof(name));
-    Price = Guard.Against.Null(value, nameof(value));
-    _tags = Guard.Against.NullOrInvalidInput(tags, nameof(tags), items => items.Count != 0).ToHashSet();
+    Price = Guard.Against.Null(price, nameof(price));
+    Tags = Guard.Against.NullOrInvalidInput(tags, nameof(tags), items => items.Count() != 0).ToHashSet();
+    Sku = Sku.Create(sku);
+
+  }
+
+  [JsonConstructor]
+  public Product(string name, string currency, decimal amount, string sku, IEnumerable<string> tags)
+  {
+    Name = Guard.Against.NullOrEmpty(name, nameof(name));
+    Tags = Guard.Against.NullOrInvalidInput(tags, nameof(tags), items => items.Count() != 0).ToHashSet();
+    Price = Money.Create(currency, amount);
     Sku = Sku.Create(sku);
   }
 }
