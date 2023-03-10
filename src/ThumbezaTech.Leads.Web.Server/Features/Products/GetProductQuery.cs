@@ -1,4 +1,5 @@
 ﻿namespace ThumbezaTech.Leads.Web.Server.Features.Products;
+
 public record GetProductQuery(int Page, int Size) : IRequest;
 
 internal sealed class GetProductQueryHandler : IRequestHandler<GetProductQuery>
