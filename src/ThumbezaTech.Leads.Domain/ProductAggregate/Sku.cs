@@ -3,12 +3,12 @@
 namespace ThumbezaTech.Leads.Domain.ProductAggregate;
 
 // Stock Keeping Unit
-public record Sku
+public sealed record Sku
 {
-  private const int DefaultSkuLength = 15;
+  private const int DefaultSkuLength = 16;
   public string Value { get; init; }
 
-  private Sku(string value) => Value = value;
+  internal Sku(string value) => Value = value;
 
   public static Sku Create(string value)
   {
