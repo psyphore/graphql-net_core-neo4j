@@ -17,7 +17,12 @@ public static class DependencyInjection
 
     services
         .AddSingleton(sp => conf)
-        .AddSingleton(sp => GraphDatabase.Driver(conf.BoltURL, AuthTokens.Basic(conf.Username, conf.Password)));
+        .AddSingleton(sp => GraphDatabase.Driver(new Uri(conf.BoltURL), AuthTokens.Basic(conf.Username, conf.Password), builder =>
+          builder
+          .WithConnectionIdleTimeout(TimeSpan.FromSeconds(30))
+          .WithConnectionTimeout(TimeSpan.FromSeconds(120))
+          .WithEncryptionLevel(EncryptionLevel.None)
+        ));
 
     services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 

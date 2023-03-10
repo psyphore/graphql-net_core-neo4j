@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 
 using Neo4j.Driver;
+using Neo4j.Driver.Experimental;
 
 using ThumbezaTech.Leads.SharedKernel.Interfaces;
 
@@ -25,90 +26,90 @@ public sealed class Repository<T> : IRepository<T> where T : class, IAggregateRo
   public async ValueTask CreateIndicesAsync(string[] labels)
   {
     labels = !labels.Any() ? new[] { typeof(T).Name.ToString() } : labels;
-
-    var queries = labels.Select(l => string.Format("CREATE INDEX ON :{0}(id)", l)).ToArray();
-    var session = GetSession(AccessMode.Write);
-    foreach (var query in queries) await session.RunAsync(query);
-
-    await session.CloseAsync();
+    foreach (var query in labels.Select(l => string.Format("CREATE INDEX ON :{0}(id)", l)))
+      await _driver.ExecutableQuery(query).ExecuteAsync();
   }
 
-  private IAsyncSession GetSession(AccessMode mode) => _driver.AsyncSession(o => o.WithDatabase(_connection.DatabaseName).WithDefaultAccessMode(mode));
+  private IAsyncSession GetSession(AccessMode mode) 
+    => _driver.AsyncSession(o => o.WithDatabase(_connection.DatabaseName).WithDefaultAccessMode(mode));
 
   public async ValueTask<T> Read<T>(string query, IDictionary<string, object> parameters, CancellationToken cancellationToken = default)
   {
-    var x = await ProcessTransactionAsync(GetSession(AccessMode.Read), query, parameters, cancellationToken);
+    await using var session = GetSession(AccessMode.Read);
+    var x = await ProcessTransactionAsync(session, query, parameters, cancellationToken);
     return x.As<T>();
   }
 
-  public async ValueTask<IList<IRecord>> Read(string query, IDictionary<string, object> parameters, CancellationToken cancellationToken = default) =>
-      await ProcessAsync(GetSession(AccessMode.Read), query, parameters, cancellationToken);
+  public async ValueTask<IReadOnlyList<IRecord>> Read(string query, IDictionary<string, object> parameters, CancellationToken cancellationToken = default)
+  {
+    await using var session = GetSession(AccessMode.Read);
+    return await ProcessAsync(session, query, parameters, cancellationToken);
+  }
 
   public async ValueTask<T> Write<T>(string query, object parameters, CancellationToken cancellationToken = default)
   {
-    var x = await ProcessWriteTransactionAsync(GetSession(AccessMode.Write), query, parameters, cancellationToken);
+    await using var session = GetSession(AccessMode.Write);
+    var x = await ProcessWriteTransactionAsync(session, query, parameters, cancellationToken);
     return x.As<T>();
   }
 
-  public async ValueTask<IList<IRecord>> Write(string query, IDictionary<string, object> parameters, CancellationToken cancellationToken = default) =>
-      await ProcessWriteTransactionAsync(GetSession(AccessMode.Write), query, parameters, cancellationToken);
+  public async ValueTask<IReadOnlyList<IRecord>> Write(string query, IDictionary<string, object> parameters, CancellationToken cancellationToken = default)
+  {
+    await using var session = GetSession(AccessMode.Write);
+    return await ProcessWriteTransactionAsync(session, query, parameters, cancellationToken);
+  }
 
-  private async ValueTask<List<IRecord>> ProcessAsync(IAsyncSession session, string query, IDictionary<string, object> parameters, CancellationToken cancellationToken = default)
+  private async ValueTask<IReadOnlyList<IRecord>> ProcessAsync(IAsyncSession session, string query, IDictionary<string, object> parameters, CancellationToken cancellationToken = default)
   {
     try
     {
-      var cursor = await session.RunAsync(query, parameters);
-      return await cursor.ToListAsync(cancellationToken: cancellationToken);
+      var content = await session.ExecuteReadAsync(async tx =>
+      {
+        var cursor = await tx.RunAsync(query, parameters);
+        return await cursor.ToListAsync(cancellationToken);
+      });
+      return content;
     }
     catch (Exception e)
     {
       _logger.LogError(e, "Exception occurred while processing");
       throw;
     }
-    finally
-    {
-      await session.CloseAsync();
-    }
   }
 
-  private async ValueTask<List<IRecord>> ProcessTransactionAsync(IAsyncSession session, string query, IDictionary<string, object> parameters, CancellationToken cancellationToken = default)
+  private async ValueTask<IReadOnlyList<IRecord>> ProcessTransactionAsync(IAsyncSession session, string query, IDictionary<string, object> parameters, CancellationToken cancellationToken = default)
   {
     try
     {
-      var trx = await session.ExecuteReadAsync(tx => tx.RunAsync(query, parameters));
-      return await trx.ToListAsync(cancellationToken: cancellationToken);
+      var content = await session.ExecuteReadAsync(async tx =>
+      {
+        var cursor = await tx.RunAsync(query, parameters);
+        return await cursor.ToListAsync(cancellationToken);
+      });
+      return content;
     }
     catch (Exception e)
     {
       _logger.LogError(e, "Exception occurred while Processing a transaction");
       throw;
     }
-    finally
-    {
-      await session.CloseAsync();
-    }
   }
 
-  private async ValueTask<List<IRecord>> ProcessWriteTransactionAsync(IAsyncSession session, string query, object parameters, CancellationToken cancellationToken = default)
+  private async ValueTask<IReadOnlyList<IRecord>> ProcessWriteTransactionAsync(IAsyncSession session, string query, object parameters, CancellationToken cancellationToken = default)
   {
     try
     {
-      var records = await session.ExecuteWriteAsync(tx =>
+      var content = await session.ExecuteReadAsync(async tx =>
       {
-        var cursor = tx.RunAsync(query, parameters);
-        var r = cursor.Result.ToListAsync(cancellationToken: cancellationToken);
-        return r;
+        var cursor = await tx.RunAsync(query, parameters);
+        return await cursor.ToListAsync(cancellationToken);
       });
-      return records;
+      return content;
     }
     catch (Exception e)
     {
       _logger.LogError(e, "Exception occurred while Writing a transaction");
       throw;
-    }
-    finally
-    {
-      await session.CloseAsync();
     }
   }
 }
