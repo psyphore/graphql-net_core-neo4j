@@ -2,7 +2,7 @@
 
 namespace ThumbezaTech.Leads.Application.Products;
 
-public sealed record GetProductsQuery(string Query, int Page = 1, int Size = 10) : IQuery<Result<IEnumerable<Product>>>;
+public sealed record GetProductsQuery(int Page = 1, int Size = 10) : IQuery<Result<IEnumerable<Product>>>;
 
 internal sealed class GetProductQueryHandler : IQueryHandler<GetProductsQuery, Result<IEnumerable<Product>>>
 {
@@ -12,13 +12,12 @@ internal sealed class GetProductQueryHandler : IQueryHandler<GetProductsQuery, R
 
   public ValueTask<Result<IEnumerable<Product>>> Handle(GetProductsQuery query, CancellationToken cancellationToken)
   {
-    var (Query, Size, Page) = query;
+    var (Size, Page) = query;
     var parameter = new Dictionary<string, object>
         {
             { "offset", Page },
-            { "first", Size },
-            { "query", Query },
+            { "first", Size }
         };
-    return _service.QueryProducts(parameter, cancellationToken);
+    return _service.GetProducts(parameter, cancellationToken);
   }
 }

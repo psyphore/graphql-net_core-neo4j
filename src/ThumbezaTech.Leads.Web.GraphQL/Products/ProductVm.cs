@@ -6,7 +6,7 @@ public sealed record ProductVm
 {
   public string Id { get; set; } = default!;
   public string Name { get; set; } = default!;
-  public Money Value { get; set; } = default!;
+  public Money? Price { get; set; } = default!;
   public List<string> Tags { get; set; } = new();
   public string Sku { get; set; } = default!;
 
@@ -14,12 +14,13 @@ public sealed record ProductVm
   {
     Id = v.Id,
     Name = v.Name,
-    Value = v.Price,
-    Tags = v.Tags.ToList()
+    Price = v.Price,
+    Tags = v.Tags.ToList(),
+    Sku = v.Sku.Value
   };
 
   public static implicit operator Product(ProductVm p)
-    => new(p.Name, p.Value, p.Sku, p.Tags)
+    => new(p.Name, p.Price, p.Sku, p.Tags)
     {
       Id = p.Id
     };

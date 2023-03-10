@@ -2,33 +2,49 @@
 
 public static class Queries
 {
-    public static readonly string GetOne = nameof(GetOne);
-    public static readonly string GetAll = nameof(GetAll);
-    public static readonly string Search = nameof(Search);
+  public static readonly string GetOne = nameof(GetOne);
+  public static readonly string GetAll = nameof(GetAll);
+  public static readonly string Search = nameof(Search);
 
-    public static Dictionary<string, string> Options => new()
+  public static Dictionary<string, string> Options => new()
     {
         { GetOne, @"
-                    MATCH (p:Product{id:$id}) 
-                    RETURN p AS product
+                    MATCH (p:Product{id:$id})<--(m:Money { active: true })
+                    RETURN p { 
+                          .id,
+                          .name,
+                          .sku,
+                          tags: [(p)<--(t:Tag) | t.value], 
+                          currency: m.currency,
+                          amount: m.amount  
+                          } AS Product
                 " },
         { GetAll, @"
-                    MATCH (p:Product) 
-                    RETURN p AS products
-                    ORDER BY p.value ASC
-                    SKIP $offset
-                    LIMIT $first
+                    MATCH (p:Product)<--(m:Money { active: true }) 
+                    RETURN p { 
+                          .id,
+                          .name,
+                          .sku,
+                          tags: [(p)<--(t:Tag) | t.value], 
+                          currency: m.currency,
+                          amount: m.amount  
+                          } AS Products
+                    ORDER BY p.name ASC, m.amount ASC
                 " },
         { Search, @"
-                    OPTIONAL MATCH (p:Product)
-                    WHERE (p.value <= toFloat($query) OR toFloat($query) >= p.value)
-                        OR p.name =~ $query
-                        OR p.tags IN [$query]
-                    WITH p
-                    RETURN p
-                    ORDER BY p.value ASC
-                    SKIP $offset
-                    LIMIT $first
+                    OPTIONAL MATCH (p:Product)<--(m:Money { active: true })
+                    WHERE (m.amount <= toFloat($query) AND m.amount >= toFloat($query))
+                      OR p.name =~ '(?i)$query*'
+                      OR p.name CONTAINS $query
+                    RETURN p { 
+                          .id,
+                          .name,
+                          .sku,
+                          tags: [(p)<--(t:Tag) | t.value], 
+                          currency: m.currency,
+                          amount: m.amount  
+                          } AS Products
+                    ORDER BY p.name ASC, m.amount ASC
                 " },
     };
 }
