@@ -1,26 +1,51 @@
 ﻿
+using System.Reflection;
+
 using Neo4j.Driver;
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace ThumbezaTech.Leads.Infrastructure.Data.Common.Serializer;
 
 public static class ParameterSerializer
 {
-  public static IList<Dictionary<string, object>> ToDictionary<TSourceType>(IList<TSourceType> source)
+  private static readonly JsonSerializerSettings settings = new()
   {
-    var settings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
+    ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
+    NullValueHandling = NullValueHandling.Ignore,
+    DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate,
+    PreserveReferencesHandling = PreserveReferencesHandling.All,
+    MissingMemberHandling = MissingMemberHandling.Ignore
+  };
 
-    string json = JsonConvert.SerializeObject(source, settings);
+  private static readonly JsonSerializerSettings deserializerSettings = new()
+  {
+    ContractResolver = new PrivateResolver(),
+    ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
+    NullValueHandling = NullValueHandling.Include,
+    DefaultValueHandling = DefaultValueHandling.Include,
+    PreserveReferencesHandling = PreserveReferencesHandling.All,
+  };
 
-    return JsonConvert.DeserializeObject<IList<Dictionary<string, object>>>(json, new CustomDictionaryConverter());
+  internal sealed class PrivateResolver : DefaultContractResolver
+  {
+    protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+    {
+      var prop = base.CreateProperty(member, memberSerialization);
+      if (!prop.Writable)
+      {
+        var property = member as PropertyInfo;
+        var hasPrivateSetter = property?.GetSetMethod(true) != null;
+        prop.Writable = hasPrivateSetter;
+      }
+      return prop;
+    }
   }
 
-  public static T ProcessRecords<T>(this IRecord record, string label)
-  {
-    var serialized = JsonConvert.SerializeObject(record[label]);
-    return JsonConvert.DeserializeObject<T>(serialized);
-  }
+  public static IList<Dictionary<string, object>>? ToDictionary<TSourceType>(IList<TSourceType> source) => JsonConvert.DeserializeObject<IList<Dictionary<string, object>>>(JsonConvert.SerializeObject(source, settings), new CustomDictionaryConverter());
+
+  public static T? ProcessRecords<T>(this IRecord record, string label) => JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(record[label], settings), deserializerSettings);
 }
 
 /// <summary>
@@ -137,4 +162,21 @@ public sealed class NodePaging
 
   [JsonProperty("offset")]
   public int Offset { get; set; }
+}
+
+public static class TypeExtensions
+{
+  public static bool HasSetter(this PropertyInfo property)
+  {
+    //In this way we can check for private setters in base classes
+    return property.DeclaringType.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
+                                 .Any(m => m.Name == "set_" + property.Name);
+  }
+
+  public static bool HasGetter(this PropertyInfo property)
+  {
+    //In this way we can check for private getters in base classes
+    return property.DeclaringType.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
+                                 .Any(m => m.Name == "get_" + property.Name);
+  }
 }
