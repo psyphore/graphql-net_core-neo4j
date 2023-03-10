@@ -38,6 +38,8 @@ net-core-graphql
 ```
 
 ## Learning resources
+
 1. [How to GraphQL](https://www.howtographql.com/)
 1. [Hot Chocolate](https://chillicream.com/docs/hotchocolate/v13/get-started-with-graphql-in-net-core)
 1. [Neo4J dotnet driver](https://neo4j.com/developer/dotnet/)
+1. [Awesome Blazor Browser Resources](https://jsakamoto.github.io/awesome-blazor-browser/?k=)
