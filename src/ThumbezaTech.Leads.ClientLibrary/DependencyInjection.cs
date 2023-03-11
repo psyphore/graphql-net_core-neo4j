@@ -18,7 +18,9 @@ public static class DependencyInjection
       {
         client.BaseAddress = new Uri(config.Url);
         client.DefaultRequestHeaders.Add("X-Client-Key", config.Key);
-      });
+      })
+      .ConfigureWebSocketClient(client => client.Uri = new Uri(config.Ws))
+      ;
 
     return services;
   }
@@ -26,6 +28,8 @@ public static class DependencyInjection
 
 public sealed record ClientConfiguration
 {
-  public string Url { get; set; } = default!;
+  public string Url { get; set; } = default!;  
+  public string Ws { get; set; } = default!;
+
   public string Key { get; set; } = default!;
 }
