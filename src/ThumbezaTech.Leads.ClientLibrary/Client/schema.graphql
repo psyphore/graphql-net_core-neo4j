@@ -1,6 +1,7 @@
 ﻿schema {
   query: Query
   mutation: Mutation
+  subscription: Subscription
 }
 
 type Query {
@@ -10,13 +11,24 @@ type Query {
   list_products("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: ProductVmFilterInput): List_productsConnection
   "Get product by Id"
   get_product(id: String!): ProductVm!
+  "Get all orders"
+  list_orders("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: OrderVmFilterInput): List_ordersConnection
+  "Get order by id"
+  get_order(id: String!): OrderVm!
 }
 
 type Mutation {
   "Add a single product"
-  add_product(product: ProductVmInput!): String!
+  add_product(product: ProductVmInput! order: OrderVmInput!): String!
   "Update a single product"
-  update_product(product: ProductVmInput!): String!
+  update_product(product: ProductVmInput! order: OrderVmInput!): String!
+}
+
+type Subscription {
+  "published product subscription"
+  product_subs: ProductVm!
+  "updated order subscription"
+  order_subs: OrderVm!
 }
 
 input ProductVmFilterInput {
@@ -47,6 +59,24 @@ type List_productsConnection {
   edges: [List_productsEdge!]
   "A flattened list of the nodes."
   nodes: [ProductVm!]
+}
+
+input OrderVmFilterInput {
+  and: [OrderVmFilterInput!]
+  or: [OrderVmFilterInput!]
+  id: StringOperationFilterInput
+  customerId: StringOperationFilterInput
+  lineItems: ListFilterInputTypeOfLineItemVmFilterInput
+}
+
+"A connection to a list of items."
+type List_ordersConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [List_ordersEdge!]
+  "A flattened list of the nodes."
+  nodes: [OrderVm!]
 }
 
 input StringOperationFilterInput {
@@ -114,6 +144,27 @@ type List_productsEdge {
   node: ProductVm!
 }
 
+input ListFilterInputTypeOfLineItemVmFilterInput {
+  all: LineItemVmFilterInput
+  none: LineItemVmFilterInput
+  some: LineItemVmFilterInput
+  any: Boolean
+}
+
+type OrderVm {
+  id: String!
+  customerId: String!
+  lineItems: [LineItemVm!]!
+}
+
+"An edge in a connection."
+type List_ordersEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: OrderVm!
+}
+
 input DecimalOperationFilterInput {
   eq: Decimal
   neq: Decimal
@@ -129,12 +180,21 @@ input DecimalOperationFilterInput {
   nlte: Decimal
 }
 
+input LineItemVmFilterInput {
+  and: [LineItemVmFilterInput!]
+  or: [LineItemVmFilterInput!]
+  id: StringOperationFilterInput
+  productId: StringOperationFilterInput
+  value: MoneyFilterInput
+}
+
 "The built-in `Decimal` scalar type."
 scalar Decimal
 
-type Money {
-  currency: String!
-  amount: Decimal!
+input OrderVmInput {
+  id: String!
+  customerId: String!
+  lineItems: [LineItemVmInput!]!
 }
 
 input ProductVmInput {
@@ -145,7 +205,24 @@ input ProductVmInput {
   sku: String!
 }
 
+type Money {
+  currency: String!
+  amount: Decimal!
+}
+
+type LineItemVm {
+  id: String!
+  productId: String!
+  value: Money!
+}
+
 input MoneyInput {
   currency: String!
   amount: Decimal!
+}
+
+input LineItemVmInput {
+  id: String!
+  productId: String!
+  value: MoneyInput!
 }
