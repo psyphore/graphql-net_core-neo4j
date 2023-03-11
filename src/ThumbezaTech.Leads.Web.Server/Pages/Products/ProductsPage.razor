@@ -1,6 +1,7 @@
 ﻿@page "/products/list"
 @using ThumbezaTech.Leads.Web.Server.Features.Products;
 
+
 @inject ISender Sender
 @inject ProductState State
 
@@ -8,36 +9,40 @@
 
 <section>
     <div class="container-fluid">
-        <RadzenDataGrid @ref="DefaultGrid"
-                        Data="@State.Items"
-                        TItem="ProductVm"
-                        AllowFiltering
-                        AllowSorting
-                        PageSize="10"
-                        AllowPaging
-                        PagerHorizontalAlign="HorizontalAlign.Left"
-                        AllowGrouping
-                        ShowPagingSummary>
-            <Columns>
-                <RadzenDataGridColumn TItem="ProductVm" Property="@nameof(ProductVm.Id)" Title="ID" />
-                <RadzenDataGridColumn TItem="ProductVm" Property="@nameof(ProductVm.Name)" Title="Name" />
-                <RadzenDataGridColumn TItem="ProductVm" Property="@nameof(ProductVm.Price)" Title="Price" />
-                <RadzenDataGridColumn TItem="ProductVm" Property="@nameof(ProductVm.Sku)" Title="SKU" />
+        <UseGet_products Context="product">
 
-            </Columns>
-        </RadzenDataGrid>
+            <LoadingContent>
+                <span class="h5">Fetching Products... Please wait</span>
+            </LoadingContent>
+
+            <ErrorContent>
+                <p class="h5">Something went wrong...</p>
+                <p class="text-warning">@product.First().Message</p>
+            </ErrorContent>
+
+            <ChildContent>
+                <RadzenDataGrid Data="@product.List_products.Nodes"
+                                TItem="IGet_products_List_products_Nodes"
+                                AllowFiltering
+                                AllowSorting
+                                PageSize="10"
+                                AllowPaging
+                                PagerHorizontalAlign="HorizontalAlign.Left"
+                                AllowGrouping
+                                ShowPagingSummary>
+                    <Columns>
+                        <RadzenDataGridColumn TItem="IGet_products_List_products_Nodes" Property="@nameof(IGet_products_List_products_Nodes.Id)" Title="ID" />
+                        <RadzenDataGridColumn TItem="IGet_products_List_products_Nodes" Property="@nameof(IGet_products_List_products_Nodes.Name)" Title="Name" />
+                        <RadzenDataGridColumn TItem="IGet_products_List_products_Nodes" Title="Price">
+                            <Template Context="item">
+                                <span>@($"{item.Price.Currency} {item.Price.Amount:C}")</span>
+                            </Template>
+                            </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="IGet_products_List_products_Nodes" Property="@nameof(IGet_products_List_products_Nodes.Sku)" Title="SKU" />
+
+                    </Columns>
+                </RadzenDataGrid>
+            </ChildContent>
+        </UseGet_products>
     </div>
 </section>
-
-@code
-{
-    RadzenDataGrid<ProductVm> DefaultGrid;
-
-    protected override Task OnInitializedAsync()
-    {
-        return Task.WhenAll(
-            base.OnInitializedAsync(),
-            Sender.Send(new GetProductQuery(1, 10), CancellationToken.None)
-        );
-    }
-}
