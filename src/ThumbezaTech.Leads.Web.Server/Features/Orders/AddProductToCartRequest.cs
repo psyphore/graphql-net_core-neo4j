@@ -1,7 +1,5 @@
-﻿using ThumbezaTech.Leads.Web.Server.Features.Products;
-
-namespace ThumbezaTech.Leads.Web.Server.Features.Orders;
-public sealed record AddProductToCartRequest(ProductVm Item) : IRequest;
+﻿namespace ThumbezaTech.Leads.Web.Server.Features.Orders;
+public sealed record AddProductToCartRequest(IGet_products_List_products_Nodes Item) : IRequest;
 
 internal sealed class AddProductToCartRequestHandler : IRequestHandler<AddProductToCartRequest>
 {
@@ -20,7 +18,7 @@ internal sealed class AddProductToCartRequestHandler : IRequestHandler<AddProduc
     try
     {
       await Task.Delay(500, cancellationToken);
-      _state.SetStateItems(new[] { new OrderVm(Guid.NewGuid().ToString(), request.Item.Id, request.Item.Sku, request.Item.Price) });
+      _state.SetStateItems(new[] { new OrderVm(Guid.NewGuid().ToString(), request.Item.Id, request.Item.Sku, request.Item.Price.Amount) });
     }
     catch (Exception e)
     {
