@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
+using StackExchange.Redis;
 
 using ThumbezaTech.Leads.Web.GraphQL.Orders;
 using ThumbezaTech.Leads.Web.GraphQL.Products;
@@ -15,15 +18,23 @@ public static class DependencyInjection
     services
         .AddGraphQLServer()
         .AddDefaultTransactionScopeHandler()
-        
+
         .AddQueryType()
         .AddTypeExtension<ProductsQuery>()
+        .AddTypeExtension<OrderQuery>()
 
         .AddMutationType()
         .AddTypeExtension<ProductsMutation>()
+        .AddTypeExtension<OrderMutation>()
 
-        //.AddSubscriptionType()
-        //.AddTypeExtension<OrderSubscription>()
+        .AddSubscriptionType()
+        .AddRedisSubscriptions((sp) =>
+        {
+          var config = sp.GetRequiredService<IConfiguration>();
+          return ConnectionMultiplexer.Connect($"{config["Redis:Host"]}:{config["Redis:Port"]}");
+        })
+        .AddTypeExtension<ProductSubscription>()
+        .AddTypeExtension<OrderSubscription>()
 
         .AddFiltering()
         .AddSorting()
