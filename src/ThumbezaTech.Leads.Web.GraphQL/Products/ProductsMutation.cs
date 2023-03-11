@@ -1,4 +1,6 @@
-﻿using Mediator;
+﻿using HotChocolate.Subscriptions;
+
+using Mediator;
 
 using ThumbezaTech.Leads.Application.Products;
 using ThumbezaTech.Leads.Domain.ProductAggregate;
@@ -12,26 +14,35 @@ public sealed class ProductsMutation
   [GraphQLDescription("Add a single product")]
   public async Task<string> AddProduct(
       [Service] ISender Sender,
+      [Service] ITopicEventSender topicSender,
       [GraphQLNonNullType] ProductVm product,
       CancellationToken cancellationToken = default)
   {
     var result = await Sender.Send(new AddProductCommand((Product)product), cancellationToken);
-    return result.IsSuccess
-      ? $"{result.Status}"
-      : string.Join("; ", result.Errors);
+    if (!result.IsSuccess)
+    {
+      return string.Join("; ", result.Errors);
+    }
+    await topicSender.SendAsync("ProuctPublishedTopic", product, cancellationToken);
+    return $"{result.Status}";
   }
 
   [GraphQLName("update_product")]
   [GraphQLDescription("Update a single product")]
   public async Task<string> UpdateProduct(
       [Service] ISender Sender,
+      [Service] ITopicEventSender topicSender,
       [GraphQLNonNullType] ProductVm product,
       CancellationToken cancellationToken = default)
   {
     var result = await Sender.Send(new UpdateProductCommand((Product)product), cancellationToken);
-    return result.IsSuccess
-      ? product.Id
-      : string.Join("; ", result.Errors);
+    if (!result.IsSuccess)
+    {
+      return string.Join("; ", result.Errors);
+    }
+
+    await topicSender.SendAsync("ProuctPublishedTopic", product, cancellationToken);
+    return product.Id;
   }
 }
 
