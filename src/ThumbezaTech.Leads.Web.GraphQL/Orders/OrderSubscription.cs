@@ -4,8 +4,8 @@
 public sealed class OrderSubscription
 {
   [Subscribe]
-  [Topic]
-  public Task<OrderVm> OnOrderUpdatedAsync(
-    [EventMessage] string orderId,
-    CancellationToken cancellationToken) => null!;
+  [Topic("OrderPublishedTopic")]
+  [GraphQLName("order_subs")]
+  [GraphQLDescription("updated order subscription")]
+  public OrderVm OnOrderUpdatedAsync([EventMessage] OrderVm order) => order;
 }
