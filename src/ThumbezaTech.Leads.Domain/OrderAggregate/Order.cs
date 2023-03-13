@@ -5,18 +5,18 @@ using ThumbezaTech.Leads.SharedKernel.Interfaces;
 namespace ThumbezaTech.Leads.Domain.OrderAggregate;
 public sealed class Order : BaseEntity, IAggregateRoot
 {
-  private Order() { }
+  internal Order() { }
 
   private readonly HashSet<LineItem> _lineItems = new();
   public new string Id { get; private set; }
-  public string CustomerId { get; private set; }
+  public Lead Customer { get; private set; }
 
   public static Order Create(Lead customer)
   {
     Order order = new()
     {
       Id = Guid.NewGuid().ToString(),
-      CustomerId = customer.Id,
+      Customer = customer,
     };
     return order;
   }
