@@ -7,23 +7,23 @@ public sealed class Order : BaseEntity, IAggregateRoot
 {
   internal Order() { }
 
-  private readonly HashSet<LineItem> _lineItems = new();
+  public readonly HashSet<LineItem> LineItems = new();
   public new string Id { get; private set; }
-  public Lead Customer { get; private set; }
+  public Lead? Customer { get; private set; }
 
-  public static Order Create(Lead customer)
+  public static Order Create(Lead? customer)
   {
     Order order = new()
     {
       Id = Guid.NewGuid().ToString(),
-      Customer = customer,
+      Customer = customer ?? default!,
     };
     return order;
   }
 
-  public void Add(Product product)
+  public void AddLineItem(Product product, Money value)
   {
-    LineItem lineItem = new(Guid.NewGuid().ToString(), Id, product.Id, product.Price);
-    _lineItems.Add(lineItem);
+    LineItem lineItem = new(Guid.NewGuid().ToString(), Id, product.Id, value.Currency, value.Amount);
+    LineItems.Add(lineItem);
   }
 }

@@ -9,11 +9,11 @@ public sealed class LineItem : BaseEntity
   public string ProductId { get; private set; }
   public Money Price { get; private set; }
 
-  internal LineItem(string id, string orderId, string productId, Money price)
+  internal LineItem(string id, string orderId, string productId, string currency, decimal amount)
   {
     Id = id;
     OrderId = orderId;
     ProductId = productId;
-    Price = price;
+    Price = Money.Create(currency, amount);
   }
 }

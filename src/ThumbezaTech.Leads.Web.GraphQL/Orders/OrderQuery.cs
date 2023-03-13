@@ -31,4 +31,17 @@ public sealed class OrderQuery
       ? content.Value.FirstOrDefault()
       : default!;
   }
+
+  [GraphQLName("get_customer_orders")]
+  [GraphQLDescription("Get customer orders")]
+  public async Task<OrderVm> GetCustomerOrders(
+      [Service] ISender Sender,
+      [GraphQLNonNullType] string id,
+      CancellationToken cancellationToken = default)
+  {
+    var content = await Task.FromResult(Ardalis.Result.Result.Success(Array.Empty<OrderVm>()));
+    return content.IsSuccess
+      ? content.Value.FirstOrDefault()
+      : default!;
+  }
 }
