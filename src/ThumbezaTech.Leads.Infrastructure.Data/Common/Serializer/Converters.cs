@@ -45,6 +45,8 @@ public static class ParameterSerializer
 
   public static IList<Dictionary<string, object>>? ToDictionary<TSourceType>(IList<TSourceType> source) => JsonConvert.DeserializeObject<IList<Dictionary<string, object>>>(JsonConvert.SerializeObject(source, settings), new CustomDictionaryConverter());
 
+  public static string Serialize(this object value) => JsonConvert.SerializeObject(value, settings);
+
   public static T? ProcessRecords<T>(this IRecord record, string label) => JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(record[label], settings), deserializerSettings);
 }
 
