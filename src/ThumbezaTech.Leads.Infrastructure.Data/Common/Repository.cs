@@ -7,7 +7,6 @@ using ThumbezaTech.Leads.SharedKernel.Interfaces;
 
 namespace ThumbezaTech.Leads.Infrastructure.Data.Common;
 
-
 internal sealed class Repository<T> : IRepository<T> where T : class, IAggregateRoot
 {
   private readonly ILogger<Repository<T>> _logger;
@@ -30,7 +29,7 @@ internal sealed class Repository<T> : IRepository<T> where T : class, IAggregate
       await _driver.ExecutableQuery(query).ExecuteAsync();
   }
 
-  private IAsyncSession GetSession(AccessMode mode) 
+  private IAsyncSession GetSession(AccessMode mode)
     => _driver.AsyncSession(o => o.WithDatabase(_connection.DatabaseName).WithDefaultAccessMode(mode));
 
   public async ValueTask<T> Read<T>(string query, IDictionary<string, object> parameters, CancellationToken cancellationToken = default)
@@ -99,7 +98,7 @@ internal sealed class Repository<T> : IRepository<T> where T : class, IAggregate
   {
     try
     {
-      var content = await session.ExecuteReadAsync(async tx =>
+      var content = await session.ExecuteWriteAsync(async tx =>
       {
         var cursor = await tx.RunAsync(query, parameters);
         return await cursor.ToListAsync(cancellationToken);
