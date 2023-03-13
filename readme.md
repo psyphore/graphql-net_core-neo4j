@@ -23,6 +23,8 @@ net-core-graphql
             |
             |__ .Leads.Infrastructure.Data
             |
+            |__ .Leads.Infrastructure.Email
+            |
             |__ .Leads.Web.GraphQL
         |
         |__ .Leads.Web

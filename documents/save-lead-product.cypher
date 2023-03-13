@@ -1,22 +1,42 @@
-WITH apoc.json.path($lead) AS l0
-WITH apoc.map.merge(l0, {createdOn: timestamp()}) AS lu
+WITH '{"FirstName":"Sipho","LastName":"Hlophe","DateOfBirth":"1987-03-09T00:00:00+02:00","MobileNumber":"0719999999","EmailAddress":"sipho.hlophe@continetal.hightable.org","Address":{"Line1":"2 Carlswald Meadows","Line2":"55 Acacia Road","Suburb":"Midrand","Zip":"1685","Country":"South Africa","ContactNumbers":{"$id":"2","$values":["0719999999"]}}}' AS l
+WITH apoc.json.path(l) AS lead
+, apoc.json.path(l, '$.Address') AS address
+, apoc.json.path(l, '$.Address.ContactNumbers..$values') AS contacts
+, timestamp() AS createdOn
 CALL {
-    WITH lu
-    CREATE (lead:Lead{id: apoc.create.uuid()})
-    SET lead += lu
-    RETURN lead
+    WITH lead, createdOn
+    MERGE (l:Lead{ id: apoc.create.uuid(), created: createdOn })
+    ON CREATE SET l += lead { 
+        .FirstName,
+        .LastName,
+        .DateOfBirth,
+        .MobileNumber,
+        .EmailAddress
+    }
+    RETURN l
 }
 CALL {
-    OPTIONAL MATCH(product:Product)
-    WHERE $productId IS NOT NULL AND p.id = $productId
-    RETURN product
-}                
-CALL {
-    WITH lead, p
-    WITH [m IN [product] WHERE m IS NOT NULL] AS selections, lead
-    UNWIND selections AS selected
-    CALL apoc.create.relationship(lead, 'SELECTED', {createdOn: timestamp()}, selected)
-    YIELD rel
-    RETURN rel AS r1, selected
+    WITH address, createdOn
+    CREATE (a:Address {created: createdOn})
+    SET a += address {
+        .Line1,
+        .Line2,
+        .Line3,
+        .Suburb,
+        .Zip,
+        .Country
+    }
+    RETURN a
 }
-RETURN lead, r1, selected
+CALL {
+    WITH contacts, createdOn
+    UNWIND contacts AS contact
+    CREATE (c:Contact { id: apoc.create.uuid(), created: createdOn, number: contact})
+    RETURN c
+}
+CALL {
+    WITH l,a,c, createdOn
+    CREATE (l)-[r1:RESIDES_AT{created: createdOn}]->(a)<-[r2:HAS_CONTACT]-(c)
+    RETURN r1,r2
+}
+RETURN l, r1,r2, a, c
