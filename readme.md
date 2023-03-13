@@ -43,6 +43,12 @@ net-core-graphql
       "Redis": {
         "Host": "localhost",
         "Port": 6379
+      },
+      "Smtp": {
+        "Sender": "no-reply@leads.thumbezatech.co.za",
+        "SenderName": "Thumbeza Tech",
+        "SmtpServer": "localhost",
+        "Port": 1025
       }
     }
   ```
