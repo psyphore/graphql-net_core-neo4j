@@ -1,6 +1,6 @@
 ﻿namespace ThumbezaTech.Leads.Infrastructure.Data;
 
-public sealed record Neo4JConfiguration
+internal sealed record Neo4JConfiguration
 {
     public string BoltURL { get; set; } = "";
     public string Username { get; set; } = "";

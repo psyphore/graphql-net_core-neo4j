@@ -8,7 +8,7 @@ using ThumbezaTech.Leads.SharedKernel.Interfaces;
 namespace ThumbezaTech.Leads.Infrastructure.Data.Common;
 
 
-public sealed class Repository<T> : IRepository<T> where T : class, IAggregateRoot
+internal sealed class Repository<T> : IRepository<T> where T : class, IAggregateRoot
 {
   private readonly ILogger<Repository<T>> _logger;
   private readonly IDriver _driver;

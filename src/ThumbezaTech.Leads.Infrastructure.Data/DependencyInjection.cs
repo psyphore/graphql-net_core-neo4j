@@ -3,7 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 using Neo4j.Driver;
 
+using ThumbezaTech.Leads.Application.Leads;
 using ThumbezaTech.Leads.Application.Products;
+using ThumbezaTech.Leads.Infrastructure.Data.Services.Leads;
 using ThumbezaTech.Leads.Infrastructure.Data.Services.Products;
 
 namespace ThumbezaTech.Leads.Infrastructure.Data;
@@ -27,6 +29,7 @@ public static class DependencyInjection
     services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
     services.AddScoped<IProductService, ProductService>();
+    services.AddScoped<ILeadService, LeadService>();
 
     return services;
   }

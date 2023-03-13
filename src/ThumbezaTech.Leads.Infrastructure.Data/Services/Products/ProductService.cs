@@ -1,11 +1,9 @@
-﻿using Neo4j.Driver;
-
-using ThumbezaTech.Leads.Application.Products;
+﻿using ThumbezaTech.Leads.Application.Products;
 using ThumbezaTech.Leads.Domain.ProductAggregate;
 
 namespace ThumbezaTech.Leads.Infrastructure.Data.Services.Products;
 
-public sealed class ProductService : IProductService
+internal sealed class ProductService : IProductService
 {
   private readonly IRepository<Product> _repository;
   private const string Label = nameof(Product);
