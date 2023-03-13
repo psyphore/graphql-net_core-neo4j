@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-using ThumbezaTech.Leads.Domain.LeadAggregate;
+﻿using ThumbezaTech.Leads.Domain.LeadAggregate;
 
 namespace ThumbezaTech.Leads.Application.Leads;
 
@@ -22,10 +20,6 @@ internal sealed class UpdateLeadCommandHandler : ICommandHandler<UpdateLeadComma
 
     matched.Value.Update(command.Lead);
 
-    Dictionary<string, object> payload = new()
-    {
-      { nameof(Lead), JsonConvert.SerializeObject(matched.Value) }
-    };
-    return await _service.UpdateLeadAsync(payload, cancellationToken);
+    return await _service.UpdateLeadAsync(matched.Value, cancellationToken);
   }
 }

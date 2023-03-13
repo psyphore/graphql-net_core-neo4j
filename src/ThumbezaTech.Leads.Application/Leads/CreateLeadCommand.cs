@@ -1,9 +1,8 @@
-﻿using Newtonsoft.Json;
-
+﻿using ThumbezaTech.Leads.Domain.AddressValueObject;
 using ThumbezaTech.Leads.Domain.LeadAggregate;
 
 namespace ThumbezaTech.Leads.Application.Leads;
-public sealed record CreateLeadCommand(string FirstName, string LastName, string Email, string MobileNumber, bool Active) : ICommand<Result>;
+public sealed record CreateLeadCommand(string FirstName, string LastName, DateTimeOffset DateOfBirth, string Email, string MobileNumber, Address Address) : ICommand<Result>;
 
 internal sealed class CreateLeadCommandHandler : ICommandHandler<CreateLeadCommand, Result>
 {
@@ -13,12 +12,14 @@ internal sealed class CreateLeadCommandHandler : ICommandHandler<CreateLeadComma
 
   public ValueTask<Result> Handle(CreateLeadCommand command, CancellationToken cancellationToken)
   {
-    var (FirstName, LastName, Email, MobileNumber, Active) = command;
-    var aggregate = new Lead(FirstName, LastName, DateTime.Now, MobileNumber, Email);
-    var payload = new Dictionary<string, object>
-    {
-      { "lead", JsonConvert.SerializeObject(aggregate) },
-    };
-    return _service.CreateALeadAsync(payload, cancellationToken);
+    var aggregate = new Lead(
+      command.FirstName,
+      command.LastName,
+      command.DateOfBirth,
+      command.MobileNumber,
+      command.Email,
+      command.Address
+      );
+    return _service.CreateALeadAsync(aggregate, cancellationToken);
   }
 }

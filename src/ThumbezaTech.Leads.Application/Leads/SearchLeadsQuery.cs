@@ -11,9 +11,6 @@ internal sealed class SearchLeadsQueryHandler : IQueryHandler<SearchLeadsQuery, 
 
   public ValueTask<Result<IEnumerable<Lead>>> Handle(SearchLeadsQuery query, CancellationToken cancellationToken)
   {
-    return _service.SearchForLeadsAsync(new Dictionary<string, object>
-    {
-      { nameof(query), query.Query }
-    }, cancellationToken);
+    return _service.SearchForLeadsAsync(query.Query, cancellationToken);
   }
 }

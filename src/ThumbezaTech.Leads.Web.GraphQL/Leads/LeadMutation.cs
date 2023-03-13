@@ -19,15 +19,16 @@ internal sealed class LeadMutation
       [GraphQLNonNullType] LeadVm lead,
       CancellationToken cancellationToken = default)
   {
-    var result = await Sender.Send(new CreateLeadCommand(
-      lead.FirstName, lead.LastName, lead.EmailAddress, lead.MobileNumber, false
-      ), cancellationToken);
+    var result = await Sender.Send(
+      new CreateLeadCommand(lead.FirstName, lead.LastName, lead.DateOfBirth, lead.EmailAddress, lead.MobileNumber, lead.Address),
+      cancellationToken);
     if (!result.IsSuccess)
     {
       return string.Join("; ", result.Errors);
     }
+
     await topicSender.SendAsync("OnLeadPublishedTopic", lead, cancellationToken);
-    return $"{result.Status}";
+    return result.SuccessMessage;
   }
 
   [GraphQLName("update_lead")]
@@ -45,7 +46,7 @@ internal sealed class LeadMutation
     }
 
     await topicSender.SendAsync("OnLeadPublishedTopic", lead, cancellationToken);
-    return lead.Id;
+    return result.SuccessMessage;
   }
 
   [GraphQLName("activate_lead")]

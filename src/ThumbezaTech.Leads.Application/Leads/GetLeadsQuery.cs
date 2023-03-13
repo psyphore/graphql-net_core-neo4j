@@ -2,7 +2,7 @@
 
 namespace ThumbezaTech.Leads.Application.Leads;
 
-public sealed record GetLeadsQuery(int PageIndex = 1, int PageSize = 10) : IQuery<Result<IEnumerable<Lead>>>;
+public sealed record GetLeadsQuery() : IQuery<Result<IEnumerable<Lead>>>;
 
 internal sealed class GetLeadsQueryHandler : IQueryHandler<GetLeadsQuery, Result<IEnumerable<Lead>>>
 {
@@ -11,10 +11,6 @@ internal sealed class GetLeadsQueryHandler : IQueryHandler<GetLeadsQuery, Result
 
   public ValueTask<Result<IEnumerable<Lead>>> Handle(GetLeadsQuery query, CancellationToken cancellationToken)
   {
-    return _service.GetLeadsAsync(new Dictionary<string, object>
-    {
-      { "first", query.PageSize },
-      { "offset", query.PageIndex },
-    }, cancellationToken);
+    return _service.GetLeadsAsync(cancellationToken);
   }
 }

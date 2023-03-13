@@ -11,10 +11,6 @@ internal sealed class GetLeadByIdQueryHandler : IQueryHandler<GetLeadByIdQuery, 
 
   public ValueTask<Result<Lead>> Handle(GetLeadByIdQuery query, CancellationToken cancellationToken)
   {
-    var payload = new Dictionary<string, object>
-    {
-      { nameof(query.Id), Guard.Against.NullOrEmpty(query.Id, nameof(query.Id)) }
-    };
-    return _service.GetLeadByIdAsync(payload, cancellationToken);
+    return _service.GetLeadByIdAsync(Guard.Against.NullOrEmpty(query.Id, nameof(query.Id)), cancellationToken);
   }
 }

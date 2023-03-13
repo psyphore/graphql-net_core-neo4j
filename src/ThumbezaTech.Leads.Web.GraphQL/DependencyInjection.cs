@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 
 using StackExchange.Redis;
 
+using ThumbezaTech.Leads.Web.GraphQL.Leads;
 using ThumbezaTech.Leads.Web.GraphQL.Orders;
 using ThumbezaTech.Leads.Web.GraphQL.Products;
 
@@ -22,10 +23,12 @@ public static class DependencyInjection
         .AddQueryType()
         .AddTypeExtension<ProductsQuery>()
         .AddTypeExtension<OrderQuery>()
+        .AddTypeExtension<LeadQuery>()
 
         .AddMutationType()
         .AddTypeExtension<ProductsMutation>()
         .AddTypeExtension<OrderMutation>()
+        .AddTypeExtension<LeadMutation>()
 
         .AddSubscriptionType()
         .AddRedisSubscriptions((sp) =>
@@ -35,6 +38,7 @@ public static class DependencyInjection
         })
         .AddTypeExtension<ProductSubscription>()
         .AddTypeExtension<OrderSubscription>()
+        .AddTypeExtension<LeadSubscription>()
 
         .AddFiltering()
         .AddSorting()
