@@ -2,6 +2,7 @@
 
 using ThumbezaTech.Leads.Application;
 using ThumbezaTech.Leads.Infrastructure.Data;
+using ThumbezaTech.Leads.Infrastructure.Email;
 using ThumbezaTech.Leads.Web.GraphQL;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,7 @@ builder.Services.AddApplicationInsightsTelemetry();
 builder.Services.AddApplication();
 builder.Services.AddGraphQL();
 builder.Services.AddDatabaseInfrastructure(builder.Configuration.GetSection("Neo4J"));
+builder.Services.AddEmailInfrastructure(builder.Configuration.GetSection("Smtp"));
 
 var app = builder.Build();
 

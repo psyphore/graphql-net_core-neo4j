@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ThumbezaTech.Leads.Application\ThumbezaTech.Leads.Application.csproj" />
     <ProjectReference Include="..\ThumbezaTech.Leads.Infrastructure.Data\ThumbezaTech.Leads.Infrastructure.Data.csproj" />
+    <ProjectReference Include="..\ThumbezaTech.Leads.Infrastructure.Email\ThumbezaTech.Leads.Infrastructure.Email.csproj" />
     <ProjectReference Include="..\ThumbezaTech.Leads.Web.GraphQL\ThumbezaTech.Leads.Web.GraphQL.csproj" />
   </ItemGroup>
   
