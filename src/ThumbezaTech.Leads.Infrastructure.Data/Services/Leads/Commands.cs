@@ -10,64 +10,115 @@ internal static class Commands
     {
         { SaveOne, @"
             WITH apoc.json.path($Lead) AS lead
-            , apoc.json.path($Lead, '$.Address') AS address
-            , apoc.json.path($Lead, '$.Address.ContactNumbers..$values') AS contacts
+            , apoc.json.path($Lead, '$.Addresses') AS addresses
+            , apoc.json.path($Lead, '$.Contacts') AS contacts
             , timestamp() AS createdOn
             CALL {
-              WITH address, createdOn
-              CREATE (a:Address {Created: createdOn})
+              WITH addresses, createdOn
+              UNWIND addresses AS address
+              CREATE (a:Address {created: createdOn, active: true})
               SET a += address {
-                  .Line1,
-                  .Line2,
-                  .Line3,
-                  .Suburb,
-                  .Zip,
-                  .Country
+                  line1: address.Line1,
+                  line2: address.Line2,
+                  line3: address.Line3,
+                  suburb: address.Suburb,
+                  zip: address.Zip,
+                  country: address.Country
               }
               RETURN a
             }
             CALL {
               WITH lead, createdOn
-              MERGE (l:Lead{ Id: apoc.create.uuid(), Created: createdOn, Active: false })
+              MERGE (l:Lead {id: apoc.create.uuid(), created: createdOn, active: false})
               ON CREATE SET l += lead { 
-                  .FirstName,
-                  .LastName,
-                  .DateOfBirth,
-                  .EmailAddress
+                  firstName: lead.FirstName,
+                  lastName: lead.LastName,
+                  dateOfBirth: lead.DateOfBirth
               }
               RETURN l
             }
             CALL {
                 WITH contacts, createdOn
                 UNWIND contacts AS contact
-                CREATE (c:Contact { Id: apoc.create.uuid(), Created: createdOn, Number: contact})
+                CREATE (c:Contact {created: createdOn, active: true})
+                SET c += contact {
+                  number: contact.Number,
+                  email: contact.Email
+                }
                 RETURN c
             }
             CALL {
                 WITH l, a, c, createdOn
-                CREATE (l)-[r1:RESIDES_AT{ Created: createdOn }]->(a)<-[r2:HAS_CONTACT{ Created: createdOn }]-(c)
+                CREATE 
+                  (l)-[r1:RESIDES_AT{ created: createdOn }]->(a),
+                  (l)-[r2:HAS_CONTACT{ created: createdOn }]->(c)
                 RETURN r1, r2
             }
-            RETURN l.Id AS Lead
+            RETURN l.id AS Lead
         "},
         { UpdateOne, @"
           WITH apoc.json.path($Lead) AS lead
-          , apoc.json.path($Lead, '$.Address') AS address
-          , apoc.json.path($Lead, '$.Address.ContactNumbers..$values') AS contacts
+          , apoc.json.path($Lead, '$.Addresses') AS addresses
+          , apoc.json.path($Lead, '$.Contacts') AS contacts
           , timestamp() AS updatedOn
           CALL {
-            WITH lead
-            MERGE (l:Lead { Id: Lead.id })
+            WITH lead, updatedOn
+            MERGE (l:Lead { id: lead.Id })
             ON MATCH SET l += lead { 
-                .FirstName,
-                .LastName,
-                .DateOfBirth,
-                .EmailAddress,
-                Updated: updatedOn
+                fisrtName: lead.FirstName,
+                lastName: lead.LastName,
+                dateOfBirth: lead.DateOfBirth,
+                updated: updatedOn
+            }
+            ON CREATE SET l += lead { 
+                fisrtName: lead.FirstName,
+                lastName: lead.LastName,
+                dateOfBirth: lead.DateOfBirth,
+                updated: updatedOn
             }
             RETURN l
           }
-          RETURN l.Id AS Lead
+          CALL {
+            WITH addresses, updatedOn
+            UNWIND addresses AS address
+            MERGE (a:Address {id: address.Id})
+            ON CREATE SET a += address {
+                line1: address.Line1,
+                line2: address.Line2,
+                line3: address.Line3,
+                suburb: address.Suburb,
+                zip: address.Zip,
+                country: address.Country,
+                created: updatedOn
+            }
+            ON MATCH SET a += address {
+                line1: address.Line1,
+                line2: address.Line2,
+                line3: address.Line3,
+                suburb: address.Suburb,
+                zip: address.Zip,
+                country: address.Country,
+                updated: updatedOn
+            }
+            RETURN a
+          }
+          CALL {
+            WITH contacts, updatedOn
+            UNWIND contacts AS contact
+            MERGE (c:Contact {id: contact.Id})
+            ON MATCH SET c += contact {
+              number: contact.Number,
+              email: contact.Email,
+              updated: updatedOn
+            }
+            ON CREATE SET c += contact {
+              number: contact.Number,
+              email: contact.Email,
+              created: updatedOn
+            }
+            RETURN c
+          }
+          RETURN l.id AS Lead
         "},
         { UpdateLeadAddress, @"
           WITH apoc.json.path($Lead) AS lead

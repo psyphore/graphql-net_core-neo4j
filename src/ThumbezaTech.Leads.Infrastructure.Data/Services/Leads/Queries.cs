@@ -10,53 +10,22 @@ internal static class Queries
   {
     {
       GetOne, @"
-      OPTIONAL MATCH (l:Lead{Id: $id})
-      CALL {
-          WITH l
-          OPTIONAL MATCH (l)--(c:Contact)
-          UNWIND c.Number AS numbers
-          RETURN numbers
-      }
-      CALL{
-          WITH l
-          OPTIONAL MATCH (l)--(a:Address)
-          //UNWIND a AS addresses
-          RETURN a AS addresses
-      }
+      OPTIONAL MATCH (l:Lead{id: $id})
       RETURN l {
-          id: l.Id,
-          firstName: l.FirstName,
-          lastName: l.LastName,
-          dateOfBirth: l.DateOfBirth,
-          emailAddress: l.EmailAddress,
-          address: addresses { .* },
-          numbers: numbers
+          .*,
+          address: [(l)--(a:Address)|a{.*}],
+          contacts: [(l)--(c:Contact)|c{.*}]
       } AS Lead
       "},
     {
       GetAll, @"
       MATCH (l:Lead)
-      CALL {
-          WITH l
-          OPTIONAL MATCH (l)--(c:Contact)
-          UNWIND c.Number AS numbers
-          RETURN numbers
-      }
-      CALL{
-          WITH l
-          OPTIONAL MATCH (l)--(a:Address)
-          //UNWIND a AS addresses
-          RETURN a AS addresses
-      }
       RETURN l {
-          id: l.Id,
-          firstName: l.FirstName,
-          lastName: l.LastName,
-          dateOfBirth: l.DateOfBirth,
-          emailAddress: l.EmailAddress,
-          address: addresses { .* },
-          numbers: numbers
-      } AS Lead
+          .*,
+          address: [(l)--(a:Address)|a{.*}],
+          contacts: [(l)--(c:Contact)|c{.*}]
+      } AS Leads
+      ORDER BY Leads.lastName ASC, Leads.firstName ASC
       "},
     {
       Search, @"
@@ -65,8 +34,12 @@ internal static class Queries
           OR l.lastName CONTAINS $query
           OR l.email CONTAINS $query
           OR l.mobileNumber CONTAINS $query
-      RETURN l AS Lead
-      ORDER BY Lead.lastName ASC, Lead.firstName ASC
+      RETURN l {
+          .*,
+          address: [(l)--(a:Address)|a{.*}],
+          contacts: [(l)--(c:Contact)|c{.*}]
+      } AS Leads
+      ORDER BY Leads.lastName ASC, Leads.firstName ASC
       "}
   };
 }

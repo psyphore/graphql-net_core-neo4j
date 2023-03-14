@@ -49,7 +49,7 @@ internal sealed class LeadService : ILeadService
     var records = await _repository.Read(statement, Query, cancellationToken);
     var payload = records.Where(record => record is not null).Select(record => record.ProcessRecords<Lead>($"{Label}s"));
 
-    return payload.Any()
+    return payload.Any(p => p is not null && !string.IsNullOrEmpty(p.Id))
         ? Result.Success(payload.Distinct())
         : Result.NotFound();
   }

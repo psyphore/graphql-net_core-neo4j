@@ -24,7 +24,6 @@ public sealed class Product : BaseEntity, IAggregateRoot
     Price = Guard.Against.Null(price, nameof(price));
     Tags = Guard.Against.NullOrInvalidInput(tags, nameof(tags), items => items.Count() != 0).ToHashSet();
     Sku = Sku.Create(sku);
-
   }
 
   [JsonConstructor]

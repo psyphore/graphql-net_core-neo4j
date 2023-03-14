@@ -1,8 +1,7 @@
-﻿using ThumbezaTech.Leads.Domain.AddressValueObject;
-using ThumbezaTech.Leads.Domain.LeadAggregate;
+﻿using ThumbezaTech.Leads.Domain.LeadAggregate;
 
 namespace ThumbezaTech.Leads.Application.Leads;
-public sealed record CreateLeadCommand(string FirstName, string LastName, DateTimeOffset DateOfBirth, string Email, string MobileNumber, Address Address) : ICommand<Result>;
+public sealed record CreateLeadCommand(Lead Lead) : ICommand<Result>;
 
 internal sealed class CreateLeadCommandHandler : ICommandHandler<CreateLeadCommand, Result>
 {
@@ -12,14 +11,6 @@ internal sealed class CreateLeadCommandHandler : ICommandHandler<CreateLeadComma
 
   public ValueTask<Result> Handle(CreateLeadCommand command, CancellationToken cancellationToken)
   {
-    var aggregate = new Lead(
-      command.FirstName,
-      command.LastName,
-      command.DateOfBirth,
-      command.MobileNumber,
-      command.Email,
-      command.Address
-      );
-    return _service.CreateALeadAsync(aggregate, cancellationToken);
+    return _service.CreateALeadAsync(command.Lead, cancellationToken);
   }
 }

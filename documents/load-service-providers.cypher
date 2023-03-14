@@ -3,7 +3,7 @@
 // load service Products
 // This is an initialization script for the leads graph.
 // Run it only once. 😊
-// Have you run it twice? Use `MATCH (n:Product|Money|Address|Lead|Order|Tag) DETACH DELETE n` to start over.
+// Have you run it twice? Use `MATCH (n:Product|Money|Address|Lead|Order|Tag|Contact|Shipment) DETACH DELETE n` to start over.
 CREATE 
   (Product1:Product {id: apoc.create.uuid(), name:'Gigabyte GA-X670 AOSUS-ELITE-AX', sku: apoc.text.random(15, 'A-Z0-9') }),
   (Product2:Product {id: apoc.create.uuid(), name:'MSI MEG X670E ACE', sku: apoc.text.random(15, 'A-Z0-9') }),
@@ -94,10 +94,16 @@ CREATE
   (Res:Address{ line1:'55 Acacia Road', line2:'1 Carlswald Meadows Estate', line3: null, suburb:'Blue Hills AH', city:'Midrand', zip:'1685', country:'ZA', created: timestamp()})
 
 CREATE
-  (Customer:Lead{ id:apoc.create.uuid(), names:'John Wick', email: 'john.wick@continetal.hightable.org', created: timestamp()})
+  (Customer:Lead{ id: apoc.create.uuid(), active: true, firstName:'John', lastName:'Wick', dateOfBirth: datetime('1971-01-12T00:00:00'), created: timestamp()})
 
 CREATE
-  (Customer)<-[:RESIDES_AT{ since: datetime('2010-11-04T08:00:00'), created: timestamp(), createdBy: 'system' }]-(Res)
+  (CustomerContact:Contact{ id: apoc.create.uuid(), active: true, number:'0718890001', email: 'john.wick@continetal.hightable.org', created: timestamp()})
+
+CREATE
+  (Customer)-[:RESIDES_AT{ since: datetime('2010-11-04T08:00:00'), created: timestamp(), createdBy: 'system' }]->(Res)
+
+CREATE
+  (Customer)-[:HAS_CONTACT{ created: timestamp(), createdBy: 'system' }]->(CustomerContact)
   
 CREATE TEXT INDEX FOR (n:Product) ON EACH [n.id, n.name, n.tags]
 CREATE TEXT INDEX FOR (n:Money) ON (n.currency)

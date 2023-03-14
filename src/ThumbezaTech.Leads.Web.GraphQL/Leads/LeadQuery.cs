@@ -14,8 +14,6 @@ internal sealed class LeadQuery
   public async Task<IQueryable<LeadVm>> SearchLeads(
       [Service] ISender Sender,
       [GraphQLNonNullType] string query,
-      int? PageNumber = 1,
-      int? PageSize = 50,
       CancellationToken cancellationToken = default)
   {
     var content = await Sender.Send(new SearchLeadsQuery(query), cancellationToken);

@@ -20,7 +20,7 @@ internal sealed class LeadMutation
       CancellationToken cancellationToken = default)
   {
     var result = await Sender.Send(
-      new CreateLeadCommand(lead.FirstName, lead.LastName, lead.DateOfBirth, lead.EmailAddress, lead.MobileNumber, lead.Address),
+      new CreateLeadCommand((Lead)lead),
       cancellationToken);
     if (!result.IsSuccess)
     {
