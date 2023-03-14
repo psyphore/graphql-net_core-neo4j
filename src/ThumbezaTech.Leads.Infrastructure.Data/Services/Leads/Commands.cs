@@ -4,6 +4,7 @@ internal static class Commands
 {
   public static readonly string SaveOne = nameof(SaveOne);
   public static readonly string UpdateOne = nameof(UpdateOne);
+  public static readonly string UpdateLeadAddress = nameof(UpdateLeadAddress);
 
   public static Dictionary<string, string> Options => new()
     {
@@ -56,16 +57,36 @@ internal static class Commands
           , timestamp() AS updatedOn
           CALL {
             WITH lead
-            MERGE (l:Lead { id: Lead.id })
+            MERGE (l:Lead { Id: Lead.id })
             ON MATCH SET l += lead { 
                 .FirstName,
                 .LastName,
                 .DateOfBirth,
-                .EmailAddress
+                .EmailAddress,
+                Updated: updatedOn
             }
             RETURN l
           }
-          RETURN l.id AS Lead
+          RETURN l.Id AS Lead
+        "},
+        { UpdateLeadAddress, @"
+          WITH apoc.json.path($Lead) AS lead
+          , apoc.json.path($Lead, '$.Address') AS address
+          , apoc.json.path($Lead, '$.Address.ContactNumbers..$values') AS contacts
+          , timestamp() AS updatedOn
+          CALL {
+            WITH lead
+            MERGE (l:Lead { Id: Lead.id })
+            ON MATCH SET l += lead { 
+                .FirstName,
+                .LastName,
+                .DateOfBirth,
+                .EmailAddress,
+                Updated: updatedOn
+            }
+            RETURN l
+          }
+          RETURN l.Id AS Lead
         "}
     };
 }

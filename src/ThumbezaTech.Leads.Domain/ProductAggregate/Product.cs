@@ -28,8 +28,9 @@ public sealed class Product : BaseEntity, IAggregateRoot
   }
 
   [JsonConstructor]
-  public Product(string name, string currency, decimal amount, string sku, IEnumerable<string> tags)
+  internal Product(string id, string name, string currency, decimal amount, string sku, IEnumerable<string> tags)
   {
+    Id = Guard.Against.NullOrEmpty(id, nameof(id));
     Name = Guard.Against.NullOrEmpty(name, nameof(name));
     Tags = Guard.Against.NullOrInvalidInput(tags, nameof(tags), items => items.Count() != 0).ToHashSet();
     Price = Money.Create(currency, amount);

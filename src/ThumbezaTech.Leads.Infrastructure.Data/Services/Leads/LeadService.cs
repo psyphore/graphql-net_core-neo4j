@@ -18,10 +18,10 @@ internal sealed class LeadService : ILeadService
     };
     var statement = Queries.Options[Queries.GetOne].Trim();
     var records = await _repository.Read(statement, Query, cancellationToken);
-    var payload = records.Where(record => record is not null).Select(record => record.ProcessRecords<Lead>(Label));
+    var payload = records.FirstOrDefault()?.ProcessRecords<Lead>(Label);
 
     return payload is not null
-        ? Result.Success(payload.First())
+        ? Result.Success(payload)
         : Result.NotFound();
   }
 

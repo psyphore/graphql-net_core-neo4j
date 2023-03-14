@@ -30,26 +30,15 @@ public sealed class Lead : BaseEntity, IAggregateRoot
   }
 
   [JsonConstructor]
-  internal Lead(string FirstName, string LastName, string DateOfBirth, string MobileNumber, string EmailAddress,
-    IReadOnlyDictionary<string, object> Address,
-    IEnumerable<string>? Numbers
+  internal Lead(string id, string firstName, string lastName, string dateOfBirth, string emailAddress
+    // IEnumerable<string>? numbers
     )
   {
-    this.FirstName = Guard.Against.NullOrEmpty(FirstName, nameof(FirstName));
-    this.LastName = Guard.Against.NullOrEmpty(LastName, nameof(LastName));
-    this.EmailAddress = Guard.Against.NullOrEmpty(EmailAddress, nameof(EmailAddress));
-    this.DateOfBirth = Guard.Against.OutOfSQLDateRange(DateTime.Parse(DateOfBirth), nameof(DateOfBirth));
-    this.MobileNumber = Guard.Against.NullOrEmpty(MobileNumber, nameof(MobileNumber));
-
-    this.Address = new Address(
-      Guard.Against.Null((string)Address[nameof(Lead.Address.Line1)], nameof(Lead.Address.Line1)),
-      Guard.Against.Null((string)Address[nameof(Lead.Address.Line2)], nameof(Lead.Address.Line2)),
-      Guard.Against.Null((string)Address[nameof(Lead.Address.Line3)], nameof(Lead.Address.Line3)),
-      Guard.Against.Null((string)Address[nameof(Lead.Address.Suburb)], nameof(Lead.Address.Suburb)),
-      Guard.Against.Null((string)Address[nameof(Lead.Address.Zip)], nameof(Lead.Address.Zip)),
-      Guard.Against.Null((string)Address[nameof(Lead.Address.Country)], nameof(Lead.Address.Country)),
-      (string[])Address[nameof(Lead.Address.ContactNumbers)]
-      );
+    Id = Guard.Against.NullOrEmpty(id, nameof(id));
+    FirstName = Guard.Against.NullOrEmpty(firstName, nameof(firstName));
+    LastName = Guard.Against.NullOrEmpty(lastName, nameof(lastName));
+    EmailAddress = Guard.Against.NullOrEmpty(emailAddress, nameof(emailAddress));
+    DateOfBirth = Guard.Against.OutOfSQLDateRange(DateTime.Parse(dateOfBirth), nameof(dateOfBirth));
   }
 
   public void Update(Lead lead)

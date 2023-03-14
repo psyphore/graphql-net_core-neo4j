@@ -10,14 +10,53 @@ internal static class Queries
   {
     {
       GetOne, @"
-      OPTIONAL MATCH (l:Lead{ id: $id })
-      RETURN l AS Lead
+      OPTIONAL MATCH (l:Lead{Id: $id})
+      CALL {
+          WITH l
+          OPTIONAL MATCH (l)--(c:Contact)
+          UNWIND c.Number AS numbers
+          RETURN numbers
+      }
+      CALL{
+          WITH l
+          OPTIONAL MATCH (l)--(a:Address)
+          //UNWIND a AS addresses
+          RETURN a AS addresses
+      }
+      RETURN l {
+          id: l.Id,
+          firstName: l.FirstName,
+          lastName: l.LastName,
+          dateOfBirth: l.DateOfBirth,
+          emailAddress: l.EmailAddress,
+          address: addresses { .* },
+          numbers: numbers
+      } AS Lead
       "},
     {
       GetAll, @"
       MATCH (l:Lead)
-      RETURN l AS Lead
-      ORDER BY Lead.lastName ASC, Lead.firstName ASC
+      CALL {
+          WITH l
+          OPTIONAL MATCH (l)--(c:Contact)
+          UNWIND c.Number AS numbers
+          RETURN numbers
+      }
+      CALL{
+          WITH l
+          OPTIONAL MATCH (l)--(a:Address)
+          //UNWIND a AS addresses
+          RETURN a AS addresses
+      }
+      RETURN l {
+          id: l.Id,
+          firstName: l.FirstName,
+          lastName: l.LastName,
+          dateOfBirth: l.DateOfBirth,
+          emailAddress: l.EmailAddress,
+          address: addresses { .* },
+          numbers: numbers
+      } AS Lead
       "},
     {
       Search, @"
