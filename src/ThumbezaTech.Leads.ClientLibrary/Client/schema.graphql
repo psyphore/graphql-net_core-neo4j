@@ -15,6 +15,14 @@ type Query {
   list_orders("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: OrderVmFilterInput): List_ordersConnection
   "Get order by id"
   get_order(id: String!): OrderVm!
+  "Get customer orders"
+  get_customer_orders(id: String!): OrderVm!
+  "Search for leads"
+  search_leads(query: String! "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: LeadVmFilterInput): Search_leadsConnection
+  "Get all leads"
+  list_leads("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: LeadVmFilterInput): List_leadsConnection
+  "Get lead by Id"
+  get_lead(id: String!): LeadVm!
 }
 
 type Mutation {
@@ -22,6 +30,10 @@ type Mutation {
   add_product(product: ProductVmInput! order: OrderVmInput!): String!
   "Update a single product"
   update_product(product: ProductVmInput! order: OrderVmInput!): String!
+  "Create a lead"
+  create_lead(lead: LeadVmInput!): String!
+  "Update a lead"
+  update_lead(lead: LeadVmInput!): String!
 }
 
 type Subscription {
@@ -29,6 +41,8 @@ type Subscription {
   product_subs: ProductVm!
   "updated order subscription"
   order_subs: OrderVm!
+  "published lead subscription"
+  lead_subs: LeadVm!
 }
 
 input ProductVmFilterInput {
@@ -77,6 +91,38 @@ type List_ordersConnection {
   edges: [List_ordersEdge!]
   "A flattened list of the nodes."
   nodes: [OrderVm!]
+}
+
+input LeadVmFilterInput {
+  and: [LeadVmFilterInput!]
+  or: [LeadVmFilterInput!]
+  id: StringOperationFilterInput
+  firstName: StringOperationFilterInput
+  lastName: StringOperationFilterInput
+  dateOfBirth: DateTimeOperationFilterInput
+  active: BooleanOperationFilterInput
+  contacts: ListFilterInputTypeOfContactFilterInput
+  addresses: ListFilterInputTypeOfAddressFilterInput
+}
+
+"A connection to a list of items."
+type Search_leadsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [Search_leadsEdge!]
+  "A flattened list of the nodes."
+  nodes: [LeadVm!]
+}
+
+"A connection to a list of items."
+type List_leadsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [List_leadsEdge!]
+  "A flattened list of the nodes."
+  nodes: [LeadVm!]
 }
 
 input StringOperationFilterInput {
@@ -165,6 +211,66 @@ type List_ordersEdge {
   node: OrderVm!
 }
 
+input DateTimeOperationFilterInput {
+  eq: DateTime
+  neq: DateTime
+  in: [DateTime]
+  nin: [DateTime]
+  gt: DateTime
+  ngt: DateTime
+  gte: DateTime
+  ngte: DateTime
+  lt: DateTime
+  nlt: DateTime
+  lte: DateTime
+  nlte: DateTime
+}
+
+input BooleanOperationFilterInput {
+  eq: Boolean
+  neq: Boolean
+}
+
+input ListFilterInputTypeOfContactFilterInput {
+  all: ContactFilterInput
+  none: ContactFilterInput
+  some: ContactFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfAddressFilterInput {
+  all: AddressFilterInput
+  none: AddressFilterInput
+  some: AddressFilterInput
+  any: Boolean
+}
+
+type LeadVm {
+  id: String!
+  firstName: String!
+  lastName: String!
+  dateOfBirth: DateTime!
+  active: Boolean!
+  contacts: [Contact!]
+  addresses: [Address!]
+}
+
+"An edge in a connection."
+type Search_leadsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: LeadVm!
+}
+
+"An edge in a connection."
+type List_leadsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: LeadVm!
+}
+
 input DecimalOperationFilterInput {
   eq: Decimal
   neq: Decimal
@@ -188,8 +294,48 @@ input LineItemVmFilterInput {
   value: MoneyFilterInput
 }
 
+"The `DateTime` scalar represents an ISO-8601 compliant date time type."
+scalar DateTime
+
+input ContactFilterInput {
+  and: [ContactFilterInput!]
+  or: [ContactFilterInput!]
+  number: StringOperationFilterInput
+  email: StringOperationFilterInput
+}
+
+input AddressFilterInput {
+  and: [AddressFilterInput!]
+  or: [AddressFilterInput!]
+  line1: StringOperationFilterInput
+  line2: StringOperationFilterInput
+  line3: StringOperationFilterInput
+  suburb: StringOperationFilterInput
+  zip: StringOperationFilterInput
+  country: StringOperationFilterInput
+}
+
 "The built-in `Decimal` scalar type."
 scalar Decimal
+
+type Address {
+  line1: String!
+  line2: String!
+  line3: String
+  suburb: String!
+  zip: String!
+  country: String!
+}
+
+input LeadVmInput {
+  id: String!
+  firstName: String!
+  lastName: String!
+  dateOfBirth: DateTime!
+  active: Boolean!
+  contacts: [ContactInput!]
+  addresses: [AddressInput!]
+}
 
 input OrderVmInput {
   id: String!
@@ -216,6 +362,11 @@ type LineItemVm {
   value: Money!
 }
 
+type Contact {
+  number: String
+  email: String
+}
+
 input MoneyInput {
   currency: String!
   amount: Decimal!
@@ -225,4 +376,18 @@ input LineItemVmInput {
   id: String!
   productId: String!
   value: MoneyInput!
+}
+
+input AddressInput {
+  line1: String!
+  line2: String!
+  line3: String
+  suburb: String!
+  zip: String!
+  country: String!
+}
+
+input ContactInput {
+  number: String
+  email: String
 }
