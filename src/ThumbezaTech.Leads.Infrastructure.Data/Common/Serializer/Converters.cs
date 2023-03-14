@@ -47,7 +47,11 @@ public static class ParameterSerializer
 
   public static string Serialize(this object value) => JsonConvert.SerializeObject(value, settings);
 
-  public static T? ProcessRecords<T>(this IRecord record, string label) => JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(record[label], settings), deserializerSettings);
+  public static T? ProcessRecords<T>(this IRecord record, string label) 
+    => JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(record[label], settings), deserializerSettings);
+
+  public static T ProcessRecord<T>(this IRecord record, string label)
+    => record[label].As<T>();
 }
 
 /// <summary>

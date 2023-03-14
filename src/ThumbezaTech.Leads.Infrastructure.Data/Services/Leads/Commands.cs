@@ -14,7 +14,7 @@ internal static class Commands
             , timestamp() AS createdOn
             CALL {
               WITH address, createdOn
-              CREATE (a:Address {created: createdOn})
+              CREATE (a:Address {Created: createdOn})
               SET a += address {
                   .Line1,
                   .Line2,
@@ -27,12 +27,11 @@ internal static class Commands
             }
             CALL {
               WITH lead, createdOn
-              MERGE (l:Lead{ id: apoc.create.uuid(), created: createdOn })
+              MERGE (l:Lead{ Id: apoc.create.uuid(), Created: createdOn, Active: false })
               ON CREATE SET l += lead { 
                   .FirstName,
                   .LastName,
                   .DateOfBirth,
-                  .MobileNumber,
                   .EmailAddress
               }
               RETURN l
@@ -40,25 +39,33 @@ internal static class Commands
             CALL {
                 WITH contacts, createdOn
                 UNWIND contacts AS contact
-                CREATE (c:Contact { id: apoc.create.uuid(), created: createdOn, number: contact})
+                CREATE (c:Contact { Id: apoc.create.uuid(), Created: createdOn, Number: contact})
                 RETURN c
             }
             CALL {
                 WITH l, a, c, createdOn
-                CREATE (l)-[r1:RESIDES_AT{created: createdOn}]->(a)<-[r2:HAS_CONTACT]-(c)
+                CREATE (l)-[r1:RESIDES_AT{ Created: createdOn }]->(a)<-[r2:HAS_CONTACT{ Created: createdOn }]-(c)
                 RETURN r1, r2
             }
-            RETURN r1, r2, l AS Lead
+            RETURN l.Id AS Lead
         "},
         { UpdateOne, @"
-          WITH apoc.json.path($lead) AS lead
+          WITH apoc.json.path($Lead) AS lead
+          , apoc.json.path($Lead, '$.Address') AS address
+          , apoc.json.path($Lead, '$.Address.ContactNumbers..$values') AS contacts
+          , timestamp() AS updatedOn
           CALL {
             WITH lead
             MERGE (l:Lead { id: Lead.id })
-            ON MATCH SET l += lead
+            ON MATCH SET l += lead { 
+                .FirstName,
+                .LastName,
+                .DateOfBirth,
+                .EmailAddress
+            }
             RETURN l
           }
-          RETURN l AS Lead
+          RETURN l.id AS Lead
         "}
     };
 }

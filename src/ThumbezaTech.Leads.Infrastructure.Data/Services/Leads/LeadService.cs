@@ -62,10 +62,10 @@ internal sealed class LeadService : ILeadService
     };
     var statement = Commands.Options[Commands.SaveOne].Trim();
     var records = await _repository.Write(statement, input, cancellationToken);
-    var payload = records.Select(record => record.ProcessRecords<Lead>(Label));
+    var payload = records.First().ProcessRecord<string>(Label);
 
     return payload.Any()
-        ? Result.SuccessWithMessage(payload.First().Id)
+        ? Result.SuccessWithMessage(payload)
         : Result.NotFound();
   }
 
@@ -77,10 +77,10 @@ internal sealed class LeadService : ILeadService
     };
     var statement = Commands.Options[Commands.UpdateOne].Trim();
     var records = await _repository.Write(statement, input, cancellationToken);
-    var payload = records.Select(record => record.ProcessRecords<Lead>(Label));
+    var payload = records.First().ProcessRecord<string>(Label);
 
     return payload.Any()
-        ? Result.SuccessWithMessage(payload.First().Id)
+        ? Result.SuccessWithMessage(payload)
         : Result.NotFound();
   }
 }
