@@ -1,0 +1,36 @@
+@page "/leads/list"
+
+@* https://blazor.radzen.com/card *@
+<section>
+    <UseListLeads Context="lead">
+        <LoadingContent>
+                <span class="h5">Fetching Leads... Please wait</span>
+            </LoadingContent>
+
+            <ErrorContent>
+                <p class="h5">Something went wrong...</p>
+                <p class="text-warning">@lead.First().Message</p>
+            </ErrorContent>
+            
+        <ChildContent>
+            <div class="d-flex flex-row flex-wrap">
+                @foreach (var node in lead.List_leads.Nodes)
+                {
+                    <RadzenCard Class="rz-my-12 rz-mx-auto" Style="max-width: 420px">
+                        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Start" Gap="1rem" Class="rz-p-4">
+                            <RadzenStack Gap="0">
+                                <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-2 rz-my-0">Operator</RadzenText>
+                                <RadzenText TextStyle="TextStyle.Body1"><b>@($"{node.FirstName} {node.LastName}")</b></RadzenText>
+                                <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-4 rz-mb-0">Date of birth</RadzenText>
+                                <RadzenText TextStyle="TextStyle.Body1"><b>@($"{node.DateOfBirth:d}")</b></RadzenText>
+                            </RadzenStack>
+                        </RadzenStack>
+                        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0">
+                            <RadzenButton Variant="Variant.Text" Text="View More" />
+                        </RadzenStack>
+                    </RadzenCard>
+                }
+            </div>
+        </ChildContent>
+    </UseListLeads>
+</section>
