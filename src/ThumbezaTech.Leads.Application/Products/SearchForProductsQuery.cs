@@ -12,13 +12,6 @@ internal sealed class SearchForProductsQueryHandler : IQueryHandler<SearchForPro
 
   public ValueTask<Result<IEnumerable<Product>>> Handle(SearchForProductsQuery query, CancellationToken cancellationToken)
   {
-    var (Size, Page, Query) = query;
-    var parameter = new Dictionary<string, object>
-        {
-            { "offset", Page },
-            { "first", Size },
-            { "query", Query }
-        };
-    return _service.QueryProducts(parameter, cancellationToken);
+    return _service.QueryProducts(Guard.Against.NullOrEmpty(query.Query), cancellationToken);
   }
 }

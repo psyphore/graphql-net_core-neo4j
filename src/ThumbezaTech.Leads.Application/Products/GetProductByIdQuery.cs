@@ -12,10 +12,6 @@ internal sealed class GetProductByIdQueryHandler : IQueryHandler<GetProductByIdQ
 
   public ValueTask<Result<Product>> Handle(GetProductByIdQuery query, CancellationToken cancellationToken)
   {
-    var parameter = new Dictionary<string, object>
-        {
-            { "id", query.Id }
-        };
-    return _service.GetProductById(parameter, cancellationToken);
+    return _service.GetProductById(Guard.Against.NullOrEmpty(query.Id), cancellationToken);
   }
 }

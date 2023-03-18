@@ -12,11 +12,6 @@ internal sealed class AddProductCommandHandler : ICommandHandler<AddProductComma
 
   public ValueTask<Result> Handle(AddProductCommand command, CancellationToken cancellationToken)
   {
-
-    var parameter = new Dictionary<string, object>
-        {
-            { "product", Guard.Against.Null(command.Product, nameof(command.Product)) },
-        };
-    return _service.AddProduct(parameter, cancellationToken);
+    return _service.AddProduct(Guard.Against.Null(command.Product, nameof(command.Product)), cancellationToken);
   }
 }

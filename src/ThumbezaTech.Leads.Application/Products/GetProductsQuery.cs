@@ -12,12 +12,6 @@ internal sealed class GetProductQueryHandler : IQueryHandler<GetProductsQuery, R
 
   public ValueTask<Result<IEnumerable<Product>>> Handle(GetProductsQuery query, CancellationToken cancellationToken)
   {
-    var (Size, Page) = query;
-    var parameter = new Dictionary<string, object>
-        {
-            { "offset", Page },
-            { "first", Size }
-        };
-    return _service.GetProducts(parameter, cancellationToken);
+    return _service.GetProducts(cancellationToken);
   }
 }
