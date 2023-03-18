@@ -7,7 +7,8 @@ using ThumbezaTech.Leads.SharedKernel.Interfaces;
 
 namespace ThumbezaTech.Leads.Infrastructure.Data.Common;
 
-internal sealed class Repository<T> : IRepository<T> where T : class, IAggregateRoot
+internal sealed class Repository<T> : IRepository<T>
+  where T : class, IAggregateRoot
 {
   private readonly ILogger<Repository<T>> _logger;
   private readonly IDriver _driver;
@@ -35,7 +36,7 @@ internal sealed class Repository<T> : IRepository<T> where T : class, IAggregate
   public async ValueTask<T> Read<T>(string query, IDictionary<string, object> parameters, CancellationToken cancellationToken = default)
   {
     await using var session = GetSession(AccessMode.Read);
-    var x = await ProcessTransactionAsync(session, query, parameters, cancellationToken);
+    var x = await ProcessReadTransactionAsync(session, query, parameters, cancellationToken);
     return x.As<T>();
   }
 
@@ -62,12 +63,11 @@ internal sealed class Repository<T> : IRepository<T> where T : class, IAggregate
   {
     try
     {
-      var content = await session.ExecuteReadAsync(async tx =>
+      return await session.ExecuteReadAsync(async tx =>
       {
         var cursor = await tx.RunAsync(query, parameters);
         return await cursor.ToListAsync(cancellationToken);
       });
-      return content;
     }
     catch (Exception e)
     {
@@ -76,16 +76,15 @@ internal sealed class Repository<T> : IRepository<T> where T : class, IAggregate
     }
   }
 
-  private async ValueTask<IReadOnlyList<IRecord>> ProcessTransactionAsync(IAsyncSession session, string query, IDictionary<string, object> parameters, CancellationToken cancellationToken = default)
+  private async ValueTask<IReadOnlyList<IRecord>> ProcessReadTransactionAsync(IAsyncSession session, string query, IDictionary<string, object> parameters, CancellationToken cancellationToken = default)
   {
     try
     {
-      var content = await session.ExecuteReadAsync(async tx =>
+      return await session.ExecuteReadAsync(async tx =>
       {
         var cursor = await tx.RunAsync(query, parameters);
         return await cursor.ToListAsync(cancellationToken);
       });
-      return content;
     }
     catch (Exception e)
     {
@@ -98,12 +97,11 @@ internal sealed class Repository<T> : IRepository<T> where T : class, IAggregate
   {
     try
     {
-      var content = await session.ExecuteWriteAsync(async tx =>
+      return await session.ExecuteWriteAsync(async tx =>
       {
         var cursor = await tx.RunAsync(query, parameters);
         return await cursor.ToListAsync(cancellationToken);
       });
-      return content;
     }
     catch (Exception e)
     {

@@ -36,9 +36,7 @@ internal static class Commands
               CREATE (lead)-[r2:HAS_ORDER {created: createdOn}]->(o)
               RETURN lead, o, r2
             }
-            RETURN o {
-
-            } AS order
+            RETURN o.id AS Order
         "},
         { UpdateOne, @"
           WITH apoc.json.path($order) AS _order
@@ -48,7 +46,7 @@ internal static class Commands
             ON MATCH SET o += _order
             RETURN o
           }
-          RETURN o AS order
+          RETURN o.id AS Order
         "}
     };
 }

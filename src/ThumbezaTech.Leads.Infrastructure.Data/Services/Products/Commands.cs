@@ -16,7 +16,7 @@ internal static class Commands
             ON CREATE SET p.created = timestamp(), p += product
             RETURN p
           }
-          RETURN p AS Product
+          RETURN p.id AS Product
         "},
         { 
           UpdateOne, @"
@@ -27,7 +27,7 @@ internal static class Commands
             ON MATCH SET p += product
             RETURN p
           }
-          RETURN p AS product
+          RETURN p.id AS Product
         "}
     };
 }

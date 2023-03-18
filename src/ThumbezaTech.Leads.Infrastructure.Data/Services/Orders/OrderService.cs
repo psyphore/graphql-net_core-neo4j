@@ -4,10 +4,10 @@ using ThumbezaTech.Leads.Domain.OrderAggregate;
 namespace ThumbezaTech.Leads.Infrastructure.Data.Services.Orders;
 internal sealed class OrderService : IOrderService
 {
-  private readonly IRepository<Order> _repository;
+  private readonly INeo4jDataAccess _data;
   private const string Label = nameof(Order);
 
-  public OrderService(IRepository<Order> repository) => _repository = repository;
+  public OrderService(INeo4jDataAccess data) => _data = data;
 
   public async ValueTask<Result> CreateOrderAsync(Order order, CancellationToken cancellationToken)
   {
@@ -17,13 +17,10 @@ internal sealed class OrderService : IOrderService
       { nameof(Order.LineItems), order.LineItems.Select(li => new { li.ProductId, li.Price.Currency, li.Price.Amount }).Serialize() },
       { nameof(Order.Customer), order.Customer?.Serialize() ?? default! },
     };
-
     var statement = Commands.Options[Commands.SaveOne].Trim();
-    var records = await _repository.Write(statement, input, cancellationToken);
-    var payload = records.Select(record => record.ProcessRecords<string>(Label));
-
+    var payload = await _data.ExecuteWriteTransactionAsync<string>(statement, input);
     return payload.Any()
-        ? Result.SuccessWithMessage(payload.First())
+        ? Result.SuccessWithMessage(payload)
         : Result.NotFound();
   }
 
@@ -33,13 +30,10 @@ internal sealed class OrderService : IOrderService
     {
       { nameof(id), id },
     };
-
     var statement = Queries.Options[Queries.LeadOrders].Trim();
-    var records = await _repository.Read(statement, Query, cancellationToken);
-    var payload = records.Where(record => record is not null).Select(record => record.ProcessRecords<Order>(Label));
-
+    var payload = await _data.ExecuteReadTransactionAsync<Order>(statement, $"{Label}s", Query);
     return payload.Any()
-        ? Result.Success(payload)
+        ? Result.Success(payload.Distinct())
         : Result.NotFound();
   }
 
@@ -49,11 +43,8 @@ internal sealed class OrderService : IOrderService
     {
       { nameof(id), id },
     };
-
     var statement = Queries.Options[Queries.LeadOrders].Trim();
-    var records = await _repository.Read(statement, Query, cancellationToken);
-    var payload = records.Where(record => record is not null).Select(record => record.ProcessRecords<Order>($"{Label}s"));
-
+    var payload = await _data.ExecuteReadTransactionAsync<Order>(statement, $"{Label}s", Query);
     return payload.Any()
         ? Result.Success(payload.First())
         : Result.NotFound();
@@ -61,12 +52,8 @@ internal sealed class OrderService : IOrderService
 
   public async ValueTask<Result<IEnumerable<Order>>> GetOrdersAsync(CancellationToken cancellationToken)
   {
-    Dictionary<string, object> Query = new();
-
     var statement = Queries.Options[Queries.LeadOrders].Trim();
-    var records = await _repository.Read(statement, Query, cancellationToken);
-    var payload = records.Where(record => record is not null).Select(record => record.ProcessRecords<Order>($"{Label}s"));
-
+    var payload = await _data.ExecuteReadTransactionAsync<Order>(statement, $"{Label}s", null!);
     return payload.Any()
         ? Result.Success(payload.Distinct())
         : Result.NotFound();
@@ -80,13 +67,10 @@ internal sealed class OrderService : IOrderService
       { nameof(Order.LineItems), order.LineItems.Select(li => new { li.ProductId, li.Price.Currency, li.Price.Amount }).Serialize() },
       { nameof(Order.Customer), order.Customer?.Serialize() ?? default! },
     };
-
     var statement = Commands.Options[Commands.UpdateOne].Trim();
-    var records = await _repository.Write(statement, input, cancellationToken);
-    var payload = records.Select(record => record.ProcessRecords<string>(Label));
-
-    return payload.Any()
-        ? Result.SuccessWithMessage(payload.First())
+    var payload = await _data.ExecuteWriteTransactionAsync<string>(statement, input);
+    return payload is not null
+        ? Result.SuccessWithMessage(payload)
         : Result.NotFound();
   }
 }
