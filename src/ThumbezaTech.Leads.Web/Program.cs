@@ -16,6 +16,7 @@ builder.Services.AddApplicationInsightsTelemetry();
 builder.Services.AddApplication();
 builder.Services.AddGraphQL();
 builder.Services.AddDatabaseInfrastructure(builder.Configuration.GetSection("Neo4J"));
+builder.Services.AddCacheInfrastructure(builder.Configuration["Redis"]);
 builder.Services.AddEmailInfrastructure(builder.Configuration.GetSection("Smtp"));
 
 var app = builder.Build();
