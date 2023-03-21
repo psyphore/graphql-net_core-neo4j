@@ -43,12 +43,23 @@ public sealed class Lead : BaseEntity, IAggregateRoot
     DateOfBirth = Guard.Against.OutOfSQLDateRange(lead.DateOfBirth.DateTime, nameof(DateOfBirth));
     Active = lead.Active;
 
+    Contacts = lead.Contacts;
+    Addresses = lead.Addresses;
+
     Events.Add(new LeadUpdatedEvent(lead));
   }
 
   public void Delete() => Events.Add(new LeadDeletedEvent(this));
 
-  public void Activate() => Events.Add(new LeadActivedEvent(Id));
+  public void Activate()
+  {
+    Active = true;
+    Events.Add(new LeadActivedEvent(Id));
+  }
 
-  public void Abandon() => Events.Add(new LeadAbandonedEvent(Id));
+  public void Abandon()
+  {
+    Active = false;
+    Events.Add(new LeadAbandonedEvent(Id));
+  }
 }

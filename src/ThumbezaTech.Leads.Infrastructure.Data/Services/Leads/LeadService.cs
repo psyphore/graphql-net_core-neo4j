@@ -1,4 +1,6 @@
-﻿using ThumbezaTech.Leads.Application.Leads;
+﻿using Mediator;
+
+using ThumbezaTech.Leads.Application.Leads;
 using ThumbezaTech.Leads.Domain.LeadAggregate;
 
 namespace ThumbezaTech.Leads.Infrastructure.Data.Services.Leads;
@@ -6,9 +8,11 @@ namespace ThumbezaTech.Leads.Infrastructure.Data.Services.Leads;
 internal sealed class LeadService : ILeadService
 {
   private readonly INeo4jDataAccess _data;
+  private readonly IPublisher _publisher;
   private const string Label = nameof(Lead);
 
-  public LeadService(INeo4jDataAccess data) => _data = data;
+  public LeadService(INeo4jDataAccess data, IPublisher publisher)
+    => (_data, _publisher) = (data, publisher);
 
   public async ValueTask<Result<Lead>> GetLeadByIdAsync(string id, CancellationToken cancellationToken = default)
   {
@@ -47,12 +51,19 @@ internal sealed class LeadService : ILeadService
 
   public async ValueTask<Result> CreateALeadAsync(Lead lead, CancellationToken cancellationToken = default)
   {
+    var events = lead.GetEvents();
+    lead.ClearEvents();
+
     Dictionary<string, object> input = new()
     {
       { nameof(Lead), lead.Serialize() },
     };
     var statement = Commands.Options[Commands.SaveOne].Trim();
     var payload = await _data.ExecuteWriteTransactionAsync<string>(statement, input);
+    foreach (var item in events)
+    {
+      await _publisher.Publish(item, cancellationToken);
+    }
     return payload.Any()
         ? Result.SuccessWithMessage(payload)
         : Result.NotFound();
@@ -60,14 +71,22 @@ internal sealed class LeadService : ILeadService
 
   public async ValueTask<Result> UpdateLeadAsync(Lead lead, CancellationToken cancellationToken = default)
   {
+    var events = lead.GetEvents();
+    lead.ClearEvents();
+
     Dictionary<string, object> input = new()
     {
       { nameof(Lead), lead.Serialize() },
     };
     var statement = Commands.Options[Commands.UpdateOne].Trim();
     var payload = await _data.ExecuteWriteTransactionAsync<string>(statement, input);
+    foreach (var item in events)
+    {
+      await _publisher.Publish(item, cancellationToken);
+    }
     return payload.Any()
         ? Result.SuccessWithMessage(payload)
         : Result.NotFound();
   }
+
 }

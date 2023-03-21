@@ -2,6 +2,8 @@
 
 using Neo4j.Driver;
 
+using ThumbezaTech.Leads.SharedKernel;
+
 namespace ThumbezaTech.Leads.Infrastructure.Data.Common;
 
 // https://github.com/chintan196/DotnetCore.Neo4j
