@@ -11,6 +11,7 @@ internal sealed class CreateLeadCommandHandler : ICommandHandler<CreateLeadComma
 
   public ValueTask<Result> Handle(CreateLeadCommand command, CancellationToken cancellationToken)
   {
+    Guard.Against.Null(command, nameof(command));
     return _service.CreateALeadAsync(Guard.Against.Null(command.Lead, nameof(command.Lead)), cancellationToken);
   }
 }

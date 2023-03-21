@@ -14,7 +14,9 @@ internal sealed class UpdateLeadCommandHandler : ICommandHandler<UpdateLeadComma
 
   public async ValueTask<Result> Handle(UpdateLeadCommand command, CancellationToken cancellationToken)
   {
-    var matched = await _sender.Send(new GetLeadByIdQuery(command.Lead.Id), cancellationToken);
+    Guard.Against.Null(command, nameof(command));
+
+    var matched = await _sender.Send(new GetLeadByIdQuery(Guard.Against.Null(command.Lead).Id), cancellationToken);
     if (!matched.IsSuccess)
       return Result.NotFound();
 

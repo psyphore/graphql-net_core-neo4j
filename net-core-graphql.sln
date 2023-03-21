@@ -26,7 +26,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThumbezaTech.Leads.ClientLi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThumbezaTech.Leads.Web.Server", "src\ThumbezaTech.Leads.Web.Server\ThumbezaTech.Leads.Web.Server.csproj", "{CFE53CB1-AF21-468D-9AA8-3518DADAF002}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThumbezaTech.Leads.Infrastructure.Email", "src\ThumbezaTech.Leads.Infrastructure.Email\ThumbezaTech.Leads.Infrastructure.Email.csproj", "{6891AD47-BDEC-4B82-A4AE-72A37084D55B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThumbezaTech.Leads.Infrastructure.Email", "src\ThumbezaTech.Leads.Infrastructure.Email\ThumbezaTech.Leads.Infrastructure.Email.csproj", "{6891AD47-BDEC-4B82-A4AE-72A37084D55B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B83D5E22-B62C-4D37-BCC1-E6CF0326F1F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThumbezaTech.Leads.IntegrationTests", "tests\ThumbezaTech.Leads.IntegrationTests\ThumbezaTech.Leads.IntegrationTests.csproj", "{EA3FBE8E-B5B1-46EF-BB66-F01F8CE39662}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThumbezaTech.Leads.UnitTests", "tests\ThumbezaTech.Leads.UnitTests\ThumbezaTech.Leads.UnitTests.csproj", "{F0C933A6-BC48-41B9-A1F7-DC31F8224E0A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -70,6 +76,14 @@ Global
 		{6891AD47-BDEC-4B82-A4AE-72A37084D55B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6891AD47-BDEC-4B82-A4AE-72A37084D55B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6891AD47-BDEC-4B82-A4AE-72A37084D55B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA3FBE8E-B5B1-46EF-BB66-F01F8CE39662}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA3FBE8E-B5B1-46EF-BB66-F01F8CE39662}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA3FBE8E-B5B1-46EF-BB66-F01F8CE39662}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA3FBE8E-B5B1-46EF-BB66-F01F8CE39662}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0C933A6-BC48-41B9-A1F7-DC31F8224E0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0C933A6-BC48-41B9-A1F7-DC31F8224E0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0C933A6-BC48-41B9-A1F7-DC31F8224E0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0C933A6-BC48-41B9-A1F7-DC31F8224E0A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -84,6 +98,8 @@ Global
 		{8B5C5C06-1E18-4761-86DC-2A7269678020} = {85A82560-F32F-4DCB-B9B9-85E495DD2928}
 		{CFE53CB1-AF21-468D-9AA8-3518DADAF002} = {85A82560-F32F-4DCB-B9B9-85E495DD2928}
 		{6891AD47-BDEC-4B82-A4AE-72A37084D55B} = {85A82560-F32F-4DCB-B9B9-85E495DD2928}
+		{EA3FBE8E-B5B1-46EF-BB66-F01F8CE39662} = {B83D5E22-B62C-4D37-BCC1-E6CF0326F1F4}
+		{F0C933A6-BC48-41B9-A1F7-DC31F8224E0A} = {B83D5E22-B62C-4D37-BCC1-E6CF0326F1F4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {744CFD8C-C0A1-4301-B1A8-A3CFDFBE9D27}
