@@ -25,4 +25,10 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ThumbezaTech.Leads.Infrastructure.Data\ThumbezaTech.Leads.Infrastructure.Data.csproj" />
+    <ProjectReference Include="..\..\src\ThumbezaTech.Leads.Infrastructure.Email\ThumbezaTech.Leads.Infrastructure.Email.csproj" />
+    <ProjectReference Include="..\ThumbezaTech.Leads.UnitTests\ThumbezaTech.Leads.UnitTests.csproj" />
+  </ItemGroup>
+
 </Project>
