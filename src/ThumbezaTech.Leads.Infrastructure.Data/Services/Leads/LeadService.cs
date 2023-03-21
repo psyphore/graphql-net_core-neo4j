@@ -1,16 +1,14 @@
 ﻿using ThumbezaTech.Leads.Application.Leads;
-using ThumbezaTech.Leads.Domain.AddressValueObject;
 using ThumbezaTech.Leads.Domain.LeadAggregate;
 
 namespace ThumbezaTech.Leads.Infrastructure.Data.Services.Leads;
+
 internal sealed class LeadService : ILeadService
 {
   private readonly INeo4jDataAccess _data;
-  private readonly IRepository<Lead> _repository;
   private const string Label = nameof(Lead);
 
-  public LeadService(IRepository<Lead> repository, INeo4jDataAccess data)
-    => (_repository, _data) = (repository, data);
+  public LeadService(INeo4jDataAccess data) => _data = data;
 
   public async ValueTask<Result<Lead>> GetLeadByIdAsync(string id, CancellationToken cancellationToken = default)
   {
