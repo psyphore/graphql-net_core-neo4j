@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
 using Neo4j.Driver;
-using Neo4j.Driver.Experimental;
 
 using ThumbezaTech.Leads.SharedKernel.Interfaces;
 
@@ -26,8 +25,9 @@ internal sealed class Repository<T> : IRepository<T>
   public async ValueTask CreateIndicesAsync(string[] labels)
   {
     labels = !labels.Any() ? new[] { typeof(T).Name.ToString() } : labels;
+    using var session = GetSession(AccessMode.Write);
     foreach (var query in labels.Select(l => string.Format("CREATE INDEX ON :{0}(id)", l)))
-      await _driver.ExecutableQuery(query).ExecuteAsync();
+      await session.ExecuteWriteAsync(r => r.RunAsync(query, null!));
   }
 
   private IAsyncSession GetSession(AccessMode mode)
