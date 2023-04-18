@@ -1,0 +1,14 @@
+﻿query get_products {
+  list_products {
+    nodes {
+      id
+      name
+      price {
+        amount
+        currency
+      }
+      sku
+      tags
+    }
+  }
+}

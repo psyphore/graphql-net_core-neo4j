@@ -1,43 +1,94 @@
-# GraphQL - .Net Core 3.1 + Neo4J 4.1
-this is my take on GraphQL and .net core 3.1
-stack: 
-- .Net core 3.1
-- Neo4j-driver 4.1 
-- HotChocolate GraphQL 10.5
+# GraphQL - .Net 6 + Neo4J 5.5
+
+This is my 2nd take on GraphQL with dotnet 6 and Neo4J Graph Database
+I will loosely follow the Domain Driven Design pattern.
+
+stack:
+
+- dotnet 6 (LTS)
+- Neo4j-driver 5.5
+- HotChocolate GraphQL 13.0.5
+- RedisStack 6.2.6v2
 
 ## Project Structure
-```
+
+```text
 net-core-graphql
 |
-|__ Models
-
-|
-|__ IoC
+|__ .Leads.SharedKernel
     |
-    |__ GraphQLCore
-
-    |
-    |__ BusinessServices
-
-    |
-    |__ DataAccess
+    |__ .Leads.Domain
+        |
+        |__ .Leads.Application
+            |
+            |__ .Leads.Infrastructure.Data
+            |
+            |__ .Leads.Infrastructure.Email
+            |
+            |__ .Leads.Web.GraphQL
+        |
+        |__ .Leads.Web
 ```
 
 ## Environment
-```json
-"ConnectionStrings": {
-    "BoltURL": "bolt://localhost:7687",
-    "Username": "neo4j",
-    "Password": "n4j",
-    "databaseName":  "neo4j" 
-  },
-```
+
+- Server Side Environment
+
+  ```json
+    {
+      "Neo4J": {
+        "BoltURL": "neo4j://localhost:7687",
+        "Username": "lead-user",
+        "Password": "thumbeza-tech-l3ad5",
+        "databaseName": "leads"
+      },
+      "Redis": {
+        "Host": "localhost",
+        "Port": 6379
+      },
+      "Smtp": {
+        "Sender": "no-reply@leads.thumbezatech.co.za",
+        "SenderName": "Thumbeza Tech",
+        "SmtpServer": "localhost",
+        "Port": 1025
+      }
+    }
+  ```
+
+- Client Side Environment
+
+    ```json
+        {
+          "LeadsGraphQLClient": {
+            "Url": "https://localhost:7234/graphql/",
+            "Ws": "wss://localhost:7234/graphql/",
+            "Key": "Blazor Web Server"
+          }
+        }
+    ```
+
+## Tips
+
+- Some things regarding StrawberryShake.Blazor are not documented well to understand the flow,
+- So to get the solution working on client side,
+  - if you have made changes to the graphql schema (e.g. introduced metadata to your handlers), you need to update the client i.e. Generated Client
+  - update the schema
+  
+  - ```sh
+    $> dotnet graphql update -u https://localhost:7234/graphql/ -p ./Client -j
+    ```
+  
+  - create a sample call on Banana cake pop client, test your query, mutation or subs
+  - create a .graphql file in the ClientLibrary/Client based on your test
+  - build to generate updated client
+  
+  - ```sh
+    $> dotnet build
+    ```
 
 ## Learning resources
-1. [GraphQL.NET](https://graphql-dotnet.github.io/)
-1. [GraphQL Authorization](https://github.com/graphql-dotnet/authorization)
-1. [Building GraphQL API](https://fullstackmark.com/post/17/building-a-graphql-api-with-aspnet-core-2-and-entity-framework-core)
+
 1. [How to GraphQL](https://www.howtographql.com/)
-1. [Neo4J .net driver](https://neo4j.com/developer/dotnet/)
-1. [NetCore 3.0 GraphQL](https://dev.to/dotnet/learn-how-you-can-use-graphql-in-net-core-and-c-4h96) 
-1. [GraphQL.NET + .NET Core](https://code-maze.com/graphql-aspnetcore-basics/)
+1. [Hot Chocolate](https://chillicream.com/docs/hotchocolate/v13/get-started-with-graphql-in-net-core)
+1. [Neo4J dotnet driver](https://neo4j.com/developer/dotnet/)
+1. [Awesome Blazor Browser Resources](https://jsakamoto.github.io/awesome-blazor-browser/?k=)

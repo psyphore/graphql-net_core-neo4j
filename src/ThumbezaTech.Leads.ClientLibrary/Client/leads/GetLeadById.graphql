@@ -1,0 +1,19 @@
+query GetLead($id: String!) {
+  get_lead(id: $id) {
+    id
+    firstName
+    dateOfBirth
+    active
+    addresses {
+      line1
+      line2
+      suburb
+      zip
+      country
+    }
+    contacts {
+      number
+      email
+    }
+  }
+}

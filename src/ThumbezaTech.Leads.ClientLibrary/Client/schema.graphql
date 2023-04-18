@@ -1,0 +1,393 @@
+﻿schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+type Query {
+  "Search for products"
+  search_products(query: String! pageNumber: Int = 1 pageSize: Int = 50 "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: ProductVmFilterInput): Search_productsConnection
+  "Get all products"
+  list_products("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: ProductVmFilterInput): List_productsConnection
+  "Get product by Id"
+  get_product(id: String!): ProductVm!
+  "Get all orders"
+  list_orders("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: OrderVmFilterInput): List_ordersConnection
+  "Get order by id"
+  get_order(id: String!): OrderVm!
+  "Get customer orders"
+  get_customer_orders(id: String!): OrderVm!
+  "Search for leads"
+  search_leads(query: String! "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: LeadVmFilterInput): Search_leadsConnection
+  "Get all leads"
+  list_leads("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: LeadVmFilterInput): List_leadsConnection
+  "Get lead by Id"
+  get_lead(id: String!): LeadVm!
+}
+
+type Mutation {
+  "Add a single product"
+  add_product(product: ProductVmInput! order: OrderVmInput!): String!
+  "Update a single product"
+  update_product(product: ProductVmInput! order: OrderVmInput!): String!
+  "Create a lead"
+  create_lead(lead: LeadVmInput!): String!
+  "Update a lead"
+  update_lead(lead: LeadVmInput!): String!
+}
+
+type Subscription {
+  "published product subscription"
+  product_subs: ProductVm!
+  "updated order subscription"
+  order_subs: OrderVm!
+  "published lead subscription"
+  lead_subs: LeadVm!
+}
+
+input ProductVmFilterInput {
+  and: [ProductVmFilterInput!]
+  or: [ProductVmFilterInput!]
+  id: StringOperationFilterInput
+  name: StringOperationFilterInput
+  price: MoneyFilterInput
+  tags: ListStringOperationFilterInput
+  sku: StringOperationFilterInput
+}
+
+"A connection to a list of items."
+type Search_productsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [Search_productsEdge!]
+  "A flattened list of the nodes."
+  nodes: [ProductVm!]
+}
+
+"A connection to a list of items."
+type List_productsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [List_productsEdge!]
+  "A flattened list of the nodes."
+  nodes: [ProductVm!]
+}
+
+input OrderVmFilterInput {
+  and: [OrderVmFilterInput!]
+  or: [OrderVmFilterInput!]
+  id: StringOperationFilterInput
+  customerId: StringOperationFilterInput
+  lineItems: ListFilterInputTypeOfLineItemVmFilterInput
+}
+
+"A connection to a list of items."
+type List_ordersConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [List_ordersEdge!]
+  "A flattened list of the nodes."
+  nodes: [OrderVm!]
+}
+
+input LeadVmFilterInput {
+  and: [LeadVmFilterInput!]
+  or: [LeadVmFilterInput!]
+  id: StringOperationFilterInput
+  firstName: StringOperationFilterInput
+  lastName: StringOperationFilterInput
+  dateOfBirth: DateTimeOperationFilterInput
+  active: BooleanOperationFilterInput
+  contacts: ListFilterInputTypeOfContactFilterInput
+  addresses: ListFilterInputTypeOfAddressFilterInput
+}
+
+"A connection to a list of items."
+type Search_leadsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [Search_leadsEdge!]
+  "A flattened list of the nodes."
+  nodes: [LeadVm!]
+}
+
+"A connection to a list of items."
+type List_leadsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [List_leadsEdge!]
+  "A flattened list of the nodes."
+  nodes: [LeadVm!]
+}
+
+input StringOperationFilterInput {
+  and: [StringOperationFilterInput!]
+  or: [StringOperationFilterInput!]
+  eq: String
+  neq: String
+  contains: String
+  ncontains: String
+  in: [String]
+  nin: [String]
+  startsWith: String
+  nstartsWith: String
+  endsWith: String
+  nendsWith: String
+}
+
+input MoneyFilterInput {
+  and: [MoneyFilterInput!]
+  or: [MoneyFilterInput!]
+  currency: StringOperationFilterInput
+  amount: DecimalOperationFilterInput
+}
+
+input ListStringOperationFilterInput {
+  all: StringOperationFilterInput
+  none: StringOperationFilterInput
+  some: StringOperationFilterInput
+  any: Boolean
+}
+
+"Information about pagination in a connection."
+type PageInfo {
+  "Indicates whether more edges exist following the set defined by the clients arguments."
+  hasNextPage: Boolean!
+  "Indicates whether more edges exist prior the set defined by the clients arguments."
+  hasPreviousPage: Boolean!
+  "When paginating backwards, the cursor to continue."
+  startCursor: String
+  "When paginating forwards, the cursor to continue."
+  endCursor: String
+}
+
+type ProductVm {
+  id: String!
+  name: String!
+  price: Money
+  tags: [String!]!
+  sku: String!
+}
+
+"An edge in a connection."
+type Search_productsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: ProductVm!
+}
+
+"An edge in a connection."
+type List_productsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: ProductVm!
+}
+
+input ListFilterInputTypeOfLineItemVmFilterInput {
+  all: LineItemVmFilterInput
+  none: LineItemVmFilterInput
+  some: LineItemVmFilterInput
+  any: Boolean
+}
+
+type OrderVm {
+  id: String!
+  customerId: String!
+  lineItems: [LineItemVm!]!
+}
+
+"An edge in a connection."
+type List_ordersEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: OrderVm!
+}
+
+input DateTimeOperationFilterInput {
+  eq: DateTime
+  neq: DateTime
+  in: [DateTime]
+  nin: [DateTime]
+  gt: DateTime
+  ngt: DateTime
+  gte: DateTime
+  ngte: DateTime
+  lt: DateTime
+  nlt: DateTime
+  lte: DateTime
+  nlte: DateTime
+}
+
+input BooleanOperationFilterInput {
+  eq: Boolean
+  neq: Boolean
+}
+
+input ListFilterInputTypeOfContactFilterInput {
+  all: ContactFilterInput
+  none: ContactFilterInput
+  some: ContactFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfAddressFilterInput {
+  all: AddressFilterInput
+  none: AddressFilterInput
+  some: AddressFilterInput
+  any: Boolean
+}
+
+type LeadVm {
+  id: String!
+  firstName: String!
+  lastName: String!
+  dateOfBirth: DateTime!
+  active: Boolean!
+  contacts: [Contact!]
+  addresses: [Address!]
+}
+
+"An edge in a connection."
+type Search_leadsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: LeadVm!
+}
+
+"An edge in a connection."
+type List_leadsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: LeadVm!
+}
+
+input DecimalOperationFilterInput {
+  eq: Decimal
+  neq: Decimal
+  in: [Decimal]
+  nin: [Decimal]
+  gt: Decimal
+  ngt: Decimal
+  gte: Decimal
+  ngte: Decimal
+  lt: Decimal
+  nlt: Decimal
+  lte: Decimal
+  nlte: Decimal
+}
+
+input LineItemVmFilterInput {
+  and: [LineItemVmFilterInput!]
+  or: [LineItemVmFilterInput!]
+  id: StringOperationFilterInput
+  productId: StringOperationFilterInput
+  value: MoneyFilterInput
+}
+
+"The `DateTime` scalar represents an ISO-8601 compliant date time type."
+scalar DateTime
+
+input ContactFilterInput {
+  and: [ContactFilterInput!]
+  or: [ContactFilterInput!]
+  number: StringOperationFilterInput
+  email: StringOperationFilterInput
+}
+
+input AddressFilterInput {
+  and: [AddressFilterInput!]
+  or: [AddressFilterInput!]
+  line1: StringOperationFilterInput
+  line2: StringOperationFilterInput
+  line3: StringOperationFilterInput
+  suburb: StringOperationFilterInput
+  zip: StringOperationFilterInput
+  country: StringOperationFilterInput
+}
+
+"The built-in `Decimal` scalar type."
+scalar Decimal
+
+type Address {
+  line1: String!
+  line2: String!
+  line3: String
+  suburb: String!
+  zip: String!
+  country: String!
+}
+
+input LeadVmInput {
+  id: String!
+  firstName: String!
+  lastName: String!
+  dateOfBirth: DateTime!
+  active: Boolean!
+  contacts: [ContactInput!]
+  addresses: [AddressInput!]
+}
+
+input OrderVmInput {
+  id: String!
+  customerId: String!
+  lineItems: [LineItemVmInput!]!
+}
+
+input ProductVmInput {
+  id: String!
+  name: String!
+  price: MoneyInput
+  tags: [String!]!
+  sku: String!
+}
+
+type Money {
+  currency: String!
+  amount: Decimal!
+}
+
+type LineItemVm {
+  id: String!
+  productId: String!
+  value: Money!
+}
+
+type Contact {
+  number: String
+  email: String
+}
+
+input MoneyInput {
+  currency: String!
+  amount: Decimal!
+}
+
+input LineItemVmInput {
+  id: String!
+  productId: String!
+  value: MoneyInput!
+}
+
+input AddressInput {
+  line1: String!
+  line2: String!
+  line3: String
+  suburb: String!
+  zip: String!
+  country: String!
+}
+
+input ContactInput {
+  number: String
+  email: String
+}

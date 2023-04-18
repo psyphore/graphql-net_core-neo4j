@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>4b5a1f53-e2bf-4e98-8aab-7a7ca54d9e1b</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <GraphQL Remove="Client\GetProducts.graphql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.0.1" />
+    <PackageReference Include="Radzen.Blazor" Version="4.9.2" />
+    <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ThumbezaTech.Leads.ClientLibrary\ThumbezaTech.Leads.ClientLibrary.csproj" />
+  </ItemGroup>
+
+</Project>

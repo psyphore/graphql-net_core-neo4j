@@ -1,0 +1,43 @@
+﻿@page "/products/list"
+
+@*https://blazor.radzen.com/get-started*@
+
+<section>
+    <div class="container-fluid">
+        <UseGet_products Context="product">
+
+            <LoadingContent>
+                <span class="h5">Fetching Products... Please wait</span>
+            </LoadingContent>
+
+            <ErrorContent>
+                <p class="h5">Something went wrong...</p>
+                <p class="text-warning">@product.First().Message</p>
+            </ErrorContent>
+
+            <ChildContent>
+                <RadzenDataGrid Data="@product.List_products.Nodes"
+                                TItem="IGet_products_List_products_Nodes"
+                                AllowFiltering
+                                AllowSorting
+                                PageSize="10"
+                                AllowPaging
+                                PagerHorizontalAlign="HorizontalAlign.Left"
+                                AllowGrouping
+                                ShowPagingSummary>
+                    <Columns>
+                        <RadzenDataGridColumn TItem="IGet_products_List_products_Nodes" Property="@nameof(IGet_products_List_products_Nodes.Id)" Title="ID" />
+                        <RadzenDataGridColumn TItem="IGet_products_List_products_Nodes" Property="@nameof(IGet_products_List_products_Nodes.Name)" Title="Name" />
+                        <RadzenDataGridColumn TItem="IGet_products_List_products_Nodes" Title="Price">
+                            <Template Context="item">
+                                <span>@($"{item.Price.Currency} {item.Price.Amount:C}")</span>
+                            </Template>
+                            </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="IGet_products_List_products_Nodes" Property="@nameof(IGet_products_List_products_Nodes.Sku)" Title="SKU" />
+
+                    </Columns>
+                </RadzenDataGrid>
+            </ChildContent>
+        </UseGet_products>
+    </div>
+</section>
