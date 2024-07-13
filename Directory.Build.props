@@ -1,0 +1,20 @@
+<Project>
+  <PropertyGroup>
+    <!--<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>-->
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <NoWarn>1591</NoWarn>
+    <!-- Remove this to turn on warnings for missing XML Comments -->
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
+    <Authors>Sipho Hlophe</Authors>
+    <Company>Thumbeza Technology</Company>
+  </PropertyGroup>
+</Project>
