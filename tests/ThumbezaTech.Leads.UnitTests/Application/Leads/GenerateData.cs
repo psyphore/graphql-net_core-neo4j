@@ -17,19 +17,17 @@ public static class GenerateData
       _faker.Person.LastName,
       _faker.Person.DateOfBirth,
       false,
-      new[]
-      {
+      [
         new Contact(_faker.Person.Phone, _faker.Person.Email)
-      },
-      new[]
-      {
+      ],
+      [
         new Address(_faker.Address.BuildingNumber(),
                     _faker.Address.StreetAddress(),
                     default!,
                     _faker.Address.StreetSuffix(),
                     _faker.Address.ZipCode(),
                     _faker.Address.Country())
-      })
+      ])
     { Id = _faker.Random.Uuid().ToString() })
     ;
 

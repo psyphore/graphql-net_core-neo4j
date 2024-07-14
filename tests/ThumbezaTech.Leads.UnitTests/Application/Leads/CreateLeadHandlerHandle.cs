@@ -2,7 +2,7 @@
 
 using FluentAssertions;
 
-using Moq;
+using NSubstitute;
 
 using ThumbezaTech.Leads.Application.Leads;
 using ThumbezaTech.Leads.Domain.LeadAggregate;
@@ -11,12 +11,12 @@ namespace ThumbezaTech.Leads.UnitTests.Application.Leads;
 public class CreateLeadHandlerHandle
 {
   private readonly CreateLeadCommandHandler _handler;
-  private readonly Mock<ILeadService> _service;
+  private readonly ILeadService _service;
 
   public CreateLeadHandlerHandle()
   {
-    _service = new Mock<ILeadService>();
-    _handler = new CreateLeadCommandHandler(_service.Object);
+    _service = Substitute.For<ILeadService>();
+    _handler = new CreateLeadCommandHandler(_service);
   }
 
   [Fact]
@@ -39,12 +39,12 @@ public class CreateLeadHandlerHandle
     var lead = GenerateData.GetLead;
 
     _service
-      .Setup(s => s.CreateALeadAsync(It.IsAny<Lead>(), CancellationToken.None))
-      .ReturnsAsync(Result.SuccessWithMessage(lead.Id));
+      .CreateALeadAsync(Arg.Any<Lead>(), CancellationToken.None)
+      .Returns(Result.SuccessWithMessage(lead.Id));
 
     Func<Task> act = async () => await _handler.Handle(new CreateLeadCommand(lead), CancellationToken.None);
     await act.Should().NotThrowAsync<ArgumentNullException>();
 
-    _service.Verify(s => s.CreateALeadAsync(It.IsAny<Lead>(), CancellationToken.None), Times.Once);
+    await _service.Received().CreateALeadAsync(Arg.Any<Lead>(), CancellationToken.None);
   }
 }

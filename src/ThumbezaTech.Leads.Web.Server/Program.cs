@@ -1,10 +1,15 @@
-﻿using Serilog;
+﻿using MudBlazor.Services;
+
+using Serilog;
 
 using ThumbezaTech.Leads.Web.Server.Features.Orders;
 using ThumbezaTech.Leads.Web.Server.Features.Products;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
+builder.Host.UseSerilog((context, config) =>
+config.ReadFrom.Configuration(context.Configuration));
+
+Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-ZA");
 
 // Add services to the container.
 builder.Services.AddHttpContextAccessor();
@@ -15,6 +20,8 @@ builder.Services.AddMediatR(config =>
   config.RegisterServicesFromAssembly(typeof(Program).Assembly);
   config.Lifetime = ServiceLifetime.Scoped;
 });
+
+builder.Services.AddMudServices();
 
 builder.Services.AddLeadsGraphQLClient(builder.Configuration.GetSection("LeadsGraphQLClient"));
 
@@ -35,6 +42,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
   options.SupportedUICultures = supportedCultures;
 });
 
+builder.WebHost.UseStaticWebAssets();
 
 var app = builder.Build();
 app.UseSerilogRequestLogging();
@@ -47,18 +55,13 @@ if (!app.Environment.IsDevelopment())
   app.UseHsts();
 }
 
-app.UseRequestLocalization(new RequestLocalizationOptions
-{
-  DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("en-ZA"),
-  SupportedCultures = supportedCultures,
-  SupportedUICultures = supportedCultures
-});
-
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
 app.UseRouting();
+//app.UseAuthorization();
+//app.UseAuthorization();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");

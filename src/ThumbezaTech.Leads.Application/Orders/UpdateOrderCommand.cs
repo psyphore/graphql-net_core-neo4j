@@ -20,11 +20,11 @@ internal sealed class UpdateOrderCommandHandler : ICommandHandler<UpdateOrderCom
   {
     var matched = await _service.GetOrderAsync(query.Order.Id, cancellationToken);
     if (!matched.IsSuccess)
-      return Result.Error(matched.Errors.ToArray());
+      return Result.Error(new ErrorList(matched.Errors));
 
     foreach (var item in matched.Value.LineItems)
     {
-      var product = await _sender.Send(new GetProductByIdQuery(item.ProductId));
+      var product = await _sender.Send(new GetProductByIdQuery(item.ProductId)).ConfigureAwait(false);
       // item.Price;
     }
 

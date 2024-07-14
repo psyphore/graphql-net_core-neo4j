@@ -14,7 +14,7 @@ internal sealed class ShipmentService : IShipmentService
   {
     var statement = Queries.Options[Queries.GetAll].Trim();
     var payload = await _data.ExecuteReadTransactionAsync<Shipment>(statement, $"{Label}s", null!);
-    return payload.Any()
+    return payload.Count != 0
         ? Result.Success(payload)
         : Result.NotFound();
   }
@@ -53,7 +53,7 @@ internal sealed class ShipmentService : IShipmentService
     };
     var statement = Commands.Options[Commands.SaveOne].Trim();
     var payload = await _data.ExecuteWriteTransactionAsync<string>(statement, input);
-    return payload.Any()
+    return payload.Length != 0
         ? Result.SuccessWithMessage(payload)
         : Result.NotFound();
   }
@@ -66,7 +66,7 @@ internal sealed class ShipmentService : IShipmentService
     };
     var statement = Commands.Options[Commands.UpdateOne].Trim();
     var payload = await _data.ExecuteWriteTransactionAsync<string>(statement, input);
-    return payload.Any()
+    return payload.Length != 0
         ? Result.SuccessWithMessage(payload)
         : Result.NotFound();
   }

@@ -16,27 +16,28 @@
             </ErrorContent>
 
             <ChildContent>
-                <RadzenDataGrid Data="@product.List_products.Nodes"
-                                TItem="IGet_products_List_products_Nodes"
-                                AllowFiltering
-                                AllowSorting
-                                PageSize="10"
-                                AllowPaging
-                                PagerHorizontalAlign="HorizontalAlign.Left"
-                                AllowGrouping
-                                ShowPagingSummary>
-                    <Columns>
-                        <RadzenDataGridColumn TItem="IGet_products_List_products_Nodes" Property="@nameof(IGet_products_List_products_Nodes.Id)" Title="ID" />
-                        <RadzenDataGridColumn TItem="IGet_products_List_products_Nodes" Property="@nameof(IGet_products_List_products_Nodes.Name)" Title="Name" />
-                        <RadzenDataGridColumn TItem="IGet_products_List_products_Nodes" Title="Price">
-                            <Template Context="item">
-                                <span>@($"{item.Price.Currency} {item.Price.Amount:C}")</span>
-                            </Template>
-                            </RadzenDataGridColumn>
-                        <RadzenDataGridColumn TItem="IGet_products_List_products_Nodes" Property="@nameof(IGet_products_List_products_Nodes.Sku)" Title="SKU" />
+                <MudGrid>
+                    @foreach (var item in product.List_products.Nodes)
+                    {
+                        <MudItem md="3">
+                            <MudCard>
+                                <MudCardHeader>
+                                    <MudText>@item.Name</MudText>
+                                </MudCardHeader>
+                                <MudCardContent>
+                                    <MudText>@item.Price.Currency</MudText>
+                                    <MudText>@item.Price.Amount</MudText>
+                                    <MudText>@item.Sku</MudText>
+                                </MudCardContent>
+                                <MudCardActions>
+                                    <MudIconButton Icon="@Icons.Material.Filled.SwipeRightAlt" title="More"></MudIconButton>
+                                </MudCardActions>
+                            </MudCard>
 
-                    </Columns>
-                </RadzenDataGrid>
+
+                        </MudItem>
+                    }
+                </MudGrid>
             </ChildContent>
         </UseGet_products>
     </div>

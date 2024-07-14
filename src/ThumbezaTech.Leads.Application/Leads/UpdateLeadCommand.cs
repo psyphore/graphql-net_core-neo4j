@@ -1,4 +1,6 @@
-﻿using ThumbezaTech.Leads.Domain.LeadAggregate;
+﻿using FluentValidation;
+
+using ThumbezaTech.Leads.Domain.LeadAggregate;
 
 namespace ThumbezaTech.Leads.Application.Leads;
 
@@ -23,5 +25,24 @@ internal sealed class UpdateLeadCommandHandler : ICommandHandler<UpdateLeadComma
     matched.Value.Update(command.Lead);
 
     return await _service.UpdateLeadAsync(matched.Value, cancellationToken);
+  }
+}
+
+internal sealed class UpdateLeadCommandValidator : AbstractValidator<UpdateLeadCommand>
+{
+  public UpdateLeadCommandValidator()
+  {
+    RuleFor(m => m.Lead).NotNull();
+    RuleFor(m => m.Lead.FirstName).NotEmpty().NotNull();
+    RuleFor(m => m.Lead.LastName).NotEmpty().NotNull();
+    RuleFor(m => m.Lead.Id).NotEmpty().NotNull();
+    RuleFor(m => m.Lead.Active).Must(i => true);
+    
+    RuleFor(m => m.Lead.Contacts)
+      .NotEmpty()
+      .NotNull()
+      .Must(v => v.All(i => !string.IsNullOrEmpty(i.Number)));
+
+    RuleFor(m => m.Lead.DateOfBirth).InclusiveBetween(DateTimeOffset.MinValue, DateTimeOffset.Now);
   }
 }

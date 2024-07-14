@@ -20,7 +20,5 @@ internal sealed class SendEmailEventHandler : INotificationHandler<SendEmailEven
     };
 
     await _service.SendEmailAsync(message, cancellationToken);
-    //if (!sent.IsSuccess)
-    //  throw new 
   }
 }

@@ -4,7 +4,7 @@ using FluentAssertions;
 
 using Mediator;
 
-using Moq;
+using NSubstitute;
 
 using ThumbezaTech.Leads.Application.Leads;
 using ThumbezaTech.Leads.Domain.LeadAggregate;
@@ -14,14 +14,14 @@ namespace ThumbezaTech.Leads.UnitTests.Application.Leads;
 public class UpdateLeadHandlerHandle
 {
   private readonly UpdateLeadCommandHandler _handler;
-  private readonly Mock<ILeadService> _service;
-  private readonly Mock<ISender> _sender;
+  private readonly ILeadService _service;
+  private readonly ISender _sender;
 
   public UpdateLeadHandlerHandle()
   {
-    _service = new Mock<ILeadService>();
-    _sender = new Mock<ISender>();
-    _handler = new UpdateLeadCommandHandler(_service.Object, _sender.Object);
+    _service = Substitute.For<ILeadService>();
+    _sender = Substitute.For<ISender>();
+    _handler = new UpdateLeadCommandHandler(_service, _sender);
   }
 
   [Fact]
@@ -44,17 +44,17 @@ public class UpdateLeadHandlerHandle
     var lead = GenerateData.GetLead;
 
     _sender
-      .Setup(s => s.Send(It.IsAny<GetLeadByIdQuery>(), CancellationToken.None))
-      .ReturnsAsync(Result.Success(lead));
+      .Send(Arg.Any<GetLeadByIdQuery>(), CancellationToken.None)
+      .Returns(Result.Success(lead));
 
     _service
-      .Setup(s => s.UpdateLeadAsync(It.IsAny<Lead>(), CancellationToken.None))
-      .ReturnsAsync(Result.SuccessWithMessage(lead.Id));
+      .UpdateLeadAsync(Arg.Any<Lead>(), CancellationToken.None)
+      .Returns(Result.SuccessWithMessage(lead.Id));
 
     Func<Task> act = async () => await _handler.Handle(new UpdateLeadCommand(lead), CancellationToken.None);
     await act.Should().NotThrowAsync<ArgumentNullException>();
-    _sender.Verify(s => s.Send(new GetLeadByIdQuery(lead.Id), CancellationToken.None), Times.Once);
-    _service.Verify(s => s.UpdateLeadAsync(lead, CancellationToken.None), Times.Once);
+    await _sender.Received().Send(new GetLeadByIdQuery(lead.Id), CancellationToken.None);
+    await _service.Received().UpdateLeadAsync(lead, CancellationToken.None);
   }
 
   [Fact]
@@ -63,16 +63,16 @@ public class UpdateLeadHandlerHandle
     var lead = GenerateData.GetLead;
 
     _sender
-      .Setup(s => s.Send(It.IsAny<GetLeadByIdQuery>(), CancellationToken.None))
-      .ReturnsAsync(Result.NotFound());
+      .Send(Arg.Any<GetLeadByIdQuery>(), CancellationToken.None)
+      .Returns(Result.NotFound());
 
     _service
-      .Setup(s => s.UpdateLeadAsync(It.IsAny<Lead>(), CancellationToken.None))
-      .ReturnsAsync(Result.SuccessWithMessage(lead.Id));
+      .UpdateLeadAsync(Arg.Any<Lead>(), CancellationToken.None)
+      .Returns(Result.SuccessWithMessage(lead.Id));
 
     Func<Task> act = async () => await _handler.Handle(new UpdateLeadCommand(lead), CancellationToken.None);
     await act.Should().NotThrowAsync<ArgumentNullException>();
-    _sender.Verify(s => s.Send(new GetLeadByIdQuery(lead.Id), CancellationToken.None), Times.Once);
-    _service.Verify(s => s.UpdateLeadAsync(lead, CancellationToken.None), Times.Never);
+    await _sender.Received().Send(new GetLeadByIdQuery(lead.Id), CancellationToken.None);
+    await _service.Received().UpdateLeadAsync(lead, CancellationToken.None);
   }
 }

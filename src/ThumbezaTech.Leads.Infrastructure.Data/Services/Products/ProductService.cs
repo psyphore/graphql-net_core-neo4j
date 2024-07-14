@@ -20,7 +20,7 @@ internal sealed class ProductService : IProductService
     };
     var statement = Queries.Options[Queries.Search].Trim();
     var payload = await _data.ExecuteReadTransactionAsync<Product>(statement, $"{Label}s", Query);
-    return payload.Any()
+    return payload.Count != 0
         ? Result.Success(payload.Distinct())
         : Result.NotFound();
   }
@@ -29,7 +29,7 @@ internal sealed class ProductService : IProductService
   {
     var statement = Queries.Options[Queries.GetAll].Trim();
     var payload = await _data.ExecuteReadTransactionAsync<Product>(statement, $"{Label}s", null!);
-    return payload.Any()
+    return payload.Count != 0
         ? Result.Success(payload.Distinct())
         : Result.NotFound();
   }
@@ -55,7 +55,7 @@ internal sealed class ProductService : IProductService
     };
     var statement = Commands.Options[Commands.SaveOne].Trim();
     var payload = await _data.ExecuteWriteTransactionAsync<string>(statement, input);
-    return payload.Any()
+    return payload.Length != 0
         ? Result.SuccessWithMessage(payload)
         : Result.NotFound();
   }
@@ -68,7 +68,7 @@ internal sealed class ProductService : IProductService
     };
     var statement = Commands.Options[Commands.UpdateOne].Trim();
     var payload = await _data.ExecuteWriteTransactionAsync<string>(statement, input);
-    return payload.Any()
+    return payload.Length != 0
         ? Result.SuccessWithMessage(payload)
         : Result.NotFound();
   }

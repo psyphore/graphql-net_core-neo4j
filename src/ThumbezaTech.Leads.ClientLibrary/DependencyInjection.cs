@@ -11,7 +11,7 @@ public static class DependencyInjection
     section.Bind(config);
 
     services.AddSingleton(config);
-
+    
     services
       .AddLeadsClient(StrawberryShake.ExecutionStrategy.CacheFirst)
       .ConfigureHttpClient(client =>
@@ -28,8 +28,7 @@ public static class DependencyInjection
 
 public sealed record ClientConfiguration
 {
-  public string Url { get; set; } = default!;  
+  public string Url { get; set; } = default!;
   public string Ws { get; set; } = default!;
-
   public string Key { get; set; } = default!;
 }

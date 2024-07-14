@@ -1,16 +1,18 @@
 ﻿
+using System.Diagnostics.CodeAnalysis;
+
 using FluentValidation;
 
 namespace ThumbezaTech.Leads.Application.Common.Behaviours;
 
-internal sealed class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-where TRequest : IRequest<TResponse>
+internal sealed class ValidationBehaviour<TRequest, TResponse> : MessagePreProcessor<TRequest, TResponse>
+where TRequest : IValidate
 {
   private readonly IEnumerable<IValidator<TRequest>> _validators;
 
   public ValidationBehaviour(IEnumerable<IValidator<TRequest>> validators) => _validators = validators;
 
-  public async ValueTask<TResponse> Handle(TRequest message, CancellationToken cancellationToken, MessageHandlerDelegate<TRequest, TResponse> next)
+  protected override async ValueTask Handle(TRequest message, CancellationToken cancellationToken)
   {
     if (_validators.Any())
     {
@@ -22,6 +24,11 @@ where TRequest : IRequest<TResponse>
       if (failures.Count != 0)
         throw new ValidationException(failures);
     }
-    return await next(message, cancellationToken);
   }
+}
+
+
+public interface IValidate: IMessage
+{
+  bool IsValid([NotNullWhen(false)] out ValidationError? error);
 }
