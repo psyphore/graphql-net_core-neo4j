@@ -19,7 +19,7 @@ internal sealed class SearchForProductsQueryHandler : IQueryHandler<SearchForPro
 internal sealed class SearchForProductsQueryValidator: AbstractValidator<SearchForProductsQuery>
 {
 
-public SearchForProductsQueryValodator()
+public SearchForProductsQueryValidator()
 {
   RuleFor(m => m.Query).NotNull().NotEmpty();
 }
