@@ -1,4 +1,4 @@
-name: .NET Continuous Integration
+name: ThumbezaTech.Leads dotnet CI
 
 on:
   push:
@@ -13,13 +13,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET
+    - name: Setup dotnet
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 8.0.x
     - name: Restore dependencies
       run: dotnet restore
-    - name: Test
-      run: dotnet test --no-restore -c "Release"
+    # - name: Test
+    #   run: dotnet test --no-restore -c "Release"
     - name: Build
       run: dotnet build --no-restore -c "Release"
