@@ -17,13 +17,11 @@ jobs:
     - name: Setup dotnet
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
-
+        dotnet-version: 8.x
+        cache: true
     - name: Restore dependencies
-      run: dotnet restore
-    
+      run: dotnet restore --locked-mode 
     # - name: Test
     #   run: dotnet test --no-restore -c "Release"
-    
     - name: Build
       run: dotnet build --no-restore -c "Release"
