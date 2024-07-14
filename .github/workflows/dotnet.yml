@@ -20,7 +20,7 @@ jobs:
         dotnet-version: 8.x
         cache: true
     - name: Restore dependencies
-      run: dotnet restore --locked-mode 
+      run: dotnet restore
     # - name: Test
     #   run: dotnet test --no-restore -c "Release"
     - name: Build
