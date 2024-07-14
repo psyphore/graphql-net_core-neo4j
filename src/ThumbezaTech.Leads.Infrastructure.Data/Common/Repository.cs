@@ -24,7 +24,7 @@ internal sealed class Repository<T> : IRepository<T>
 
   public async ValueTask CreateIndicesAsync(string[] labels)
   {
-    labels = labels.Length == 0 ? [typeof(T).Name.ToString()] : labels;
+    labels = !labels.Any() ? new[] { typeof(T).Name.ToString() } : labels;
     using var session = GetSession(AccessMode.Write);
     foreach (var query in labels.Select(l => string.Format("CREATE INDEX ON :{0}(id)", l)))
       await session.ExecuteWriteAsync(r => r.RunAsync(query, null!));

@@ -18,7 +18,7 @@
     <PackageVersion Include="Serilog.Formatting.Compact" Version="3.0.0" />
     <!--API-->
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageVersion Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
+    <PackageVersion Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
     <PackageVersion Include="Ardalis.ApiEndpoints" Version="4.1.0" />
     <PackageVersion Include="Ardalis.ListStartupServices" Version="1.1.4" />
     <PackageVersion Include="Ardalis.Result.AspNetCore" Version="9.1.0" />
@@ -46,7 +46,11 @@
     <PackageVersion Include="Microsoft.Extensions.Http" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
     <PackageVersion Include="Microsoft.FeatureManagement.AspNetCore" Version="3.4.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
+    <PackageVersion Include="EntityFrameworkCore.Data.UnitOfwork.Abstractions" Version="8.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.7" />
     <PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
     <PackageVersion Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.3" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
@@ -61,18 +65,21 @@
     <PackageVersion Include="System.Drawing.Common" Version="8.0.7" />
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="7.6.3" />
     <PackageVersion Include="AspNetCore.HealthChecks.UI.Client" Version="8.0.1" />
+    <PackageVersion Include="AspNetCore.HealthChecks.NpgSql" Version="8.0.1" />
     <PackageVersion Include="AspNetCore.HealthChecks.Uris" Version="8.0.1" />
+    <PackageVersion Include="OpenCvSharp4.Windows" Version="4.10.0.20240616" />
     <PackageVersion Include="FluentEmail.Core" Version="3.0.2" />
     <PackageVersion Include="FluentEmail.Smtp" Version="3.0.2" />
     <PackageVersion Include="FluentEmail.Razor" Version="3.0.2" />
     <PackageVersion Include="Camunda.Api.Client" Version="2.6.0" />
     <PackageVersion Include="Camunda.Worker" Version="0.15.0" />
-    <PackageVersion Include="Neo4j.Driver" Version="5.22.0" />
-    <PackageVersion Include="Redis.OM" Version="0.7.3" />
+    <PackageVersion Include="Neo4j.Driver" Version="5.7.0" />
+    <PackageVersion Include="Redis.OM" Version="0.5.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
-    <PackageVersion Include="HotChocolate.AspNetCore" Version="13.9.7" />
-    <PackageVersion Include="HotChocolate.Data" Version="13.9.7" />
-    <PackageVersion Include="HotChocolate.Subscriptions.Redis" Version="13.9.7" />
+    <PackageVersion Include="HotChocolate.AspNetCore" Version="13.0.5" />
+    <PackageVersion Include="HotChocolate.Data" Version="13.0.5" />
+    <PackageVersion Include="HotChocolate.Subscriptions.Redis" Version="13.0.5" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.7" />
     <!--UI-->
     <PackageVersion Include="MudBlazor" Version="7.1.1" />
@@ -82,7 +89,6 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <!--Test-->
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
-    <PackageVersion Include="Testcontainers.Neo4j" Version="3.9.0" />
     <PackageVersion Include="xunit" Version="2.9.0" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />

@@ -33,11 +33,8 @@ public static class DependencyInjection
         .AddSubscriptionType()
         .AddRedisSubscriptions((sp) =>
         {
-          var config = sp
-          .GetRequiredService<IConfiguration>()
-          .GetValue<string>("Redis");
-
-          return ConnectionMultiplexer.Connect(config!);
+          var config = sp.GetRequiredService<IConfiguration>();
+          return ConnectionMultiplexer.Connect($"{config["Redis:Host"]}:{config["Redis:Port"]}");
         })
         .AddTypeExtension<ProductSubscription>()
         .AddTypeExtension<OrderSubscription>()
@@ -55,21 +52,16 @@ public static class DependencyInjection
   {
     app.UseEndpoints(endpoints =>
     {
-      _ = endpoints.MapGraphQL()
-      .WithOptions(new HotChocolate.AspNetCore.GraphQLServerOptions
+      _ = endpoints.MapGraphQL().WithOptions(new HotChocolate.AspNetCore.GraphQLServerOptions
       {
-        EnableSchemaRequests = env.IsDevelopment(),
+        EnableSchemaRequests = !env.IsProduction(),
         EnableBatching = true,
         EnableMultipartRequests = true,
-        EnforceMultipartRequestsPreflightHeader = true,
         Tool =
             {
-                    Title = "ThumbezaTech.Leads",
                     Enable = env.IsDevelopment(),
-                    DisableTelemetry = env.IsProduction(),
             }
       });
-
       endpoints.MapGet("/", context =>
           {
             context.Response.Redirect("/graphql", true);

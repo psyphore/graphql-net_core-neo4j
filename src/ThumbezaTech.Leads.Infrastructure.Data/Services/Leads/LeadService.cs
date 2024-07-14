@@ -22,7 +22,7 @@ internal sealed class LeadService : ILeadService
     };
     var statement = Queries.Options[Queries.GetOne].Trim();
     var payload = await _data.ExecuteReadTransactionAsync<Lead>(statement, Label, Query);
-    return payload.Count != 0
+    return payload.Any()
         ? Result.Success(payload.First())
         : Result.NotFound();
   }
@@ -31,7 +31,7 @@ internal sealed class LeadService : ILeadService
   {
     var statement = Queries.Options[Queries.GetAll].Trim();
     var payload = await _data.ExecuteReadTransactionAsync<Lead>(statement, $"{Label}s", null!);
-    return payload.Count != 0
+    return payload.Any()
         ? Result.Success(payload.Distinct())
         : Result.NotFound();
   }
@@ -64,7 +64,7 @@ internal sealed class LeadService : ILeadService
     {
       await _publisher.Publish(item, cancellationToken);
     }
-    return payload.Length != 0
+    return payload.Any()
         ? Result.SuccessWithMessage(payload)
         : Result.NotFound();
   }
@@ -84,7 +84,7 @@ internal sealed class LeadService : ILeadService
     {
       await _publisher.Publish(item, cancellationToken);
     }
-    return payload.Length != 0
+    return payload.Any()
         ? Result.SuccessWithMessage(payload)
         : Result.NotFound();
   }

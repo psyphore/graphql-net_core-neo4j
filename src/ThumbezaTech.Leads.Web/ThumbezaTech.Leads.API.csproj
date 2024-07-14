@@ -28,10 +28,4 @@
     <ProjectReference Include="..\ThumbezaTech.Leads.Infrastructure.Email\ThumbezaTech.Leads.Infrastructure.Email.csproj" />
     <ProjectReference Include="..\ThumbezaTech.Leads.Web.GraphQL\ThumbezaTech.Leads.Web.GraphQL.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>ThumbezaTech.Leads.IntegrationTests</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
 </Project>

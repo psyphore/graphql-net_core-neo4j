@@ -9,7 +9,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Testcontainers.Neo4j" />
     <PackageReference Include="xunit" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
@@ -22,7 +21,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\ThumbezaTech.Leads.Infrastructure.Data\ThumbezaTech.Leads.Infrastructure.Data.csproj" />
     <ProjectReference Include="..\..\src\ThumbezaTech.Leads.Infrastructure.Email\ThumbezaTech.Leads.Infrastructure.Email.csproj" />
-    <ProjectReference Include="..\..\src\ThumbezaTech.Leads.Web\ThumbezaTech.Leads.API.csproj" />
     <ProjectReference Include="..\ThumbezaTech.Leads.UnitTests\ThumbezaTech.Leads.UnitTests.csproj" />
   </ItemGroup>
 </Project>

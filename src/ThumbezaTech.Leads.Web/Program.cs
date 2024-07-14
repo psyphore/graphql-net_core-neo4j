@@ -29,3 +29,4 @@ app.UseRouting();
 app.UseGraphQLResolver(app.Environment);
 
 app.Run();
+

@@ -1,8 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   
   <ItemGroup>
-    <PackageReference Include="Neo4j.Driver" />
+    <PackageReference Include="Neo4j.Driver"/>
     <PackageReference Include="Redis.OM" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
   </ItemGroup>
   
