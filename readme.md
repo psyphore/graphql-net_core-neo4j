@@ -5,10 +5,10 @@ I will loosely follow the Domain Driven Design pattern.
 
 stack:
 
-- dotnet 6 (LTS)
-- Neo4j-driver 5.5
-- HotChocolate GraphQL 13.0.5
-- RedisStack 6.2.6v2
+- dotnet 8 (LTS)
+- Neo4j-driver 5.22
+- HotChocolate GraphQL 13.9.7
+- RedisStack 6.2.6v14
 
 ## Project Structure
 
@@ -42,10 +42,7 @@ net-core-graphql
         "Password": "thumbeza-tech-l3ad5",
         "databaseName": "leads"
       },
-      "Redis": {
-        "Host": "localhost",
-        "Port": 6379
-      },
+      "Redis": "redis://localhost:6379",
       "Smtp": {
         "Sender": "no-reply@leads.thumbezatech.co.za",
         "SenderName": "Thumbeza Tech",

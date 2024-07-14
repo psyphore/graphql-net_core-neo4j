@@ -19,7 +19,7 @@ internal sealed class OrderService : IOrderService
     };
     var statement = Commands.Options[Commands.SaveOne].Trim();
     var payload = await _data.ExecuteWriteTransactionAsync<string>(statement, input);
-    return payload.Any()
+    return payload.Length != 0
         ? Result.SuccessWithMessage(payload)
         : Result.NotFound();
   }
@@ -32,7 +32,7 @@ internal sealed class OrderService : IOrderService
     };
     var statement = Queries.Options[Queries.LeadOrders].Trim();
     var payload = await _data.ExecuteReadTransactionAsync<Order>(statement, $"{Label}s", Query);
-    return payload.Any()
+    return payload.Count != 0
         ? Result.Success(payload.Distinct())
         : Result.NotFound();
   }
@@ -45,7 +45,7 @@ internal sealed class OrderService : IOrderService
     };
     var statement = Queries.Options[Queries.LeadOrders].Trim();
     var payload = await _data.ExecuteReadTransactionAsync<Order>(statement, $"{Label}s", Query);
-    return payload.Any()
+    return payload.Count != 0
         ? Result.Success(payload.First())
         : Result.NotFound();
   }
@@ -54,7 +54,7 @@ internal sealed class OrderService : IOrderService
   {
     var statement = Queries.Options[Queries.LeadOrders].Trim();
     var payload = await _data.ExecuteReadTransactionAsync<Order>(statement, $"{Label}s", null!);
-    return payload.Any()
+    return payload.Count != 0
         ? Result.Success(payload.Distinct())
         : Result.NotFound();
   }

@@ -13,62 +13,62 @@ internal sealed class LeadMutation
 {
   [GraphQLName("create_lead")]
   [GraphQLDescription("Create a lead")]
-  public async Task<string> CreateLead(
-      [Service] ISender Sender,
-      [Service] ITopicEventSender topicSender,
-      [GraphQLNonNullType] LeadVm lead,
-      CancellationToken cancellationToken = default)
+  public async Task<string> CreateLead([Service] ISender Sender,
+                                       [Service] ITopicEventSender topicSender,
+                                       [GraphQLNonNullType] LeadVm lead,
+                                       CancellationToken cancellationToken = default)
   {
-    var result = await Sender.Send(
-      new CreateLeadCommand((Lead)lead),
-      cancellationToken);
-    if (!result.IsSuccess)
-    {
-      return string.Join("; ", result.Errors);
-    }
+    var result = await Sender.Send(new CreateLeadCommand((Lead)lead), cancellationToken)
+      .ConfigureAwait(true);
 
-    await topicSender.SendAsync("OnLeadPublishedTopic", lead, cancellationToken);
+    if (!result.IsSuccess)
+      return string.Join("; ", result.Errors);
+
+    await topicSender.SendAsync("OnLeadPublishedTopic", lead, cancellationToken)
+      .ConfigureAwait(false);
+
     return result.SuccessMessage;
   }
 
   [GraphQLName("update_lead")]
   [GraphQLDescription("Update a lead")]
-  public async Task<string> UpdateLead(
-      [Service] ISender Sender,
-      [Service] ITopicEventSender topicSender,
-      [GraphQLNonNullType] LeadVm lead,
-      CancellationToken cancellationToken = default)
+  public async Task<string> UpdateLead([Service] ISender Sender,
+                                       [Service] ITopicEventSender topicSender,
+                                       [GraphQLNonNullType] LeadVm lead,
+                                       CancellationToken cancellationToken = default)
   {
-    var result = await Sender.Send(new UpdateLeadCommand((Lead)lead), cancellationToken);
+    var result = await Sender.Send(new UpdateLeadCommand((Lead)lead), cancellationToken)
+      .ConfigureAwait(true);
     if (!result.IsSuccess)
     {
       return string.Join("; ", result.Errors);
     }
 
-    await topicSender.SendAsync("OnLeadPublishedTopic", lead, cancellationToken);
+    await topicSender.SendAsync("OnLeadPublishedTopic", lead, cancellationToken)
+      .ConfigureAwait(false);
     return result.SuccessMessage;
   }
 
   [GraphQLName("activate_lead")]
   [GraphQLDescription("Activate a lead")]
-  public async Task ActivateLead(
-      [Service] IPublisher Sender,
-      [Service] ITopicEventSender topicSender,
-      [GraphQLNonNullType] string activationId,
-      CancellationToken cancellationToken = default)
+  public async Task ActivateLead([Service] IPublisher Sender,
+                                 [Service] ITopicEventSender topicSender,
+                                 [GraphQLNonNullType] string activationId,
+                                 CancellationToken cancellationToken = default)
   {
-    await Sender.Publish(new LeadActivedEvent(activationId), cancellationToken);
+    await Sender.Publish(new LeadActivedEvent(activationId), cancellationToken)
+      .ConfigureAwait(false);
   }
 
   [GraphQLName("deactivate_lead")]
   [GraphQLDescription("De-activate a lead")]
-  public async Task DeactivateLead(
-      [Service] IPublisher Sender,
-      [Service] ITopicEventSender topicSender,
-      [GraphQLNonNullType] string activationId,
-      CancellationToken cancellationToken = default)
+  public async Task DeactivateLead([Service] IPublisher Sender,
+                                   [Service] ITopicEventSender topicSender,
+                                   [GraphQLNonNullType] string activationId,
+                                   CancellationToken cancellationToken = default)
   {
-    await Sender.Publish(new LeadAbandonedEvent(activationId), cancellationToken);
+    await Sender.Publish(new LeadAbandonedEvent(activationId), cancellationToken)
+      .ConfigureAwait(false);
   }
 
 }

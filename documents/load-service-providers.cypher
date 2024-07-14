@@ -90,25 +90,28 @@ CREATE
   (Product9)<-[:HAS_PRICE{ created: timestamp(), createdBy: 'system' }]-(M9),
   (Product10)<-[:HAS_PRICE{ created: timestamp(), createdBy: 'system' }]-(M10)
  
-CREATE
-  (Res:Address{ line1:'55 Acacia Road', line2:'1 Carlswald Meadows Estate', line3: null, suburb:'Blue Hills AH', city:'Midrand', zip:'1685', country:'ZA', created: timestamp()})
+CREATE (Res:Address{ line1:'55 Acacia Road', line2:'1 Carlswald Meadows Estate', line3: null, suburb:'Blue Hills AH', city:'Midrand', zip:'1685', country:'ZA', created: timestamp()})
+CREATE (Customer:Lead{ id: apoc.create.uuid(), active: true, firstName:'John', lastName:'Wick', dateOfBirth: datetime('1971-01-12T00:00:00'), created: timestamp()})
+CREATE (CustomerContact:Contact{ id: apoc.create.uuid(), active: true, number:'0718890001', email: 'john.wick@continetal.hightable.org', created: timestamp()})
 
-CREATE
-  (Customer:Lead{ id: apoc.create.uuid(), active: true, firstName:'John', lastName:'Wick', dateOfBirth: datetime('1971-01-12T00:00:00'), created: timestamp()})
+CREATE (Customer)-[:RESIDES_AT{ since: datetime('2010-11-04T08:00:00'), created: timestamp(), createdBy: 'system' }]->(Res)
+CREATE (Customer)-[:HAS_CONTACT{ created: timestamp(), createdBy: 'system' }]->(CustomerContact)
 
-CREATE
-  (CustomerContact:Contact{ id: apoc.create.uuid(), active: true, number:'0718890001', email: 'john.wick@continetal.hightable.org', created: timestamp()})
+// https://neo4j.com/docs/cypher-manual/current/indexes/search-performance-indexes/managing-indexes/#create-text-index  
+CREATE TEXT INDEX product_text_index_id FOR (n:Product) ON (n.id)
+CREATE TEXT INDEX product_text_index_name FOR (n:Product) ON (n.name)
+CREATE TEXT INDEX product_text_index_tags FOR (n:Product) ON (n.tags)
+CREATE TEXT INDEX money_text_index_currency FOR (n:Money) ON (n.currency)
+CREATE RANGE INDEX money_range_index_amount FOR (n:Money) ON (n.amount)
+CREATE TEXT INDEX lead_text_index_id FOR (n:Lead) ON (n.id)
+CREATE TEXT INDEX lead_text_index_names FOR (n:Lead) ON (n.names)
 
-CREATE
-  (Customer)-[:RESIDES_AT{ since: datetime('2010-11-04T08:00:00'), created: timestamp(), createdBy: 'system' }]->(Res)
+// https://neo4j.com/docs/cypher-manual/current/indexes/search-performance-indexes/managing-indexes/#create-a-composite-range-index-for-nodes
+CREATE INDEX product_composite_index FOR (n:Product) ON (n.id, n.name, n.tags)
+CREATE INDEX address_composite_index FOR (n:Address) ON (n.line1, n.line2, n.line3, n.suburb, n.city, n.zip, n.country)
 
-CREATE
-  (Customer)-[:HAS_CONTACT{ created: timestamp(), createdBy: 'system' }]->(CustomerContact)
-  
-CREATE TEXT INDEX FOR (n:Product) ON EACH [n.id, n.name, n.tags]
-CREATE TEXT INDEX FOR (n:Money) ON (n.currency)
-CREATE RANGE INDEX FOR (n:Money) ON (n.amount)
-CREATE TEXT INDEX FOR (n:Lead) ON EACH [n.id, n.names]
-CREATE TEXT INDEX FOR (n:Address) ON EACH [n.line1, n.line2, n.line3, n.suburb, n.city, n.zip, n.country]
+https://neo4j.com/docs/cypher-manual/current/constraints/syntax/#constraints-syntax-create-node-unique
+CREATE CONSTRAINT product_unique_containt IF NOT EXISTS FOR (n:Product) REQUIRE n.name IS UNIQUE
+CREATE CONSTRAINT product_null_containt IF NOT EXISTS FOR (n:Product) REQUIRE n.name IS NOT NULL
 
 ;
