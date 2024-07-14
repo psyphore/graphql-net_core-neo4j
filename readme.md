@@ -42,7 +42,7 @@ net-core-graphql
         "Password": "thumbeza-tech-l3ad5",
         "databaseName": "leads"
       },
-      "Redis": "localhost:6379",
+      "Redis": "redis://localhost:6379",
       "Smtp": {
         "Sender": "no-reply@leads.thumbezatech.co.za",
         "SenderName": "Thumbeza Tech",
