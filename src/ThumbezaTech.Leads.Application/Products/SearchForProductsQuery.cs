@@ -15,3 +15,13 @@ internal sealed class SearchForProductsQueryHandler : IQueryHandler<SearchForPro
     return _service.QueryProducts(Guard.Against.NullOrEmpty(query.Query), cancellationToken);
   }
 }
+
+internal sealed class SearchForProductsQueryValidator: AbstractValidator<SearchForProductsQuery>
+{
+
+public SearchForProductsQueryValodator()
+{
+  RuleFor(m => m.Query).NotNull().NotEmpty();
+}
+
+}
