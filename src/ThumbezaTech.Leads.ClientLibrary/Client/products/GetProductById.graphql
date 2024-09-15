@@ -1,0 +1,12 @@
+﻿query get_product_by_id ($id: String!) {
+  get_product(id: $id) {
+    id
+    name
+    price {
+      currency
+      amount
+    }
+    tags
+    sku
+  }
+}

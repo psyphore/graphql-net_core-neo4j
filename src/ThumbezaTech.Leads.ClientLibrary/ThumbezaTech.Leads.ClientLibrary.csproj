@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  
+  <ItemGroup>
+    <GraphQL Remove="Client\GetProductById.graphql" />
+    <GraphQL Remove="Client\GetProducts.graphql" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="StrawberryShake.Blazor" />
+  </ItemGroup>
+</Project>

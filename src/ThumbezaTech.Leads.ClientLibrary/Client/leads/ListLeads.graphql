@@ -1,0 +1,11 @@
+query ListLeads {
+  list_leads {
+    nodes {
+      id
+      firstName
+      lastName
+      dateOfBirth
+      active
+    }
+  }
+}

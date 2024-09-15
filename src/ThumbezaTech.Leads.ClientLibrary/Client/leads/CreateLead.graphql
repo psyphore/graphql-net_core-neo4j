@@ -1,0 +1,3 @@
+mutation CreateLead($lead: LeadVmInput!) {
+  create_lead(lead: $lead)
+}

@@ -1,0 +1,10 @@
+query SearchLeads($query: String!) {
+  search_leads(query: $query) {
+    nodes{
+      id
+      firstName
+      lastName
+      active
+    }
+  }
+}

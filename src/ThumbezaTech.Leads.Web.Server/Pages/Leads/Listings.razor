@@ -1,0 +1,40 @@
+@page "/leads/list"
+
+@* https://blazor.radzen.com/card *@
+<section>
+    <UseListLeads Context="lead">
+        <LoadingContent>
+            <span class="h5">Fetching Leads... Please wait</span>
+        </LoadingContent>
+
+        <ErrorContent>
+            <p class="h5">Something went wrong...</p>
+            <p class="text-warning">@lead.First().Message</p>
+        </ErrorContent>
+
+        <ChildContent>
+            <MudGrid>
+                @foreach (var item in lead.List_leads.Nodes)
+                {
+                    <MudItem md="3">
+                        <MudCard>
+                            <MudCardHeader>
+                                <MudText>@item.FirstName</MudText>
+                                <MudText>@item.LastName</MudText>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                <MudText>@item.DateOfBirth</MudText>
+                            </MudCardContent>
+                            <MudCardActions>
+                                <MudIconButton Icon="@Icons.Material.Filled.SwipeRightAlt" title="More"></MudIconButton>
+                            </MudCardActions>
+                        </MudCard>
+
+
+                    </MudItem>
+                }
+            </MudGrid>
+
+        </ChildContent>
+    </UseListLeads>
+</section>

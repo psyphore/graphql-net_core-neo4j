@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\ThumbezaTech.Leads.SharedKernel\ThumbezaTech.Leads.SharedKernel.csproj" />
+  </ItemGroup>
+</Project>

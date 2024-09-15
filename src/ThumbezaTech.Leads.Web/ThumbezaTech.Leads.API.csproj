@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <UserSecretsId>87870e70-3db8-43f0-928a-bdc76ea241bd</UserSecretsId>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
+
+    <PackageReference Include="Serilog.AspNetCore" />
+    <PackageReference Include="Serilog.Sinks.Console" />
+    <PackageReference Include="Serilog.Sinks.File" />
+    <PackageReference Include="Serilog.Sinks.Seq" />
+    <PackageReference Include="Serilog.Enrichers.Sensitive" />
+    <PackageReference Include="Serilog.Enrichers.ExceptionData" />
+    <PackageReference Include="Serilog.Enrichers.AspNetCore" />
+    <PackageReference Include="Serilog.Enrichers.Context" />
+    <PackageReference Include="Serilog.Enrichers.CorrelationId" />
+    <PackageReference Include="Serilog.Enrichers.Environment" />
+    <PackageReference Include="Serilog.Enrichers.Process" />
+    <PackageReference Include="Serilog.Enrichers.Thread" />
+    <PackageReference Include="Serilog.Exceptions" />
+    <PackageReference Include="Serilog.Formatting.Compact" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\ThumbezaTech.Leads.Application\ThumbezaTech.Leads.Application.csproj" />
+    <ProjectReference Include="..\ThumbezaTech.Leads.Infrastructure.Data\ThumbezaTech.Leads.Infrastructure.Data.csproj" />
+    <ProjectReference Include="..\ThumbezaTech.Leads.Infrastructure.Email\ThumbezaTech.Leads.Infrastructure.Email.csproj" />
+    <ProjectReference Include="..\ThumbezaTech.Leads.Web.GraphQL\ThumbezaTech.Leads.Web.GraphQL.csproj" />
+  </ItemGroup>
+</Project>

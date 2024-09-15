@@ -1,0 +1,12 @@
+subscription products_subscription {
+  product_subs {
+    id
+    name
+    price {
+      currency
+      amount
+    }
+    tags
+    sku
+  }
+}
