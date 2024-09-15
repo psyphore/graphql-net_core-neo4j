@@ -26,7 +26,7 @@ public static class DependencyInjection
   }
 }
 
-public sealed record ClientConfiguration
+internal sealed record ClientConfiguration
 {
   public string Url { get; set; } = default!;
   public string Ws { get; set; } = default!;
